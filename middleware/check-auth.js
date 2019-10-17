@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
-const { User } = require('../models/user');
+const { User } = require('../models/user.model');
 module.exports = {
     checkAuth: async (req, res) => {
         // First Validate The HTTP Request
