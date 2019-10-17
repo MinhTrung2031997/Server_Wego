@@ -11,6 +11,9 @@ const usersRouter = require('./routes/users.router');
 const authRouter = require('./routes/auth.router');
 const forgotPasswordRouter = require('./routes/forgotPassword.router');
 const tripRouter = require('./routes/trip.router');
+const tripUserRouter = require('./routes/tripUser.router');
+const transactionRouter = require('./routes/transaction.router');
+const transactionUserRouter = require('./routes/transactionUser.router');
 
 const app = express();
 
@@ -35,10 +38,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api/users', usersRouter);
+app.use('/api/user', usersRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/forgotPassword', forgotPasswordRouter);
 app.use('/api/trip', tripRouter);
+app.use('/api/tripUser',tripUserRouter);
+app.use('/api/transaction',transactionRouter );
+app.use('/api/transactionUser',transactionUserRouter);
 
 
 // catch 404 and forward to error handler

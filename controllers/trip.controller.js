@@ -8,7 +8,7 @@ module.exports = {
               res.json({
                   result: "ok",
                   data: trip,
-                  message: "Query list if trip successfully"
+                  message: "Query list of trip successfully"
               })
           })
           .catch(err => {
@@ -32,7 +32,7 @@ module.exports = {
               res.json({
                   result: "ok",
                   data: item,
-                  message: "Insert new food Successfully"
+                  message: "Insert new trip Successfully"
               })
           })
           .catch(err => {
@@ -49,7 +49,7 @@ module.exports = {
           res.json({
               result: "failed",
               data: [],
-              message: "You must enter food_id to update"
+              message: "You must enter trip_id to update"
           })
       }
       let newValues = {};
@@ -72,13 +72,13 @@ module.exports = {
               res.json({
                   result: "Failed",
                   data: [],
-                  message: `Cannot update existing food.Error is: ${err}`
+                  message: `Cannot update existing trip.Error is: ${err}`
               })
           } else {
               res.json({
                   result: "ok",
                   data: updateTrip,
-                  message: "Update food successfully"
+                  message: "Update trip successfully"
               })
           }
       })
@@ -89,12 +89,12 @@ module.exports = {
               res.json({
                   result:"failed",
                   data:[],
-                  message:`Cannot delete  tripId ${req.params.tripId} Error is : ${err}`
+                  message:`Cannot delete  trip_id ${req.params.tripId} Error is : ${err}`
               })
           }
           res.json({
               result:"ok",
-              message:"Delete trip successfully"
+              message:`Delete trip_id ${req.params.tripId} successfully`
           })
       })
   }

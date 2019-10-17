@@ -4,6 +4,4 @@ const Authentication = require('../middleware/check-auth');
 
 router.post('/', Authentication.checkAuth);
 
-
-
 module.exports = router;
