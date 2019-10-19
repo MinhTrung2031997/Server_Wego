@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const lodash = require('lodash');
-const { User, validate } = require("../models/user");
 const mailer = require("../nodemailer/mailer");
 var rn = require('random-number');
 const {User, validate} = require("../models/user.model");
@@ -31,8 +30,7 @@ module.exports = {
                 , integer: true
             })
             const secretToken = gen();
-            console.log('secretToken', secretToken);
-
+            
             // Insert the new user if they do not exist yet
 
             //user = new User (lodash.pick(req.body,['name','email','password']));
