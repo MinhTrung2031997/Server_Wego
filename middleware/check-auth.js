@@ -16,12 +16,18 @@ module.exports = {
             return res.status(400).json({error: 'incorrect email or password'});
         }
 
+        // Check if email has been verified
+        if (!user.active) {
+            return res.status(400).json({ error: 'Sorry, you must validate email first' });
+        }
+
         // Then validate the Credentials in MongoDB match
         // those provided in the request
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
             return res.status(400).json({error:'incorrect email or password'});
         }
+
         const token = jwt.sign({ _id: user._id }, 'PrivateKey');
         res.status(200).json({token});
     }
