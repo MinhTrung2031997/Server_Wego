@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="" />
+    <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/controllers/transactionUser.controller.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/tripUser.controller.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/transactionUser.model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/tripUser.model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/transactionUser.router.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/tripUser.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/transaction.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/transaction.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/trip.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/trip.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/user.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/auth.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/transaction.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/transaction.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/users.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.router.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1Ru9HvsYf92myNvJ7nlfco5alCL" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="ignore_missing_gitignore" value="true" />
     <property name="javascript.nodejs.core.library.configured.version" value="10.16.1" />
-    <property name="last_opened_file_path" value="E:/SliptWise/Server WeGo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -57,10 +82,39 @@
       <workItem from="1570725365842" duration="1141000" />
       <workItem from="1570759027776" duration="3603000" />
       <workItem from="1570843971779" duration="8270000" />
+      <workItem from="1570950815640" duration="18000" />
+      <workItem from="1570950837108" duration="738000" />
+      <workItem from="1570953771354" duration="170000" />
+      <workItem from="1570977505111" duration="898000" />
+      <workItem from="1571035448447" duration="8421000" />
+      <workItem from="1571061334773" duration="9480000" />
+      <workItem from="1571102173401" duration="1570000" />
+      <workItem from="1571108775469" duration="396000" />
+      <workItem from="1571115938846" duration="2799000" />
+      <workItem from="1571128583269" duration="4580000" />
+      <workItem from="1571149394763" duration="7055000" />
+      <workItem from="1571189897657" duration="3770000" />
+      <workItem from="1571195926190" duration="2170000" />
+      <workItem from="1571276024362" duration="2010000" />
+      <workItem from="1571278658508" duration="5293000" />
+      <workItem from="1571288623766" duration="13426000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
