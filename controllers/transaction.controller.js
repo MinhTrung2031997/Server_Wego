@@ -20,11 +20,50 @@ module.exports = {
                 })
             })
     },
+    getPopulateNameTrip: (req,res,next) => {
+        Transaction.findOne({_id:mongoose.Types.ObjectId(req.params.transactionId)})
+            .populate('trip_id')
+            .exec((err, data) => {
+                if (err){
+                    res.json({
+                        result:"failed",
+                        data:[],
+                        message:"query failed"
+                    })
+                } else {
+                    res.json({
+                        result:"ok",
+                        data: data,
+                        message:"query successfully"
+                    })
+                }
+            })
+    },
+    getTransactionByTripId: async (req, res, next) => {
+        Transaction.find({trip_id: mongoose.Types.ObjectId(req.params.tripId)})
+            .then(transactionByTripId => {
+                res.json({
+                    result: "ok",
+                    data: transactionByTripId,
+                    message: "Query list of transaction_by_trip_id successfully"
+                })
+            })
+            .catch(err => {
+                res.json({
+                    result: "failed",
+                    data: [],
+                    message: `error is : ${err}`
+                })
+            })
+    },
     createTransaction: async (req, res, next) => {
-
-        let name = await Transaction.findOne({name: req.body.name});
-        if (name) {
-            return res.status(400).json({error: "transaction is exits"});
+        let tripId = await Transaction.findOne({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
+        if (tripId) {
+            let arrUser = Transaction.find({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
+            let name = await arrUser.findOne({name: req.body.name});
+            if (name) {
+                return res.status(400).json({error: "transaction is exits"});
+            }
         }
 
         let transaction = new Transaction(req.body);
@@ -41,7 +80,7 @@ module.exports = {
             });
 
     },
-    updateTransaction:  async (req, res, next) => {
+    updateTransaction: async (req, res, next) => {
         let conditions = {}; // search record with "conditions" update
         if (mongoose.Types.ObjectId.isValid(req.params.transactionId))//check food_id ObjectId ?
         {
@@ -53,14 +92,17 @@ module.exports = {
                 message: "You must enter transaction_id to update"
             })
         }
+        let update_date = Date.now();
         let newValues = {};
-        if (req.body.name && req.body.name.length > 2 && req.body.amount) {
+        if (req.body.name && req.body.name.length > 2 && req.body.amount && req.body.list_user) {
             newValues = {
-                name : req.body.name,
-                amount: req.body.amount
+                update_date:update_date,
+                name: req.body.name,
+                amount: req.body.amount,
+                list_user:req.body.list_user
             }
         } else {
-            return  res.status(400).json({error: "not be empty"});
+            return res.status(400).json({error: "not be empty"});
         }
         const options = {
             new: true,
@@ -82,18 +124,18 @@ module.exports = {
             }
         })
     },
-    deleteTransaction: (req,res,next) => {
+    deleteTransaction: (req, res, next) => {
         Transaction.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.transactionId)}, (err) => {
-            if (err){
+            if (err) {
                 res.json({
-                    result:"failed",
-                    data:[],
-                    message:`Cannot delete  transaction_id ${req.params.transactionId} Error is : ${err}`
+                    result: "failed",
+                    data: [],
+                    message: `Cannot delete  transaction_id ${req.params.transactionId} Error is : ${err}`
                 })
             }
             res.json({
-                result:"ok",
-                message:`Delete transaction_id: ${req.params.transactionId} successfully`
+                result: "ok",
+                message: `Delete transaction_id: ${req.params.transactionId} successfully`
             })
         })
     }

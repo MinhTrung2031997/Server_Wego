@@ -11,7 +11,6 @@ const usersRouter = require('./routes/users.router');
 const authRouter = require('./routes/auth.router');
 const forgotPasswordRouter = require('./routes/forgotPassword.router');
 const tripRouter = require('./routes/trip.router');
-const tripUserRouter = require('./routes/tripUser.router');
 const transactionRouter = require('./routes/transaction.router');
 const transactionUserRouter = require('./routes/transactionUser.router');
 
@@ -42,7 +41,6 @@ app.use('/api/user', usersRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/forgotPassword', forgotPasswordRouter);
 app.use('/api/trip', tripRouter);
-app.use('/api/tripUser',tripUserRouter);
 app.use('/api/transaction',transactionRouter );
 app.use('/api/transactionUser',transactionUserRouter);
 
