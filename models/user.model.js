@@ -27,6 +27,9 @@ const UserModel = mongoose.model('User', new mongoose.Schema({
       type: String,
       default:""
     },
+    secretToken: String,
+    active: Boolean,
+    pinCode: String,
     create_date: {
         type: Date,
         default: Date.now()
