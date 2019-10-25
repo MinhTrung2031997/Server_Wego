@@ -77,36 +77,11 @@ module.exports = {
             user.secretToken = '';
             await user.save();
 
-            res.status(200).json({ result: "PIN code is correct" });
+            const token = jwt.sign({ _id: user._id }, 'PrivateKey');
+            res.status(200).json({ token });
+            
         } catch (error) {
             res.send(error);
-        }
-        const {error} = validate(req.body);
-        if (error) {
-            return res.status(400).json({error: error.details[0].message});
-        }
-
-        // Check if this user already exists
-        let name = await User.findOne({name: req.body.name});
-        let email = await User.findOne({email: req.body.email});
-        if (name) {
-            return res.status(400).json({error: 'That user  already exists!'});
-        } else if (email) {
-            return res.status(400).json({error: 'That email already exists'});
-        } else {
-            // Insert the new user if they do not exist yet
-
-            let user = new User(lodash.pick(req.body, ['name', 'email', 'password']));
-            // user = new User({
-            //     name: req.body.name,
-            //     email: req.body.email,
-            //     password: req.body.password
-            // });
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(user.password, salt);
-            await user.save();
-            res.send(user);
-            //res.send(lodash.pick(user, ['_id', 'name', 'email', 'password']));
         }
     },
     updateUser: (req, res, next) => {
