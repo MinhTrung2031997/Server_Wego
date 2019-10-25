@@ -2,22 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/controllers/transactionUser.controller.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/tripUser.controller.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/transactionUser.model.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/tripUser.model.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/transactionUser.router.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/tripUser.router.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/transaction.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/transaction.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/trip.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/trip.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/auth.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/transaction.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/transaction.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/users.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,7 +22,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="ignore_missing_gitignore" value="true" />
     <property name="javascript.nodejs.core.library.configured.version" value="10.16.1" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ReactApp" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -97,7 +82,24 @@
       <workItem from="1571195926190" duration="2170000" />
       <workItem from="1571276024362" duration="2010000" />
       <workItem from="1571278658508" duration="5293000" />
-      <workItem from="1571288623766" duration="13426000" />
+      <workItem from="1571288623766" duration="13561000" />
+      <workItem from="1571309537913" duration="5152000" />
+      <workItem from="1571364087773" duration="1751000" />
+      <workItem from="1571388667736" duration="1797000" />
+      <workItem from="1571400364128" duration="8972000" />
+      <workItem from="1571414005955" duration="660000" />
+      <workItem from="1571454941775" duration="1316000" />
+      <workItem from="1571461569044" duration="9386000" />
+      <workItem from="1571490956470" duration="6171000" />
+      <workItem from="1571536335948" duration="616000" />
+      <workItem from="1571543615534" duration="697000" />
+      <workItem from="1571589816061" duration="10005000" />
+      <workItem from="1571663120850" duration="6013000" />
+      <workItem from="1571725891236" duration="684000" />
+      <workItem from="1571728386244" duration="8175000" />
+      <workItem from="1571806083845" duration="1196000" />
+      <workItem from="1571817910148" duration="2145000" />
+      <workItem from="1571882616956" duration="278000" />
     </task>
     <servers />
   </component>

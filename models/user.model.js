@@ -23,6 +23,10 @@ const UserModel = mongoose.model('User', new mongoose.Schema({
         minlength: 5,
         maxlength: 1024
     },
+    avatar: {
+      type: String,
+      default:""
+    },
     secretToken: String,
     active: Boolean,
     pinCode: String,

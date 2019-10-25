@@ -2,22 +2,34 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const transactionUserSchema = new Schema({
+    list_user:[
+        {
+            type: Schema.Types.ObjectId,
+            require:true,
+            ref:'User'
+        },
+        {
+           type: Number,
+            require: true
+        }
+    ],
     user_id: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        require:true,
+        ref: 'User'
     },
     transaction_id: {
         type: Schema.Types.ObjectId,
         require:true,
         ref: 'transaction'
     },
+    amount_user: {
+        type: Number,
+        require: true
+    },
     type:{
       type: Number,
       default:0
-    },
-    amount: {
-        type: Number,
-        require: true
     },
     create_date: {
         type: Date,

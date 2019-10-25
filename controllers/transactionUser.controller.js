@@ -34,6 +34,29 @@ module.exports = {
             });
 
     },
+    getAddedTransaction: (req,res,next) => {
+        TransactionUser.findOne({_id:mongoose.Types.ObjectId(req.params.transactionUserId)})
+            .populate('user_id')
+            .populate({
+                path:'transaction_id',
+                populate:{ path: 'trip_id'}
+            })
+            .exec((err, data) => {
+                if (err){
+                    res.json({
+                        result:"failed",
+                        data:[],
+                        message:"query failed"
+                    })
+                } else {
+                    res.json({
+                        result:"ok",
+                        data: [ {a: data.user_id.name}, {b:data.transaction_id.name}, {c: data.transaction_id.trip_id.name}],
+                        message:"query successfully"
+                    })
+                }
+            })
+    },
     updateTransactionUser:  async (req, res, next) => {
         let conditions = {}; // search record with "conditions" update
         if (mongoose.Types.ObjectId.isValid(req.params.transactionUserId))//check food_id ObjectId ?

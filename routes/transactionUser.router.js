@@ -6,6 +6,8 @@ router.get('/list_all_transactionUser', transactionUserController.getAllTransact
 
 router.post('/insert_new_transactionUser',transactionUserController.createTransactionUser);
 
+router.post('/get_added_transaction/:transactionUserId', transactionUserController.getAddedTransaction);
+
 router.put('/update_a_transactionUser/:transactionUserId', transactionUserController.updateTransactionUser);
 
 router.delete('/delete_a_transactionUser/:transactionUserId', transactionUserController.deleteTransactionUser);
