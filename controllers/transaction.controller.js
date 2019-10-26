@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Transaction = require("../models/transaction.model");
+const TransactionUser = require("../models/transactionUser.model");
 
 
 module.exports = {
@@ -20,21 +21,21 @@ module.exports = {
                 })
             })
     },
-    getPopulateNameTrip: (req,res,next) => {
-        Transaction.findOne({_id:mongoose.Types.ObjectId(req.params.transactionId)})
+    getPopulateNameTrip: (req, res, next) => {
+        Transaction.findOne({_id: mongoose.Types.ObjectId(req.params.transactionId)})
             .populate('trip_id')
             .exec((err, data) => {
-                if (err){
+                if (err) {
                     res.json({
-                        result:"failed",
-                        data:[],
-                        message:"query failed"
+                        result: "failed",
+                        data: [],
+                        message: "query failed"
                     })
                 } else {
                     res.json({
-                        result:"ok",
+                        result: "ok",
                         data: data,
-                        message:"query successfully"
+                        message: "query successfully"
                     })
                 }
             })
@@ -57,6 +58,7 @@ module.exports = {
             })
     },
     createTransaction: async (req, res, next) => {
+        const {name, author, amount, trip_id, list_user} = req.body;
         let tripId = await Transaction.findOne({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
         if (tripId) {
             let arrUser = Transaction.find({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
@@ -65,21 +67,34 @@ module.exports = {
                 return res.status(400).json({error: "transaction is exits"});
             }
         }
-
-        let transaction = new Transaction(req.body);
+        let transaction = new Transaction({name, author, amount, trip_id});
         transaction.save()
-            .then(item => {
+            .then(transaction => {
                 res.json({
-                    result: "ok",
-                    data: item,
-                    message: "Insert new transaction Successfully"
-                })
+                    result: "failed",
+                    data: transaction,
+                    message: "save transaction successfully"
+                });
+                for (let i = 0; i < list_user.length; i++) {
+                    let transactionUser = new TransactionUser({
+                        user_id: list_user[i].user_id,
+                        transaction_id: transaction._id,
+                        amount_user: list_user[i].amount_user
+                    });
+                    transactionUser.save();
+                }
             })
             .catch(err => {
-                res.status(400).send(`error is :${err}`);
+                res.json({
+                    result: "failed",
+                    data: [],
+                    message: `error is : ${err}`
+                })
             });
 
     },
+
+
     updateTransaction: async (req, res, next) => {
         let conditions = {}; // search record with "conditions" update
         if (mongoose.Types.ObjectId.isValid(req.params.transactionId))//check food_id ObjectId ?
@@ -96,10 +111,10 @@ module.exports = {
         let newValues = {};
         if (req.body.name && req.body.name.length > 2 && req.body.amount && req.body.list_user) {
             newValues = {
-                update_date:update_date,
+                update_date: update_date,
                 name: req.body.name,
                 amount: req.body.amount,
-                list_user:req.body.list_user
+                list_user: req.body.list_user
             }
         } else {
             return res.status(400).json({error: "not be empty"});

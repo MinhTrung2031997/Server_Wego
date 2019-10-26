@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/models/tripUser.model.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/transaction.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/transaction.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/transactionUser.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/transactionUser.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/trip.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/trip.model.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -99,7 +105,12 @@
       <workItem from="1571728386244" duration="8175000" />
       <workItem from="1571806083845" duration="1196000" />
       <workItem from="1571817910148" duration="2145000" />
-      <workItem from="1571882616956" duration="278000" />
+      <workItem from="1571882616956" duration="1052000" />
+      <workItem from="1571889792376" duration="61000" />
+      <workItem from="1571889877076" duration="878000" />
+      <workItem from="1571920130936" duration="5881000" />
+      <workItem from="1571971885394" duration="780000" />
+      <workItem from="1571988228253" duration="16322000" />
     </task>
     <servers />
   </component>

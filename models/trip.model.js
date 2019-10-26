@@ -12,15 +12,6 @@ const tripSchema = new Schema({
         require: true,
         ref: 'User'
     },
-    list_user: [
-        {
-            _id: {
-                type: Schema.Types.ObjectId,
-                require: true,
-                ref: 'User'
-            }
-        }
-    ],
     create_date: {
         type: Date,
         default: Date.now()

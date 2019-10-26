@@ -1,4 +1,5 @@
 const Trip = require("../models/trip.model");
+const TripUser = require("../models/tripUser.model");
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -37,39 +38,29 @@ module.exports = {
                     })
                 }
             })
-
-        // .populate('list_user')
-        // .exec((err, users) => {
-        //     if (err) {
-        //         res.json({
-        //             result: "failed",
-        //             data: [],
-        //             message: "query failed"
-        //         })
-        //     } else {
-        //         res.json({
-        //             result: "ok",
-        //             data: users,
-        //             message: "query successfully"
-        //         })
-        //     }
-        // })
     },
     createTrip: async (req, res, next) => {
-
-        let name = await Trip.findOne({name: req.body.name});
-        if (name) {
+        const {name, author, list_user} = req.body;
+        let nameTrip = await Trip.findOne({name: req.body.name});
+        if (nameTrip) {
             return res.status(400).json({error: "trip is exits"});
         }
 
-        let trip = new Trip(req.body);
+        let trip = new Trip({name, author});
         trip.save()
-            .then(item => {
+            .then(trip => {
                 res.json({
                     result: "ok",
-                    data: item,
+                    data: trip,
                     message: "Insert new trip Successfully"
-                })
+                });
+                for (let i = 0; i < list_user.length; i++) {
+                    let tripUser = new TripUser({
+                        user_id: list_user[i].user_id,
+                        trip_id:trip._id
+                    });
+                    tripUser.save();
+                }
             })
             .catch(err => {
                 res.status(400).send(`error is :${err}`);
@@ -90,12 +81,9 @@ module.exports = {
         }
         let newValues = {};
         let update_date = Date.now();
-        if (req.body.name && req.body.name.length) {
-            // newValues.name = req.body.name;
-            // newValues.amount = req.body.amount;
+        if (req.body.name && req.body.name.length > 2) {
             newValues = {
                 name: req.body.name,
-                list_user: req.body.list_user,
                 update_date: update_date
             }
         } else {
@@ -110,16 +98,17 @@ module.exports = {
                 res.json({
                     result: "Failed",
                     data: [],
-                    message: `Cannot update existing trip.Error is: ${err}`
+                    message: `Cannot update existing trip.Error ias: ${err}`
                 })
             } else {
                 res.json({
                     result: "ok",
                     data: updateTrip,
                     message: "Update trip successfully"
-                })
+                });
             }
-        })
+        });
+        TripUser.remove({trip_id: mongoose.Types.ObjectId(req.params.tripId)});
     },
     deleteTrip: (req, res, next) => {
         Trip.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.tripId)}, (err) => {
