@@ -50,7 +50,12 @@ module.exports = {
         let trip = new Trip({name, author});
         let saveTrip = await trip.save();
         await res.json({saveTrip});
-
+        let user_create = await User.findOne({_id:mongoose.Types.ObjectId(req.body.author)});
+        let tripUser = new TripUser({
+            user_id: user_create._id,
+            trip_id: saveTrip._id
+        });
+        await tripUser.save();
         for (let i = 0; i < list_user.length; i++)  {
             let user = new User({
                 name:list_user[i].name,
@@ -63,6 +68,7 @@ module.exports = {
             });
             tripUser.save();
         }
+
 
     },
     updateTrip: async (req, res, next) => {
