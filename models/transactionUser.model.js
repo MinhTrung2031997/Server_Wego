@@ -2,34 +2,23 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const transactionUserSchema = new Schema({
-    list_user:[
-        {
-            type: Schema.Types.ObjectId,
-            require:true,
-            ref:'User'
-        },
-        {
-           type: Number,
-            require: true
-        }
-    ],
     user_id: {
         type: Schema.Types.ObjectId,
-        require:true,
+        require: true,
         ref: 'User'
     },
     transaction_id: {
         type: Schema.Types.ObjectId,
-        require:true,
+        require: true,
         ref: 'transaction'
     },
     amount_user: {
         type: Number,
         require: true
     },
-    type:{
-      type: Number,
-      default:0
+    type: {
+        type: Number,
+        default: -1
     },
     create_date: {
         type: Date,
@@ -39,10 +28,10 @@ const transactionUserSchema = new Schema({
         type: Date,
         default: ""
     },
-    delete_date:{
+    delete_date: {
         type: Date,
-        default:""
+        default: ""
     }
-}, {collection:'transactionUser'});
+}, {collection: 'transactionUser'});
 
 module.exports = mongoose.model('transactionUser', transactionUserSchema);

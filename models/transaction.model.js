@@ -15,25 +15,6 @@ const transactionSchema = new Schema({
         type: Number,
         require: true
     },
-    list_user:[
-        {
-            _id:{
-                type:Schema.Types.ObjectId,
-                require:true,
-                ref:'User'
-            },
-            type:{
-                type: Number,
-                require:true,
-                default:-1
-            },
-            amount:{
-                type:Number,
-                require:true,
-                default:0
-            }
-        }
-    ],
     trip_id: {
         type: Schema.Types.ObjectId,
         require: true,
