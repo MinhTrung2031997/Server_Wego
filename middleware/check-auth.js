@@ -30,7 +30,9 @@ module.exports = {
 
         const token = jwt.sign({ _id: user._id }, 'PrivateKey');
         res.status(200).json({token});
-    }
+    },
+    
+
 };
 
 function validate(req) {

@@ -46,9 +46,8 @@ app.use('/api/forgotPassword', forgotPasswordRouter);
 app.use('/api/sendMailGetCode', sendMailGetCode);
 app.use('/api/user', usersRouter);
 app.use('/api/trip', tripRouter);
-app.use('/api/transaction',transactionRouter );
-app.use('/api/transactionUser',transactionUserRouter);
-
+app.use('/api/transaction', transactionRouter);
+app.use('/api/transactionUser', transactionUserRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

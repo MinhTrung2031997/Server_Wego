@@ -2,10 +2,24 @@ const bcrypt = require('bcrypt');
 const lodash = require('lodash');
 const mailer = require("../nodemailer/mailer");
 var rn = require('random-number');
-const {User, validate} = require("../models/user.model");
+const { User, validate } = require("../models/user.model");
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
+    getInfoUser: async (req, res) => {
+        try {
+            const { token } = req.body;
+            // decode token retrieve id user
+            let decoded = jwt.verify(token, 'PrivateKey');
+            var userId = decoded._id;
+            // Fetch the user by id 
+            let user = await User.findOne({ _id: userId });
+            res.status(200).send(user);
+        } catch (error) {
+            return res.status(400).json({ error: 'Cannot get info user' });
+        }
+    },
     createUser: async (req, res) => {
         // First Validate The Request
         const { error } = validate(req.body);
@@ -30,7 +44,7 @@ module.exports = {
                 , integer: true
             })
             const secretToken = gen();
-            
+
             // Insert the new user if they do not exist yet
 
             //user = new User (lodash.pick(req.body,['name','email','password']));
@@ -79,7 +93,7 @@ module.exports = {
 
             const token = jwt.sign({ _id: user._id }, 'PrivateKey');
             res.status(200).json({ token });
-            
+
         } catch (error) {
             res.send(error);
         }
@@ -87,36 +101,36 @@ module.exports = {
     updateUser: (req, res, next) => {
         let conditions = {};
         if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
-           conditions._id = mongoose.Types.ObjectId(req.params.userId)
+            conditions._id = mongoose.Types.ObjectId(req.params.userId)
         } else {
             res.json({
-                result:"failed",
-                data:[],
-                message:"you must enter user_id to update"
+                result: "failed",
+                data: [],
+                message: "you must enter user_id to update"
             })
         }
 
         let newValues = {};
-        if(req.body.name && req.body.name.length > 2){
+        if (req.body.name && req.body.name.length > 2) {
             newValues = {
                 name: req.body.name
             }
         }
         const options = {
-            new:true
+            new: true
         };
-        User.findOneAndUpdate(conditions,{$set :newValues}, options, (err,updateUser) => {
+        User.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateUser) => {
             if (err) {
                 res.json({
-                    result:"failed",
-                    data:[],
-                    message:`Cannot update User with ${req.params.userId}. Error is: ${err}`
+                    result: "failed",
+                    data: [],
+                    message: `Cannot update User with ${req.params.userId}. Error is: ${err}`
                 })
             } else {
                 res.json({
-                    result:"ok",
-                    data:updateUser,
-                    message:"update a user successfully"
+                    result: "ok",
+                    data: updateUser,
+                    message: "update a user successfully"
                 })
             }
         })

@@ -74,7 +74,6 @@ module.exports = {
             .catch(err => {
                 res.status(400).send(`error is :${err}`);
             });
-
     },
     updateTrip: async (req, res, next) => {
         let conditions = {}; // search record with "conditions" update

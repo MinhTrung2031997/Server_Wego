@@ -7,17 +7,25 @@ const tripSchema = new Schema({
         require: true,
         trim: true
     },
-    author: {
-        type: Schema.Types.ObjectId,
-        require: true,
-        ref: 'User'
-    },
+    // author: {
+    //     type: Schema.Types.ObjectId,
+    //     require: true,
+    //     ref: 'User'
+    // },
     list_user: [
         {
             _id: {
                 type: Schema.Types.ObjectId,
                 require: true,
                 ref: 'User'
+            }
+        }
+    ],
+    list_email: [
+        {
+            email: {
+                type: String,
+                trim: true
             }
         }
     ],
