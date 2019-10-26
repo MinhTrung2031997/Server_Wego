@@ -72,6 +72,9 @@ module.exports = {
 
     },
     updateTrip: async (req, res, next) => {
+        const {list_user} = req.body;
+        let trip = Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)});
+
         let conditions = {}; // search record with "conditions" update
         if (mongoose.Types.ObjectId.isValid(req.params.tripId))//check food_id ObjectId ?
         {
@@ -85,7 +88,7 @@ module.exports = {
         }
         let newValues = {};
         let update_date = Date.now();
-        if (req.body.name && req.body.name.length > 2) {
+        if (req.body.name && req.body.name.length >= 2) {
             newValues = {
                 name: req.body.name,
                 update_date: update_date
@@ -112,7 +115,7 @@ module.exports = {
                 });
             }
         });
-        TripUser.remove({trip_id: mongoose.Types.ObjectId(req.params.tripId)});
+        TripUser.findOneAndRemove({trip_id: mongoose.Types.ObjectId(req.params.tripId)});
     },
     deleteTrip: (req, res, next) => {
         Trip.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.tripId)}, (err) => {

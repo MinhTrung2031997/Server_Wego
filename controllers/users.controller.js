@@ -12,25 +12,37 @@ module.exports = {
         if (error) {
             return res.status(400).json({ error: error.details[0].message });
         }
-
+        var gen = rn.generator({
+            min: 10000
+            , max: 99999
+            , integer: true
+        });
+        const secretToken = gen();
         // Check if this user already exists
-        let name = await User.findOne({ name: req.body.name });
-        let email = await User.findOne({ email: req.body.email });
-        if (name) {
+        let nameUser = await User.findOne({ name: req.body.name });
+        let user = await User.findOne({ email: req.body.email });
+        if (nameUser) {
             return res.status(400).json({ error: 'That user  already exists!' });
-        } else if (email) {
-            return res.status(400).json({ error: 'That email already exists' });
-        } else {
+        } else if (user) {
+            if (!user.password) {
+                const salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash (req.body.password, salt);
+                user.secretToken = secretToken;
+                user.active = false;
+                user.save();
+                return ;
+            }
+            else {
+                return res.status(400).json({ error: 'That email already exists' });
+            }
+        }
+
+        else {
 
             // Generate secret token
 
-            var gen = rn.generator({
-                min: 10000
-                , max: 99999
-                , integer: true
-            })
-            const secretToken = gen();
-            
+
+
             // Insert the new user if they do not exist yet
 
             //user = new User (lodash.pick(req.body,['name','email','password']));
