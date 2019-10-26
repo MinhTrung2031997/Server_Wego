@@ -76,6 +76,7 @@ module.exports = {
                     message: "save transaction successfully"
                 });
                 for (let i = 0; i < list_user.length; i++) {
+
                     let transactionUser = new TransactionUser({
                         user_id: list_user[i].user_id,
                         transaction_id: transaction._id,

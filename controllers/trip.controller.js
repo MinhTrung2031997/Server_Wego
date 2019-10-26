@@ -1,5 +1,6 @@
 const Trip = require("../models/trip.model");
 const TripUser = require("../models/tripUser.model");
+const {User} = require("../models/user.model");
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -47,24 +48,21 @@ module.exports = {
         }
 
         let trip = new Trip({name, author});
-        trip.save()
-            .then(trip => {
-                res.json({
-                    result: "ok",
-                    data: trip,
-                    message: "Insert new trip Successfully"
-                });
-                for (let i = 0; i < list_user.length; i++) {
-                    let tripUser = new TripUser({
-                        user_id: list_user[i].user_id,
-                        trip_id:trip._id
-                    });
-                    tripUser.save();
-                }
-            })
-            .catch(err => {
-                res.status(400).send(`error is :${err}`);
+        let saveTrip = await trip.save();
+        await res.json({saveTrip});
+
+        for (let i = 0; i < list_user.length; i++)  {
+            let user = new User({
+                name:list_user[i].name,
+                email:list_user[i].email
             });
+            let saveUser = await user.save();
+            let tripUser = new TripUser({
+                user_id: saveUser._id,
+                trip_id: saveTrip._id
+            });
+            tripUser.save();
+        }
 
     },
     updateTrip: async (req, res, next) => {
