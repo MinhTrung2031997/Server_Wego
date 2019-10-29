@@ -50,16 +50,16 @@ module.exports = {
         let trip = new Trip({name, author});
         let saveTrip = await trip.save();
         await res.json({saveTrip});
-        let user_create = await User.findOne({_id:mongoose.Types.ObjectId(req.body.author)});
+        let user_create = await User.findOne({_id: mongoose.Types.ObjectId(req.body.author)});
         let tripUser = new TripUser({
             user_id: user_create._id,
             trip_id: saveTrip._id
         });
         await tripUser.save();
-        for (let i = 0; i < list_user.length; i++)  {
+        for (let i = 0; i < list_user.length; i++) {
             let user = new User({
-                name:list_user[i].name,
-                email:list_user[i].email
+                name: list_user[i].name,
+                email: list_user[i].email
             });
             let saveUser = await user.save();
             let tripUser = new TripUser({
@@ -72,9 +72,6 @@ module.exports = {
 
     },
     updateTrip: async (req, res, next) => {
-        const {list_user} = req.body;
-        let trip = Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)});
-
         let conditions = {}; // search record with "conditions" update
         if (mongoose.Types.ObjectId.isValid(req.params.tripId))//check food_id ObjectId ?
         {
@@ -115,9 +112,39 @@ module.exports = {
                 });
             }
         });
-        TripUser.findOneAndRemove({trip_id: mongoose.Types.ObjectId(req.params.tripId)});
     },
-    deleteTrip: (req, res, next) => {
+    addMemberToTrip: async (req, res, next) => {
+        const {list_user} = req.body;
+        let trip = await Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)});
+        await res.json({trip});
+        if (trip) {
+            for (let i = 0; i < list_user.length; i++) {
+                let user = new User({
+                    name: list_user[i].name,
+                    email: list_user[i].email
+                });
+                let saveUser = await user.save();
+                let tripUser = new TripUser({
+                    user_id: saveUser._id,
+                    trip_id: trip._id
+                });
+                tripUser.save();
+            }
+        } else {
+            return res.status(400).json({error: "trip not exits"});
+        }
+
+
+    },
+    deleteMemberToTrip: async (req, res, next) => {
+        const {list_user} = req.body;
+        for (let i = 0; i < list_user.length; i++) {
+            console.log(list_user[i]);
+            let a = await TripUser.findOneAndRemove({_id: mongoose.Types.ObjectId(list_user[i].id)});
+        }
+    },
+
+    deleteTrip: async (req, res, next) => {
         Trip.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.tripId)}, (err) => {
             if (err) {
                 res.json({
@@ -130,6 +157,11 @@ module.exports = {
                 result: "ok",
                 message: `Delete trip_id ${req.params.tripId} successfully`
             })
-        })
+        });
+
+        let trip_id = req.params.tripId;
+        let  a  = await  TripUser.deleteMany({trip_id:trip_id});
+        console.log(a);
     }
+
 };

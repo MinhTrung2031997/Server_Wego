@@ -12,13 +12,23 @@ const transactionUserSchema = new Schema({
         require: true,
         ref: 'transaction'
     },
+    trip_id: {
+        type: Schema.Types.ObjectId,
+        require: true,
+        ref: 'trip'
+    },
     amount_user: {
         type: Number,
         require: true
     },
     type: {
         type: Number,
+        require:true,
         default: -1
+    },
+    total:{
+        type:Number,
+        default:0
     },
     create_date: {
         type: Date,
