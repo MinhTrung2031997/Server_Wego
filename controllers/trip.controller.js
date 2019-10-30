@@ -41,35 +41,37 @@ module.exports = {
             })
     },
     createTrip: async (req, res, next) => {
-        const {name, author, list_user} = req.body;
-        let nameTrip = await Trip.findOne({name: req.body.name});
-        if (nameTrip) {
-            return res.status(400).json({error: "trip is exits"});
-        }
+        try{
+            const { name, author, list_user } = req.body;
+            let nameTrip = await Trip.findOne({ name: req.body.name });
+            if (nameTrip) {
+                return res.status(400).json({ error: "trip already exists" });
+            }
 
-        let trip = new Trip({name, author});
-        let saveTrip = await trip.save();
-        await res.json({saveTrip});
-        let user_create = await User.findOne({_id:mongoose.Types.ObjectId(req.body.author)});
-        let tripUser = new TripUser({
-            user_id: user_create._id,
-            trip_id: saveTrip._id
-        });
-        await tripUser.save();
-        for (let i = 0; i < list_user.length; i++)  {
-            let user = new User({
-                name:list_user[i].name,
-                email:list_user[i].email
-            });
-            let saveUser = await user.save();
+            let trip = new Trip({ name, author });
+            let saveTrip = await trip.save();
+            await res.json({ saveTrip });
+            let user_create = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.author) });
             let tripUser = new TripUser({
-                user_id: saveUser._id,
+                user_id: user_create._id,
                 trip_id: saveTrip._id
             });
-            tripUser.save();
+            await tripUser.save();
+            for (let i = 0; i < list_user.length; i++) {
+                let user = new User({
+                    name: list_user[i].name,
+                    email: list_user[i].email
+                });
+                let saveUser = await user.save();
+                let tripUser = new TripUser({
+                    user_id: saveUser._id,
+                    trip_id: saveTrip._id
+                });
+                tripUser.save();
+            }
+        }catch(error){
+            res.json({error: error})
         }
-
-
     },
     updateTrip: async (req, res, next) => {
         const {list_user} = req.body;

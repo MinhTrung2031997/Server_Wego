@@ -22,10 +22,10 @@ module.exports = {
     },
     createUser: async (req, res) => {
         // First Validate The Request
-        const { error } = validate(req.body);
-        if (error) {
-            return res.status(400).json({ error: error.details[0].message });
-        }
+        // const { error } = validate(req.body);
+        // if (error) {
+        //     return res.status(400).json({ error: error.details[0].message });
+        // }
         var gen = rn.generator({
             min: 10000
             , max: 99999
@@ -36,8 +36,10 @@ module.exports = {
         let nameUser = await User.findOne({ name: req.body.name });
         let user = await User.findOne({ email: req.body.email });
         if (nameUser) {
-            return res.status(400).json({ error: 'That user  already exists!' });
-        } else if (user) {
+            return res.status(400).json({ error: 'That user already exists!' });
+        } else 
+        if (user) {
+
             if (!user.password) {
                 const salt = await bcrypt.genSalt(10);
                 user.password = await bcrypt.hash (req.body.password, salt);
