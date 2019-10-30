@@ -1,6 +1,6 @@
 const Trip = require("../models/trip.model");
 const TripUser = require("../models/tripUser.model");
-const {User} = require("../models/user.model");
+const { User } = require("../models/user.model");
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
             })
     },
     getUsersByTripId: (req, res, next) => {
-        Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)})
+        Trip.findOne({ _id: mongoose.Types.ObjectId(req.params.tripId) })
             .populate('list_user._id')
             .exec((err, users) => {
                 if (err) {
@@ -41,7 +41,7 @@ module.exports = {
             })
     },
     createTrip: async (req, res, next) => {
-        try{
+        try {
             const { name, author, list_user } = req.body;
             let nameTrip = await Trip.findOne({ name: req.body.name });
             if (nameTrip) {
@@ -68,15 +68,13 @@ module.exports = {
                     trip_id: saveTrip._id
                 });
                 tripUser.save();
+               
             }
-        }catch(error){
-            res.json({error: error})
+        } catch (error) {
+            res.json({ error: error })
         }
     },
     updateTrip: async (req, res, next) => {
-        const {list_user} = req.body;
-        let trip = Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)});
-
         let conditions = {}; // search record with "conditions" update
         if (mongoose.Types.ObjectId.isValid(req.params.tripId))//check food_id ObjectId ?
         {
@@ -96,13 +94,13 @@ module.exports = {
                 update_date: update_date
             }
         } else {
-            return res.status(400).json({error: "not be empty"});
+            return res.status(400).json({ error: "not be empty" });
         }
         const options = {
             new: true,
             multi: true
         };
-        Trip.findOneAndUpdate(conditions, {$set: newValues}, options, (err, updateTrip) => {
+        Trip.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateTrip) => {
             if (err) {
                 res.json({
                     result: "Failed",
@@ -117,10 +115,40 @@ module.exports = {
                 });
             }
         });
-        TripUser.findOneAndRemove({trip_id: mongoose.Types.ObjectId(req.params.tripId)});
     },
-    deleteTrip: (req, res, next) => {
-        Trip.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.tripId)}, (err) => {
+    addMemberToTrip: async (req, res, next) => {
+        const { list_user } = req.body;
+        let trip = await Trip.findOne({ _id: mongoose.Types.ObjectId(req.params.tripId) });
+        await res.json({ trip });
+        if (trip) {
+            for (let i = 0; i < list_user.length; i++) {
+                let user = new User({
+                    name: list_user[i].name,
+                    email: list_user[i].email
+                });
+                let saveUser = await user.save();
+                let tripUser = new TripUser({
+                    user_id: saveUser._id,
+                    trip_id: trip._id
+                });
+                tripUser.save();
+            }
+        } else {
+            return res.status(400).json({ error: "trip not exits" });
+        }
+
+
+    },
+    deleteMemberToTrip: async (req, res, next) => {
+        const { list_user } = req.body;
+        for (let i = 0; i < list_user.length; i++) {
+            console.log(list_user[i]);
+            let a = await TripUser.findOneAndRemove({ _id: mongoose.Types.ObjectId(list_user[i].id) });
+        }
+    },
+
+    deleteTrip: async (req, res, next) => {
+        Trip.findOneAndRemove({ _id: mongoose.Types.ObjectId(req.params.tripId) }, (err) => {
             if (err) {
                 res.json({
                     result: "failed",
@@ -132,6 +160,11 @@ module.exports = {
                 result: "ok",
                 message: `Delete trip_id ${req.params.tripId} successfully`
             })
-        })
+        });
+
+        let trip_id = req.params.tripId;
+        let a = await TripUser.deleteMany({ trip_id: trip_id });
+        console.log(a);
     }
+
 };

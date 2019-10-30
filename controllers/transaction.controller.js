@@ -57,6 +57,20 @@ module.exports = {
                 })
             })
     },
+    getTotalMoneyUser: async (req, res, next) => {
+        let a = await TransactionUser.aggregate([
+            {
+                $match:{trip_id:mongoose.Types.ObjectId(req.params.tripId)}
+            },
+            {
+                $group:{
+                    _id:"$user_id",
+                    totalBalance:{$sum: "$total"}
+                }
+            }
+        ]);
+        await res.json({a});
+    },
     createTransaction: async (req, res, next) => {
         const {name, author, amount, trip_id, list_user} = req.body;
         let tripId = await Transaction.findOne({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
@@ -71,18 +85,43 @@ module.exports = {
         transaction.save()
             .then(transaction => {
                 res.json({
-                    result: "failed",
+                    result: "ok",
                     data: transaction,
                     message: "save transaction successfully"
                 });
+                let money = 0;
+                let countType1 = 0;
                 for (let i = 0; i < list_user.length; i++) {
-
-                    let transactionUser = new TransactionUser({
-                        user_id: list_user[i].user_id,
-                        transaction_id: transaction._id,
-                        amount_user: list_user[i].amount_user
-                    });
-                    transactionUser.save();
+                    if (list_user[i].type === -1) {
+                        money += list_user[i].amount_user;
+                        let transactionUser = new TransactionUser({
+                            user_id: list_user[i].user_id,
+                            transaction_id: transaction._id,
+                            trip_id:trip_id,
+                            amount_user: list_user[i].amount_user,
+                            type: list_user[i].type,
+                            total: (list_user[i].amount_user * list_user[i].type)
+                        });
+                        transactionUser.save();
+                    } else {
+                        countType1++;
+                    }
+                }
+                console.log(money, countType1);
+                for (let i = 0; i < list_user.length; i++) {
+                    if (list_user[i].type === 1) {
+                        let transactionUser = new TransactionUser({
+                            user_id: list_user[i].user_id,
+                            transaction_id: transaction._id,
+                            trip_id:trip_id,
+                            amount_user: list_user[i].amount_user,
+                            type: list_user[i].type,
+                            total: (money/countType1)
+                        });
+                        transactionUser.save();
+                    } else {
+                        console.log(`type -1`);
+                    }
                 }
             })
             .catch(err => {
@@ -94,9 +133,8 @@ module.exports = {
             });
 
     },
-
-
     updateTransaction: async (req, res, next) => {
+        const {list_user} = req.body;
         let conditions = {}; // search record with "conditions" update
         if (mongoose.Types.ObjectId.isValid(req.params.transactionId))//check food_id ObjectId ?
         {
@@ -110,12 +148,11 @@ module.exports = {
         }
         let update_date = Date.now();
         let newValues = {};
-        if (req.body.name && req.body.name.length > 2 && req.body.amount && req.body.list_user) {
+        if (req.body.name && req.body.name.length > 2 && req.body.amount) {
             newValues = {
                 update_date: update_date,
                 name: req.body.name,
-                amount: req.body.amount,
-                list_user: req.body.list_user
+                amount: req.body.amount
             }
         } else {
             return res.status(400).json({error: "not be empty"});
@@ -136,11 +173,18 @@ module.exports = {
                     result: "ok",
                     data: updateTransaction,
                     message: "Update transaction successfully"
-                })
+                });
             }
-        })
-    },
-    deleteTransaction: (req, res, next) => {
+        });
+
+        for (let i = 0; i < list_user.length; i++) {
+            let userTransaction = await TransactionUser.findOne({_id: mongoose.Types.ObjectId(list_user[i]._id)});
+            userTransaction.amount_user = list_user[i].amount_user;
+            userTransaction.save();
+        }
+    }
+    ,
+    deleteTransaction: async (req, res, next) => {
         Transaction.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.transactionId)}, (err) => {
             if (err) {
                 res.json({
@@ -153,6 +197,10 @@ module.exports = {
                 result: "ok",
                 message: `Delete transaction_id: ${req.params.transactionId} successfully`
             })
-        })
+        });
+        let Transaction_id = req.params.transactionId;
+        let a = await TransactionUser.deleteMany({transaction_id: Transaction_id});
+        console.log(a);
+
     }
 };
