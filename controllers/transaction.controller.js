@@ -57,20 +57,6 @@ module.exports = {
                 })
             })
     },
-    getTotalMoneyUser: async (req, res, next) => {
-        let a = await TransactionUser.aggregate([
-            {
-                $match:{trip_id:mongoose.Types.ObjectId(req.params.tripId)}
-            },
-            {
-                $group:{
-                    _id:"$user_id",
-                    totalBalance:{$sum: "$total"}
-                }
-            }
-        ]);
-        await res.json({a});
-    },
     createTransaction: async (req, res, next) => {
         const {name, author, amount, trip_id, list_user} = req.body;
         let tripId = await Transaction.findOne({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
@@ -97,7 +83,7 @@ module.exports = {
                         let transactionUser = new TransactionUser({
                             user_id: list_user[i].user_id,
                             transaction_id: transaction._id,
-                            trip_id:trip_id,
+                            trip_id: trip_id,
                             amount_user: list_user[i].amount_user,
                             type: list_user[i].type,
                             total: (list_user[i].amount_user * list_user[i].type)
@@ -113,10 +99,10 @@ module.exports = {
                         let transactionUser = new TransactionUser({
                             user_id: list_user[i].user_id,
                             transaction_id: transaction._id,
-                            trip_id:trip_id,
+                            trip_id: trip_id,
                             amount_user: list_user[i].amount_user,
                             type: list_user[i].type,
-                            total: (money/countType1)
+                            total: (money / countType1)
                         });
                         transactionUser.save();
                     } else {
@@ -177,13 +163,164 @@ module.exports = {
             }
         });
 
-        for (let i = 0; i < list_user.length; i++) {
-            let userTransaction = await TransactionUser.findOne({_id: mongoose.Types.ObjectId(list_user[i]._id)});
-            userTransaction.amount_user = list_user[i].amount_user;
-            userTransaction.save();
+        let transactionsUser = await TransactionUser.find({transaction_id: mongoose.Types.ObjectId(req.params.transactionId)});
+        console.log(list_user.length, transactionsUser.length);
+        if (list_user.length === transactionsUser.length) {
+            for (let i = 0; i < list_user.length; i++) {
+                let a = await TransactionUser.findOneAndUpdate(
+                    {
+                        $and: [
+                            {
+                                user_id: mongoose.Types.ObjectId(list_user[i].user_id)
+                            },
+                            {
+                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                            }
+                        ]
+                    },
+                    {
+                        $set: {
+                            amount_user: list_user[i].amount_user,
+                            type: list_user[i].type
+                        }
+                    },
+                    {
+                        $options: {
+                            new: true,
+                            multi: true
+                        }
+                    }
+                );
+            }
+            let listsTransaction = await TransactionUser.find({transaction_id: req.params.transactionId});
+            let sumMoney = 0;
+            let typeCount1 = 0;
+            for (let i = 0; i < listsTransaction.length; i++) {
+                if (listsTransaction[i].type === -1) {
+                    sumMoney += listsTransaction[i].amount_user
+                } else {
+                    typeCount1++;
+                }
+            }
+            for (let i = 0; i < listsTransaction.length; i++) {
+                let userTransaction = await TransactionUser.findOne(
+                    {
+                        $and: [
+                            {
+                                user_id: mongoose.Types.ObjectId(listsTransaction[i].user_id)
+                            },
+                            {
+                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                            }
+                        ]
+                    },
+                );
+                if(userTransaction.type === -1){
+                    userTransaction.total =userTransaction.amount_user * userTransaction.type;
+                }
+                else {
+                    userTransaction.total = sumMoney/typeCount1;
+                }
+                userTransaction.save();
+            }
+        } else {
+            let transactionsDelete = [];
+            let strTransaction = [];
+            let list_users = [];
+            for (let i in transactionsUser) {
+                let str = JSON.stringify(transactionsUser[i].user_id);
+                let a = str.replace(/^"|"$/g, '');
+                strTransaction.push(a);
+            }
+            for (let i = 0; i < list_user.length; i++) {
+                let a = list_user[i].user_id;
+                list_users.push(a);
+            }
+            strTransaction.forEach(item => {
+                if (list_users.some(items => {
+                    return item === items
+                })) {
+                    console.log("equal");
+                } else {
+                    transactionsDelete.push(item)
+                }
+            });
+            console.log(transactionsDelete);
+            for (let i = 0; i < transactionsDelete.length; i++) {
+                await TransactionUser.findOneAndRemove(
+                    {
+                        $and: [
+                            {
+                                user_id: mongoose.Types.ObjectId(transactionsDelete[i])
+                            },
+                            {
+                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                            }
+                        ]
+                    }
+                );
+            }
+
+            for (let i = 0; i < list_user.length; i++) {
+                await TransactionUser.findOneAndUpdate(
+                    {
+                        $and: [
+                            {
+                                user_id: mongoose.Types.ObjectId(list_user[i].user_id)
+                            },
+                            {
+                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                            }
+                        ]
+                    },
+                    {
+                        $set: {
+                            amount_user: list_user[i].amount_user,
+                            type: list_user[i].type
+                        }
+                    },
+                    {
+                        $options: {
+                            new: true,
+                            multi: true
+                        }
+                    }
+                );
+            }
+
+            let listsTransaction = await TransactionUser.find({transaction_id: req.params.transactionId});
+            let sumMoney = 0;
+            let typeCount1 = 0;
+            for (let i = 0; i < listsTransaction.length; i++) {
+                if (listsTransaction[i].type === -1) {
+                    sumMoney += listsTransaction[i].amount_user
+                } else {
+                    typeCount1++;
+                }
+            }
+            for (let i = 0; i < listsTransaction.length; i++) {
+                let userTransaction = await TransactionUser.findOne(
+                    {
+                        $and: [
+                            {
+                                user_id: mongoose.Types.ObjectId(listsTransaction[i].user_id)
+                            },
+                            {
+                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                            }
+                        ]
+                    },
+                );
+                if(userTransaction.type === -1){
+                    userTransaction.total =userTransaction.amount_user * userTransaction.type;
+                }
+                else {
+                    userTransaction.total = sumMoney/typeCount1;
+                }
+                userTransaction.save();
+            }
         }
-    }
-    ,
+    },
     deleteTransaction: async (req, res, next) => {
         Transaction.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.transactionId)}, (err) => {
             if (err) {
