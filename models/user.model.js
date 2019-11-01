@@ -32,6 +32,10 @@ const UserModel = mongoose.model('User', new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
+    totalBalanceTrip:{
+      type:Number,
+      default:0
+    },
     update_date: {
         type: Date,
         default: ""

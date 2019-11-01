@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const TransactionUser = require('../models/transactionUser.model');
 const Trip = require("../models/trip.model");
+const {User} = require("../models/user.model");
 
 module.exports = {
     getTransactionUserByTransactionIdAndTripId: (req, res, next) => {
@@ -28,8 +29,8 @@ module.exports = {
                 })
             })
     },
-    getTotalMoneyUser: async (req, res, next) => {
-        TransactionUser.aggregate([
+    getTotalMoneyAllUserInOneTrip: async (req, res, next) => {
+        let moneyUser = await TransactionUser.aggregate([
             {
                 $match: {trip_id: mongoose.Types.ObjectId(req.params.tripId)}
             },
@@ -39,9 +40,16 @@ module.exports = {
                     totalBalance: {$sum: "$total"}
                 }
             }
-        ])
+        ]);
+        let listUser = [];
+        for (let i = 0; i < moneyUser.length; i++) {
+            let a = await User.findOne({_id: mongoose.Types.ObjectId(moneyUser[i]._id)});
+            a.totalBalanceTrip = moneyUser[i].totalBalance;
+            listUser.push(a);
+        }
+        await res.json({listUser});
     },
-    getMoneyByUserId: async (req, res, next) => {
+    getMoneyByUserIdAllTrip: async (req, res, next) => {
         let tripMoney = await TransactionUser.aggregate([
             {
                 $match: {user_id: mongoose.Types.ObjectId(req.params.userId)}
@@ -55,12 +63,23 @@ module.exports = {
         ]);
         let listTrip = [];
         for (let i = 0; i < tripMoney.length; i++) {
-            console.log(tripMoney[i]);
             let a = await Trip.findOne({_id: mongoose.Types.ObjectId(tripMoney[i]._id)});
             a.oweUser = tripMoney[i].totalBalance;
             listTrip.push(a);
         }
         await res.json({listTrip});
-
+    },
+    getTotalMoneyUserAllTransactionInOneTrip: async  (req,res,next) => {
+        let a = await TransactionUser.aggregate({
+            $and:[
+                {
+                    trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                },
+                {
+                    user_id:mongoose.Types.ObjectId(req.body.user_id)
+                }
+            ]
+        });
+        console.log(a);
     }
 };
