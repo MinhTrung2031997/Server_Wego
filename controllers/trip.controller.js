@@ -1,5 +1,7 @@
 const Trip = require("../models/trip.model");
 const TripUser = require("../models/tripUser.model");
+const Transaction = require("../models/transaction.model")
+const TransactionUser = require("../models/transactionUser.model")
 const { User } = require("../models/user.model");
 const mongoose = require('mongoose');
 
@@ -164,6 +166,9 @@ module.exports = {
 
         let trip_id = req.params.tripId;
         let a = await TripUser.deleteMany({ trip_id: trip_id });
+        let b = await Transaction.deleteMany({ trip_id: trip_id });
+        let c = await TransactionUser.deleteMany({ trip_id: trip_id });
+
         console.log(a);
     }
 
