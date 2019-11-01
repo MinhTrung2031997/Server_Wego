@@ -21,25 +21,6 @@ module.exports = {
                 })
             })
     },
-    getPopulateNameTrip: (req, res, next) => {
-        Transaction.findOne({_id: mongoose.Types.ObjectId(req.params.transactionId)})
-            .populate('trip_id')
-            .exec((err, data) => {
-                if (err) {
-                    res.json({
-                        result: "failed",
-                        data: [],
-                        message: "query failed"
-                    })
-                } else {
-                    res.json({
-                        result: "ok",
-                        data: data,
-                        message: "query successfully"
-                    })
-                }
-            })
-    },
     getTransactionByTripId: async (req, res, next) => {
         Transaction.find({trip_id: mongoose.Types.ObjectId(req.params.tripId)})
             .then(transactionByTripId => {
@@ -180,6 +161,7 @@ module.exports = {
                     },
                     {
                         $set: {
+                            update_date:update_date,
                             amount_user: list_user[i].amount_user,
                             type: list_user[i].type
                         }
@@ -275,6 +257,7 @@ module.exports = {
                     },
                     {
                         $set: {
+                            update_date:update_date,
                             amount_user: list_user[i].amount_user,
                             type: list_user[i].type
                         }
