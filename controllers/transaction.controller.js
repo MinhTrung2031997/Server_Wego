@@ -56,11 +56,9 @@ module.exports = {
                     data: transaction,
                     message: "save transaction successfully"
                 });
-                let money = 0;
-                let countType1 = 0;
+
                 for (let i = 0; i < list_user.length; i++) {
                     if (list_user[i].type === -1) {
-                        money += list_user[i].amount_user;
                         let transactionUser = new TransactionUser({
                             user_id: list_user[i].user_id,
                             transaction_id: transaction._id,
@@ -71,19 +69,18 @@ module.exports = {
                         });
                         transactionUser.save();
                     } else {
-                        countType1++;
+                        console.log("Type 1");
                     }
                 }
-                console.log(money, countType1);
                 for (let i = 0; i < list_user.length; i++) {
-                    if (list_user[i].type === 1) {
+                    if (list_user[i].type !== -1) {
                         let transactionUser = new TransactionUser({
                             user_id: list_user[i].user_id,
                             transaction_id: transaction._id,
                             trip_id: trip_id,
                             amount_user: list_user[i].amount_user,
                             type: list_user[i].type,
-                            total: (money / countType1)
+                            total: ( list_user[i].type - list_user[i].amount_user)
                         });
                         transactionUser.save();
                     } else {
