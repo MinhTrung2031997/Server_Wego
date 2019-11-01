@@ -1,8 +1,8 @@
 const Trip = require("../models/trip.model");
 const TripUser = require("../models/tripUser.model");
-const Transaction = require("../models/transaction.model")
-const TransactionUser = require("../models/transactionUser.model")
-const { User } = require("../models/user.model");
+const Transaction = require("../models/transaction.model");
+const TransactionUser = require("../models/transactionUser.model");
+const {User} = require("../models/user.model");
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -145,8 +145,22 @@ module.exports = {
         const { list_user } = req.body;
         for (let i = 0; i < list_user.length; i++) {
             console.log(list_user[i]);
-            let a = await TripUser.findOneAndRemove({ _id: mongoose.Types.ObjectId(list_user[i].id) });
+            let a = await TripUser.findOneAndRemove(
+                {
+                    $and: [
+                        {
+                            user_id: mongoose.Types.ObjectId(list_user[i]._id)
+                        },
+                        {
+                            trip_id: mongoose.Types.ObjectId(req.params.tripId)
+                        }
+                    ]
+                }
+            );
+            console.log(a);
         }
+
+
     },
 
     deleteTrip: async (req, res, next) => {
@@ -165,11 +179,9 @@ module.exports = {
         });
 
         let trip_id = req.params.tripId;
-        let a = await TripUser.deleteMany({ trip_id: trip_id });
-        let b = await Transaction.deleteMany({ trip_id: trip_id });
-        let c = await TransactionUser.deleteMany({ trip_id: trip_id });
-
-        console.log(a);
+        let a = await TripUser.deleteMany({trip_id: trip_id});
+        let b = await Transaction.deleteMany({trip_id: trip_id});
+        let c = await TransactionUser.deleteMany({trip_id: trip_id});
     }
 
 };

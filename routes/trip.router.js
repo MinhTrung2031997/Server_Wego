@@ -8,7 +8,7 @@ router.post('/list_users_by_trip_id/:tripId', tripController.getUsersByTripId);
 
 router.post('/addMemberToTrip/:tripId', tripController.addMemberToTrip);
 
-router.post('/deleteMemberToTrip', tripController.deleteMemberToTrip);
+router.post('/deleteMemberToTrip/:tripId', tripController.deleteMemberToTrip);
 
 router.post('/insert_new_trip',tripController.createTrip );
 

@@ -4,10 +4,10 @@
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/transactionUser.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/transactionUser.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/transactionUser.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transactionUser.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/trip.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/trip.model.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/transaction.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/transaction.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/trip.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/trip.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/transactionUser.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/transactionUser.router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -118,7 +118,14 @@
       <workItem from="1572226058995" duration="620000" />
       <workItem from="1572230424724" duration="15024000" />
       <workItem from="1572264997872" duration="8756000" />
-      <workItem from="1572322854304" duration="8571000" />
+      <workItem from="1572322854304" duration="12958000" />
+      <workItem from="1572355568797" duration="7620000" />
+      <workItem from="1572400959116" duration="12380000" />
+      <workItem from="1572445457920" duration="7303000" />
+      <workItem from="1572485203040" duration="4227000" />
+      <workItem from="1572491903351" duration="19008000" />
+      <workItem from="1572528565172" duration="8591000" />
+      <workItem from="1572578218111" duration="257000" />
     </task>
     <servers />
   </component>

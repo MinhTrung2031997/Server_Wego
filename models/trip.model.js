@@ -12,6 +12,10 @@ const tripSchema = new Schema({
         require: true,
         ref: 'User'
     },
+    oweUser: {
+      type:Number,
+      default:0
+    },
     create_date: {
         type: Date,
         default: Date.now()

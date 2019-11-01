@@ -14,6 +14,7 @@ const forgotPasswordRouter = require('./routes/forgotPassword.router');
 const sendMailGetCode = require('./routes/sendMailGetCode.router');
 
 const tripRouter = require('./routes/trip.router');
+const tripUserRouter = require('./routes/tripUser.router');
 const transactionRouter = require('./routes/transaction.router');
 const transactionUserRouter = require('./routes/transactionUser.router');
 
@@ -46,8 +47,10 @@ app.use('/api/forgotPassword', forgotPasswordRouter);
 app.use('/api/sendMailGetCode', sendMailGetCode);
 app.use('/api/user', usersRouter);
 app.use('/api/trip', tripRouter);
-app.use('/api/transaction', transactionRouter);
-app.use('/api/transactionUser', transactionUserRouter);
+app.use('/api/tripUser',tripUserRouter);
+app.use('/api/transaction',transactionRouter );
+app.use('/api/transactionUser',transactionUserRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
