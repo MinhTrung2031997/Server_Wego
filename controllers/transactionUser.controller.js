@@ -14,19 +14,21 @@ module.exports = {
                     transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
                 }
             ]
-        }).then(transactionUser => {
-            res.json({
-                result: "ok",
-                data: transactionUser,
-                message: "Query list of transaction successfully"
-            })
-        })
-            .catch(err => {
-                res.json({
-                    result: "failed",
-                    data: [],
-                    message: `error is : ${err}`
-                })
+        }).populate('user_id')
+            .exec((err, item) => {
+                if (err) {
+                    res.json({
+                        result: "failed",
+                        data: [],
+                        message: "query failed"
+                    })
+                } else {
+                    res.json({
+                        result: "ok",
+                        data: item,
+                        message: "query successfully"
+                    })
+                }
             })
     },
     getTotalMoneyAllUserInOneTrip: async (req, res, next) => {
@@ -69,17 +71,31 @@ module.exports = {
         }
         await res.json({listTrip});
     },
-    getTotalMoneyUserAllTransactionInOneTrip: async  (req,res,next) => {
-        let a = await TransactionUser.aggregate({
-            $and:[
+    getTotalMoneyUserAllTransactionInOneTrip: async (req, res, next) => {
+        TransactionUser.find({
+            $and: [
                 {
                     trip_id: mongoose.Types.ObjectId(req.body.trip_id)
                 },
                 {
-                    user_id:mongoose.Types.ObjectId(req.body.user_id)
+                    user_id: mongoose.Types.ObjectId(req.body.user_id)
                 }
             ]
-        });
-        console.log(a);
+        }).populate('transaction_id')
+            .exec((err, item) => {
+                if (err) {
+                    res.json({
+                        result: "failed",
+                        data: [],
+                        message: "query failed"
+                    })
+                } else {
+                    res.json({
+                        result: "ok",
+                        data: item,
+                        message: "query successfully"
+                    })
+                }
+            })
     }
 };

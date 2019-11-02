@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/transactionUser.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transactionUser.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/transaction.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/transaction.router.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/transactionUser.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/transactionUser.router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -123,7 +124,10 @@
       <workItem from="1572485203040" duration="4227000" />
       <workItem from="1572491903351" duration="19008000" />
       <workItem from="1572528565172" duration="8591000" />
-      <workItem from="1572578218111" duration="7166000" />
+      <workItem from="1572578218111" duration="15843000" />
+      <workItem from="1572616433193" duration="734000" />
+      <workItem from="1572618312983" duration="7971000" />
+      <workItem from="1572661087462" duration="5247000" />
     </task>
     <servers />
   </component>
