@@ -49,7 +49,7 @@ module.exports = {
         }
         await res.json({listUser});
     },
-    getMoneyByUserIdAllTrip: async (req, res, next) => {
+    getMoneyByUserInAllTrip: async (req, res, next) => {
         let tripMoney = await TransactionUser.aggregate([
             {
                 $match: {user_id: mongoose.Types.ObjectId(req.params.userId)}
