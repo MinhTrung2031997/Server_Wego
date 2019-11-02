@@ -80,7 +80,7 @@ module.exports = {
                             trip_id: trip_id,
                             amount_user: list_user[i].amount_user,
                             type: list_user[i].type,
-                            total: ( list_user[i].type - list_user[i].amount_user)
+                            total: (list_user[i].type - list_user[i].amount_user)
                         });
                         transactionUser.save();
                     } else {
@@ -99,50 +99,46 @@ module.exports = {
     },
     updateTransaction: async (req, res, next) => {
         const {list_user} = req.body;
-        let conditions = {}; // search record with "conditions" update
-        if (mongoose.Types.ObjectId.isValid(req.params.transactionId))//check food_id ObjectId ?
-        {
-            conditions._id = mongoose.Types.ObjectId(req.params.transactionId);//object want update
-        } else {
-            res.json({
-                result: "failed",
-                data: [],
-                message: "You must enter transaction_id to update"
-            })
-        }
         let update_date = Date.now();
-        let newValues = {};
-        if (req.body.name && req.body.name.length > 2 && req.body.amount) {
-            newValues = {
-                update_date: update_date,
-                name: req.body.name,
-                amount: req.body.amount
+       let transaction = await Transaction.findOneAndUpdate(
+            {
+                $and: [
+                    {
+                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                    },
+                    {
+                        _id: mongoose.Types.ObjectId(req.body.transaction_id)
+                    }
+                ]
+            },
+            {
+                $set: {
+                    update_date: update_date,
+                    name: req.body.name,
+                    amount: req.body.amount
+                }
+            },
+            {
+                options: {
+                    new: true,
+                    multi: true
+                }
             }
-        } else {
-            return res.status(400).json({error: "not be empty"});
-        }
-        const options = {
-            new: true,
-            multi: true
-        };
-        Transaction.findOneAndUpdate(conditions, {$set: newValues}, options, (err, updateTransaction) => {
-            if (err) {
-                res.json({
-                    result: "Failed",
-                    data: [],
-                    message: `Cannot update existing transaction.Error is: ${err}`
-                })
-            } else {
-                res.json({
-                    result: "ok",
-                    data: updateTransaction,
-                    message: "Update transaction successfully"
-                });
-            }
-        });
+        );
 
-        let transactionsUser = await TransactionUser.find({transaction_id: mongoose.Types.ObjectId(req.params.transactionId)});
-        console.log(list_user.length, transactionsUser.length);
+       await res.json(transaction);
+        let transactionsUser = await TransactionUser.find(
+            {
+                $and: [
+                    {
+                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                    },
+                    {
+                        transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                    }
+                ]
+            }
+        );
         if (list_user.length === transactionsUser.length) {
             for (let i = 0; i < list_user.length; i++) {
                 let a = await TransactionUser.findOneAndUpdate(
@@ -152,35 +148,41 @@ module.exports = {
                                 user_id: mongoose.Types.ObjectId(list_user[i].user_id)
                             },
                             {
-                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                                transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                            },
+                            {
+                                trip_id: mongoose.Types.ObjectId(req.body.trip_id)
                             }
                         ]
+
                     },
                     {
                         $set: {
-                            update_date:update_date,
+                            update_date: update_date,
                             amount_user: list_user[i].amount_user,
-                            type: list_user[i].type
+                            type: list_user[i].type,
                         }
                     },
                     {
-                        $options: {
+                        options: {
                             new: true,
                             multi: true
                         }
                     }
-                );
+                )
             }
-            let listsTransaction = await TransactionUser.find({transaction_id: req.params.transactionId});
-            let sumMoney = 0;
-            let typeCount1 = 0;
-            for (let i = 0; i < listsTransaction.length; i++) {
-                if (listsTransaction[i].type === -1) {
-                    sumMoney += listsTransaction[i].amount_user
-                } else {
-                    typeCount1++;
+            let listsTransaction = await TransactionUser.find(
+                {
+                    $and: [
+                        {
+                            trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                        },
+                        {
+                            transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                        }
+                    ]
                 }
-            }
+            );
             for (let i = 0; i < listsTransaction.length; i++) {
                 let userTransaction = await TransactionUser.findOne(
                     {
@@ -189,16 +191,18 @@ module.exports = {
                                 user_id: mongoose.Types.ObjectId(listsTransaction[i].user_id)
                             },
                             {
-                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                                transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                            },
+                            {
+                                trip_id: mongoose.Types.ObjectId(req.body.trip_id)
                             }
                         ]
                     },
                 );
-                if(userTransaction.type === -1){
-                    userTransaction.total =userTransaction.amount_user * userTransaction.type;
-                }
-                else {
-                    userTransaction.total = sumMoney/typeCount1;
+                if (userTransaction.type === -1) {
+                    userTransaction.total = userTransaction.amount_user * userTransaction.type;
+                } else {
+                    userTransaction.total = userTransaction.type - userTransaction.amount_user;
                 }
                 userTransaction.save();
             }
@@ -224,16 +228,18 @@ module.exports = {
                     transactionsDelete.push(item)
                 }
             });
-            console.log(transactionsDelete);
             for (let i = 0; i < transactionsDelete.length; i++) {
-                await TransactionUser.findOneAndRemove(
+                let a = await TransactionUser.findOneAndRemove(
                     {
                         $and: [
                             {
                                 user_id: mongoose.Types.ObjectId(transactionsDelete[i])
                             },
                             {
-                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                                transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                            },
+                            {
+                                trip_id: mongoose.Types.ObjectId(req.body.trip_id)
                             }
                         ]
                     }
@@ -241,43 +247,47 @@ module.exports = {
             }
 
             for (let i = 0; i < list_user.length; i++) {
-                await TransactionUser.findOneAndUpdate(
+                let a = await TransactionUser.findOneAndUpdate(
                     {
                         $and: [
                             {
                                 user_id: mongoose.Types.ObjectId(list_user[i].user_id)
                             },
                             {
-                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                                transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                            },
+                            {
+                                trip_id: mongoose.Types.ObjectId(req.body.trip_id)
                             }
                         ]
                     },
                     {
                         $set: {
-                            update_date:update_date,
+                            update_date: update_date,
                             amount_user: list_user[i].amount_user,
                             type: list_user[i].type
                         }
                     },
                     {
-                        $options: {
+                        options: {
                             new: true,
                             multi: true
                         }
                     }
                 );
             }
-
-            let listsTransaction = await TransactionUser.find({transaction_id: req.params.transactionId});
-            let sumMoney = 0;
-            let typeCount1 = 0;
-            for (let i = 0; i < listsTransaction.length; i++) {
-                if (listsTransaction[i].type === -1) {
-                    sumMoney += listsTransaction[i].amount_user
-                } else {
-                    typeCount1++;
+            let listsTransaction = await TransactionUser.find(
+                {
+                    $and: [
+                        {
+                            trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                        },
+                        {
+                            transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                        }
+                    ]
                 }
-            }
+            );
             for (let i = 0; i < listsTransaction.length; i++) {
                 let userTransaction = await TransactionUser.findOne(
                     {
@@ -286,38 +296,64 @@ module.exports = {
                                 user_id: mongoose.Types.ObjectId(listsTransaction[i].user_id)
                             },
                             {
-                                transaction_id: mongoose.Types.ObjectId(req.params.transactionId)
+                                transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                            },
+                            {
+                                trip_id: mongoose.Types.ObjectId(req.body.trip_id)
                             }
                         ]
                     },
                 );
-                if(userTransaction.type === -1){
-                    userTransaction.total =userTransaction.amount_user * userTransaction.type;
-                }
-                else {
-                    userTransaction.total = sumMoney/typeCount1;
+                if (userTransaction.type === -1) {
+                    userTransaction.total = userTransaction.amount_user * userTransaction.type;
+                } else {
+                    userTransaction.total = userTransaction.type - userTransaction.amount_user;
                 }
                 userTransaction.save();
             }
         }
     },
+
     deleteTransaction: async (req, res, next) => {
-        Transaction.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.transactionId)}, (err) => {
-            if (err) {
+        Transaction.findOneAndRemove(
+            {
+                $and: [
+                    {
+                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                    },
+                    {
+                        transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                    }
+                ]
+            }
+        ).then(item => {
+            res.json({
+                result: "ok",
+                data: item,
+                message: "Query list of transaction successfully"
+            })
+        })
+            .catch(err => {
                 res.json({
                     result: "failed",
                     data: [],
-                    message: `Cannot delete  transaction_id ${req.params.transactionId} Error is : ${err}`
+                    message: `error is : ${err}`
                 })
+            });
+        let a = await TransactionUser.deleteMany(
+            {
+                $and: [
+                    {
+                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                    },
+                    {
+                        transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                    }
+                ]
             }
-            res.json({
-                result: "ok",
-                message: `Delete transaction_id: ${req.params.transactionId} successfully`
-            })
-        });
-        let Transaction_id = req.params.transactionId;
-        let a = await TransactionUser.deleteMany({transaction_id: Transaction_id});
+        );
         console.log(a);
-
     }
+
+
 };

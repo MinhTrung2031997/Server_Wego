@@ -8,8 +8,8 @@ router.post('/get_transaction_by_trip_id/:tripId', transactionController.getTran
 
 router.post('/insert_new_transaction',transactionController.createTransaction);
 
-router.put('/update_a_transaction/:transactionId', transactionController.updateTransaction);
+router.put('/update_a_transaction', transactionController.updateTransaction);
 
-router.delete('/delete_a_transaction/:transactionId', transactionController.deleteTransaction);
+router.delete('/delete_a_transaction', transactionController.deleteTransaction);
 
 module.exports = router;

@@ -4,7 +4,7 @@ const transactionUserController = require('../controllers/transactionUser.contro
 
 router.post('/get_total_money_user/:tripId',transactionUserController.getTotalMoneyAllUserInOneTrip);
 
-router.post('/get_transaction_user_by_transaction_id', transactionUserController.getTransactionUserByTransactionIdAndTripId);
+router.post('/get_transaction_user_by_transaction_id_and_trip_id', transactionUserController.getTransactionUserByTransactionIdAndTripId);
 
 router.post("/get_total_money_user_by_trip_id_and_user_id",transactionUserController.getTotalMoneyUserAllTransactionInOneTrip);
 
