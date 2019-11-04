@@ -8,7 +8,7 @@ router.post('/get_transaction_user_by_transaction_id_and_trip_id', transactionUs
 
 router.post("/get_total_money_user_by_trip_id_and_user_id",transactionUserController.getTotalMoneyUserAllTransactionInOneTrip);
 
-router.post('/get_total_money_user_by_id/:userId', transactionUserController.getMoneyByUserInAllTrip);
+router.post('/get_total_money_user_by_id/:userId', transactionUserController.getMoneyByUserIdAllTrip);
 
 
 module.exports = router;

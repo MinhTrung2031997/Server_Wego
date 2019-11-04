@@ -51,36 +51,25 @@ module.exports = {
         }
         await res.json({listUser});
     },
-    getMoneyByUserInAllTrip: async (req, res, next) => {
-        let listTrip = [];
-        await Trip.find()
-            .then(trip => {
-                listTrip = trip
-            })
-            .catch(err => {
-                listTrip = []
-            })
+    getMoneyByUserIdAllTrip: async (req, res, next) => {
         let tripMoney = await TransactionUser.aggregate([
             {
-                $match: {user_id: mongoose.Types.ObjectId(req.params.userId)}
+                $match: { user_id: mongoose.Types.ObjectId(req.params.userId) }
             },
             {
                 $group: {
                     _id: "$trip_id",
-                    totalBalance: {$sum: "$total"}
+                    totalBalance: { $sum: "$total" }
                 }
             }
         ]);
+        let listTrip = [];
         for (let i = 0; i < tripMoney.length; i++) {
-            for(let j = 0; j < listTrip.length; j++){
-                if(tripMoney[i]._id.toString() == listTrip[j]._id.toString()){
-                    listTrip[j].oweUser = tripMoney[i].totalBalance;
-                }
-            }
+            let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(tripMoney[i]._id) });
+            a.oweUser = tripMoney[i].totalBalance;
+            listTrip.push(a);
         }
-        await res.json({
-            data: listTrip
-        });
+        await res.json({ data: listTrip });
     },
     getTotalMoneyUserAllTransactionInOneTrip: async (req, res, next) => {
         TransactionUser.find({
