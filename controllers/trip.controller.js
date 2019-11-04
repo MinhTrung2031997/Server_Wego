@@ -58,11 +58,19 @@ module.exports = {
                 user_id: user_create._id,
                 trip_id: saveTrip._id
             });
+
+            // random avatar
+            function getRandomInt(max) {
+                return Math.floor(Math.random() * Math.floor(max));
+            }
+
+
             await tripUser.save();
             for (let i = 0; i < list_user.length; i++) {
                 let user = new User({
                     name: list_user[i].name,
-                    email: list_user[i].email
+                    email: list_user[i].email,
+                    avatar: getRandomInt(6)
                 });
                 let saveUser = await user.save();
                 let tripUser = new TripUser({

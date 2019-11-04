@@ -20,6 +20,31 @@ const transactionSchema = new Schema({
         require: true,
         ref: 'trip'
     },
+    namePayer: {
+        type: String,
+        require: false,
+    },
+    moneyPayer: {
+        type: Number,
+        require: false
+    },
+    list_user: [
+        {
+            user_id: {
+                type: Schema.Types.ObjectId,
+                require: false,
+                ref: 'user'
+            },
+            type: {
+                type: Number,
+                require: false
+            },
+            amount_user: {
+                type: Number,
+                require: false
+            }
+        }
+    ],
     create_date: {
         type: Date,
         default: Date.now()

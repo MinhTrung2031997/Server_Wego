@@ -64,6 +64,10 @@ module.exports = {
             })
             const secretToken = gen();
 
+            // random avatar
+            function getRandomInt(max) {
+                return Math.floor(Math.random() * Math.floor(max));
+            }
 
             // Insert the new user if they do not exist yet
 
@@ -74,6 +78,7 @@ module.exports = {
                 password: req.body.password,
                 secretToken: secretToken,
                 active: false,
+                avatar: getRandomInt(6),
             });
             const salt = await bcrypt.genSalt(10);
             newUser.password = await bcrypt.hash(newUser.password, salt);

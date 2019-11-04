@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Transaction = require("../models/transaction.model");
 const TransactionUser = require("../models/transactionUser.model");
+const { User } = require("../models/user.model");
+const  TripUser  = require('../models/tripUser.model');
 
 
 module.exports = {
@@ -22,33 +24,52 @@ module.exports = {
             })
     },
     getTransactionByTripId: async (req, res, next) => {
-        Transaction.find({trip_id: mongoose.Types.ObjectId(req.params.tripId)})
+        var listTransaction = [];
+        var numberUserInTrip = 0;
+        await TripUser.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
+            .populate('user_id')
+            .exec((err, users) => {
+                if (err) {
+                    numberUserInTrip = 0;
+                } else {
+                    numberUserInTrip = users.length;
+                }
+            })
+        await Transaction.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
             .then(transactionByTripId => {
-                res.json({
-                    result: "ok",
-                    data: transactionByTripId,
-                    message: "Query list of transaction_by_trip_id successfully"
-                })
+                listTransaction = transactionByTripId
             })
             .catch(err => {
-                res.json({
-                    result: "failed",
-                    data: [],
-                    message: `error is : ${err}`
-                })
+                console.log(err)
             })
+        for (let i = 0; i < listTransaction.length; i++) {
+            if (listTransaction[i].list_user.length > 0){
+                for (let j = 0; j < listTransaction[i].list_user.length; j++) {
+                    if (listTransaction[i].list_user[j].type > 0) {
+                        let user = await User.findOne({ _id: listTransaction[i].list_user[j].user_id });
+                        listTransaction[i].namePayer = user.name;
+                        listTransaction[i].moneyPayer = listTransaction[i].list_user[j].type
+                    }
+                }  
+            }             
+        }
+
+        await res.json({
+            numberUser: numberUserInTrip,
+            data: listTransaction
+        });
     },
     createTransaction: async (req, res, next) => {
-        const {name, author, amount, trip_id, list_user} = req.body;
-        let tripId = await Transaction.findOne({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
+        const { name, author, amount, trip_id, list_user } = req.body;
+        let tripId = await Transaction.findOne({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
         if (tripId) {
-            let arrUser = Transaction.find({trip_id: mongoose.Types.ObjectId(req.body.trip_id)});
-            let name = await arrUser.findOne({name: req.body.name});
+            let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
+            let name = await arrUser.findOne({ name: req.body.name });
             if (name) {
-                return res.status(400).json({error: "transaction is exits"});
+                return res.status(400).json({ error: "transaction is exits" });
             }
         }
-        let transaction = new Transaction({name, author, amount, trip_id});
+        let transaction = new Transaction({ name, author, amount, trip_id, list_user });
         transaction.save()
             .then(transaction => {
                 res.json({
@@ -98,9 +119,9 @@ module.exports = {
 
     },
     updateTransaction: async (req, res, next) => {
-        const {list_user} = req.body;
+        const { list_user } = req.body;
         let update_date = Date.now();
-       let transaction = await Transaction.findOneAndUpdate(
+        let transaction = await Transaction.findOneAndUpdate(
             {
                 $and: [
                     {
@@ -126,7 +147,7 @@ module.exports = {
             }
         );
 
-       await res.json(transaction);
+        await res.json(transaction);
         let transactionsUser = await TransactionUser.find(
             {
                 $and: [
