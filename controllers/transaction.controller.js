@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Transaction = require("../models/transaction.model");
 const TransactionUser = require("../models/transactionUser.model");
-
+const UserAction = require("../models/userAction.model");
+const ActivityTransaction = require("../models/activityTransaction.model");
 
 module.exports = {
     getAllTransaction: (req, res, next) => {
@@ -87,6 +88,22 @@ module.exports = {
                         console.log(`type -1`);
                     }
                 }
+                let userCreateTransaction = new UserAction({
+                    user_id: author,
+                    transaction_id: transaction._id,
+                    trip_id: trip_id,
+                    type: "created",
+                    create_date: Date.now()
+                });
+                userCreateTransaction.save();
+                let activityTransaction = new ActivityTransaction({
+                    _id: transaction._id,
+                    name,
+                    author,
+                    amount,
+                    trip_id
+                });
+                activityTransaction.save();
             })
             .catch(err => {
                 res.json({
@@ -95,12 +112,11 @@ module.exports = {
                     message: `error is : ${err}`
                 })
             });
-
     },
     updateTransaction: async (req, res, next) => {
         const {list_user} = req.body;
         let update_date = Date.now();
-       let transaction = await Transaction.findOneAndUpdate(
+        let transaction = await Transaction.findOneAndUpdate(
             {
                 $and: [
                     {
@@ -126,7 +142,41 @@ module.exports = {
             }
         );
 
-       await res.json(transaction);
+        let userUpdateTransaction = new UserAction({
+            user_id: req.body.user_id,
+            transaction_id: req.body.transaction_id,
+            trip_id: req.body.trip_id,
+            type:"updated",
+            update_date:Date.now()
+        });
+        await userUpdateTransaction.save();
+        await ActivityTransaction.findOneAndUpdate(
+            {
+                $and: [
+                    {
+                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                    },
+                    {
+                        _id: mongoose.Types.ObjectId(req.body.transaction_id)
+                    }
+                ]
+            },
+            {
+                $set: {
+                    update_date: update_date,
+                    name: req.body.name,
+                    amount: req.body.amount
+                }
+            },
+            {
+                options: {
+                    new: true,
+                    multi: true
+                }
+            }
+        );
+
+        await res.json(transaction);
         let transactionsUser = await TransactionUser.find(
             {
                 $and: [
@@ -322,7 +372,7 @@ module.exports = {
                         trip_id: mongoose.Types.ObjectId(req.body.trip_id)
                     },
                     {
-                        transaction_id: mongoose.Types.ObjectId(req.body.transaction_id)
+                        _id: mongoose.Types.ObjectId(req.body.transaction_id)
                     }
                 ]
             }
@@ -353,7 +403,27 @@ module.exports = {
             }
         );
         console.log(a);
+        let userDeleteTransaction = new UserAction({
+            user_id: req.body.user_id,
+            transaction_id: req.body.transaction_id,
+            trip_id: req.body.trip_id,
+            type: "deleted",
+            delete_date: Date.now()
+        });
+        userDeleteTransaction.save();
+        let activityTransaction = await ActivityTransaction.findOne(
+            {
+                $and: [
+                    {
+                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+                    },
+                    {
+                        _id: mongoose.Types.ObjectId(req.body.transaction_id)
+                    }
+                ]
+            }
+        );
+        activityTransaction.delete_date = Date.now();
+        activityTransaction.save();
     }
-
-
 };
