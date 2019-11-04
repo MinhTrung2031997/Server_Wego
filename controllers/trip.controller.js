@@ -4,6 +4,7 @@ const Transaction = require("../models/transaction.model");
 const TransactionUser = require("../models/transactionUser.model");
 const {User} = require("../models/user.model");
 const mongoose = require('mongoose');
+const mailer = require("../nodemailer/mailer")
 
 module.exports = {
     getAllTrip: (req, res, next) => {
@@ -45,6 +46,7 @@ module.exports = {
     createTrip: async (req, res, next) => {
         try {
             const { name, author, list_user } = req.body;
+            const userAuthor = await User.findOne({_id: req.body.author});
             let nameTrip = await Trip.findOne({ name: req.body.name });
             if (nameTrip) {
                 return res.status(400).json({ error: "trip already exists" });
@@ -63,7 +65,21 @@ module.exports = {
             function getRandomInt(max) {
                 return Math.floor(Math.random() * Math.floor(max));
             }
+            async function senMailInvite(email, nameAuthor, emailAuthor, nameTrip) {
+                // Compose email
+                const html = `Hi there,
+                    <br/>
+                    Welcome to Wego!
+                    <br/>
+                    <p>${nameAuthor} - ${emailAuthor} just added you to the group "${nameTrip}" on Wego.</p>
+                    <br/>
+                    Visit now: ...
+                    <br/>
+                    <br/><br/>
+                    Have a pleasant day.`
 
+                await mailer.sendEmail('tranvler344@gmail.com', email, 'Welcome to Wego', html);
+            }
 
             await tripUser.save();
             for (let i = 0; i < list_user.length; i++) {
@@ -73,6 +89,7 @@ module.exports = {
                     avatar: getRandomInt(6)
                 });
                 let saveUser = await user.save();
+                senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
                 let tripUser = new TripUser({
                     user_id: saveUser._id,
                     trip_id: saveTrip._id
@@ -81,7 +98,7 @@ module.exports = {
                
             }
         } catch (error) {
-            res.json({ error: error })
+            console.log(error)
         }
     },
     updateTrip: async (req, res, next) => {
