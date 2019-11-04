@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/controllers/userAction.controller.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/activityTransaction.model.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/activityTrip.model.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/userAction.model.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/userAction.router.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -136,7 +129,7 @@
       <workItem from="1572760512670" duration="919000" />
       <workItem from="1572769505232" duration="2866000" />
       <workItem from="1572789883921" duration="5231000" />
-      <workItem from="1572823996604" duration="19564000" />
+      <workItem from="1572823996604" duration="19626000" />
     </task>
     <servers />
   </component>

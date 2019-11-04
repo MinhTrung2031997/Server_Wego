@@ -271,5 +271,4 @@ module.exports = {
         activityTrip.delete_date = delete_date;
         activityTrip.save();
     }
-
 };
