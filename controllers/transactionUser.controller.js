@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const TransactionUser = require('../models/transactionUser.model');
 const Trip = require("../models/trip.model");
-const {User} = require("../models/user.model");
+const { User } = require("../models/user.model");
+const TripUser = require('../models/tripUser.model');
+
 
 module.exports = {
     getTransactionUserByTransactionIdAndTripId: (req, res, next) => {
@@ -34,24 +36,34 @@ module.exports = {
     getTotalMoneyAllUserInOneTrip: async (req, res, next) => {
         let moneyUser = await TransactionUser.aggregate([
             {
-                $match: {trip_id: mongoose.Types.ObjectId(req.params.tripId)}
+                $match: { trip_id: mongoose.Types.ObjectId(req.params.tripId) }
             },
             {
                 $group: {
                     _id: "$user_id",
-                    totalBalance: {$sum: "$total"}
+                    totalBalance: { $sum: "$total" }
                 }
             }
         ]);
         let listUser = [];
         for (let i = 0; i < moneyUser.length; i++) {
-            let a = await User.findOne({_id: mongoose.Types.ObjectId(moneyUser[i]._id)});
+            let a = await User.findOne({ _id: mongoose.Types.ObjectId(moneyUser[i]._id) });
             a.totalBalanceTrip = moneyUser[i].totalBalance;
             listUser.push(a);
         }
-        await res.json({listUser});
+        await res.json({ listUser });
     },
     getMoneyByUserIdAllTrip: async (req, res, next) => {
+        let allTripHaveUser = await TripUser.aggregate([
+            {
+                $match: { user_id: mongoose.Types.ObjectId(req.params.userId) }
+            },
+            {
+                $group: {
+                    _id: "$trip_id",
+                }
+            }
+        ]);
         let tripMoney = await TransactionUser.aggregate([
             {
                 $match: { user_id: mongoose.Types.ObjectId(req.params.userId) }
@@ -69,6 +81,26 @@ module.exports = {
             a.oweUser = tripMoney[i].totalBalance;
             listTrip.push(a);
         }
+
+        for (let i = 0; i < allTripHaveUser.length; i++) {
+            if (tripMoney.length > 0) {
+                for (let j = 0; j < tripMoney.length; j++) {
+                    if (allTripHaveUser[i]._id.toString() !== tripMoney[j]._id.toString()) {
+                           let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(allTripHaveUser[i]._id) });
+                           a.oweUser = 0;
+                           listTrip.push(a);
+
+                    }
+                }
+            } else {
+                let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(allTripHaveUser[i]._id) });
+                a.oweUser = 0;
+                listTrip.push(a);
+            }
+
+        }
+
+
         await res.json({ data: listTrip });
     },
     getTotalMoneyUserAllTransactionInOneTrip: async (req, res, next) => {
