@@ -45,6 +45,10 @@ const transactionSchema = new Schema({
             }
         }
     ],
+    isDelete: {
+        type: Boolean,
+        default: false
+    },
     create_date: {
         type: Date,
         default: Date.now()

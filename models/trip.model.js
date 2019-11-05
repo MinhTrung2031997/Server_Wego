@@ -16,6 +16,10 @@ const tripSchema = new Schema({
       type:Number,
       default:0
     },
+    isDelete: {
+      type:Boolean,
+      default: false
+    },
     create_date: {
         type: Date,
         default: Date.now()
