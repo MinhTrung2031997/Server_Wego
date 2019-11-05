@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const UserAction = require('../models/userAction.model');
+const UserActivity = require('../models/userActivity.model');
 
 module.exports = {
-    getAllUserAction: (req, res, next) => {
-        UserAction.find()
+    getAllUserActivity: (req, res, next) => {
+        UserActivity.find()
             .populate('user_id')
             .populate('list_user.user_id')
             .populate('transaction_id')

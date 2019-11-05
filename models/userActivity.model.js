@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userActionSchema = new Schema({
+const userActivitySchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
         require: true,
@@ -9,12 +9,12 @@ const userActionSchema = new Schema({
     },
     transaction_id: {
         type: Schema.Types.ObjectId,
-        ref: 'activityTransaction',
+        ref: 'Transaction',
     },
     trip_id: {
         type:Schema.Types.ObjectId,
         require: true,
-        ref:'activityTrip'
+        ref:'Trip'
     },
     list_user: [
         {
@@ -43,7 +43,7 @@ const userActionSchema = new Schema({
     delete_date: {
         type: Date,
     }
-}, {collection: 'userAction'});
+}, {collection: 'userActivity'});
 
 
-module.exports = mongoose.model('userAction', userActionSchema);
+module.exports = mongoose.model('userActivity',userActivitySchema);

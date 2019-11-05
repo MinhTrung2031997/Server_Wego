@@ -2,28 +2,30 @@ const Trip = require("../models/trip.model");
 const TripUser = require("../models/tripUser.model");
 const Transaction = require("../models/transaction.model");
 const TransactionUser = require("../models/transactionUser.model");
-const UserAction = require('../models/userAction.model');
-const ActivityTrip = require("../models/activityTrip.model");
+const UserActivity = require('../models/userActivity.model');
 const {User} = require("../models/user.model");
 const mongoose = require('mongoose');
 
 module.exports = {
-    getAllTrip: (req, res, next) => {
-        Trip.find()
-            .then(trip => {
-                res.json({
-                    result: "ok",
-                    data: trip,
-                    message: "Query list of trip successfully"
-                })
+    getAllTrip: async (req, res, next) => {
+        let trip = await Trip.find();
+        let trips = [];
+        if (trip){
+            for (let i = 0; i<trip.length; i++){
+                if (trip[i].isDelete === false){
+                    trips.push(trip[i])
+                } else {
+                    console.log("deleted");
+                }
+            }
+            await res.json(trips);
+        } else {
+            await res.json({
+                result:"failed",
+                data:[],
+                message:"query not successfully"
             })
-            .catch(err => {
-                res.json({
-                    result: "failed",
-                    data: [],
-                    message: `error is : ${err}`
-                })
-            })
+        }
     },
     getUsersByTripId: (req, res, next) => {
         Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)})
@@ -54,8 +56,6 @@ module.exports = {
         let trip = new Trip({name, author});
         let saveTrip = await trip.save();
         await res.json({saveTrip});
-        let activityTrip = new ActivityTrip({_id: saveTrip._id, name, author});
-        await activityTrip.save();
         if (!list_user) {
             let user_create = await User.findOne({_id: mongoose.Types.ObjectId(req.body.author)});
             let tripUser = new TripUser({
@@ -63,7 +63,7 @@ module.exports = {
                 trip_id: saveTrip._id
             });
             await tripUser.save();
-            let userCreateTrip = new UserAction(
+            let userCreateTrip = new UserActivity(
                 {
                     user_id: author,
                     trip_id: saveTrip._id,
@@ -91,7 +91,7 @@ module.exports = {
                 });
                 tripUser.save();
             }
-            let userCreateTrip = new UserAction(
+            let userCreateTrip = new UserActivity(
                 {
                     user_id: author,
                     trip_id: saveTrip._id,
@@ -143,30 +143,13 @@ module.exports = {
                 });
             }
         });
-        let userUpdateTrip = new UserAction({
+        let userUpdateTrip = new UserActivity({
             user_id: req.body.user_id,
             trip_id: req.params.tripId,
             type: "updated",
             update_date: Date.now()
         });
         await userUpdateTrip.save();
-        await ActivityTrip.findOneAndUpdate(
-            {
-                _id: mongoose.Types.ObjectId(req.params.tripId)
-            },
-            {
-                $set: {
-                    name: req.body.name,
-                    update_date: update_date
-                }
-            },
-            {
-                options: {
-                    new: true,
-                    multi: true
-                }
-            }
-        );
     },
     addMemberToTrip: async (req, res, next) => {
         const {list_user} = req.body;
@@ -186,7 +169,7 @@ module.exports = {
                 });
                 tripUser.save();
                 let add_user = {
-                  user_id: saveUser._id
+                    user_id: saveUser._id
                 };
                 list_user_add.push(add_user);
             }
@@ -194,11 +177,11 @@ module.exports = {
             return res.status(400).json({error: "trip not exits"});
         }
 
-        let userAddMembers = new UserAction({
+        let userAddMembers = new UserActivity({
             user_id: req.body.user_id,
             trip_id: req.params.tripId,
-            list_user_add:list_user_add,
-            type:"added",
+            list_user_add: list_user_add,
+            type: "added",
             added_date: Date.now()
         });
         await userAddMembers.save();
@@ -227,10 +210,10 @@ module.exports = {
             list_user_reduce.push(reduce_user);
         }
 
-        let userReduceMembers = new UserAction({
+        let userReduceMembers = new UserActivity({
             user_id: req.body.user_id,
             trip_id: req.params.tripId,
-            type:"reduce",
+            type: "reduce",
             list_user: list_user_reduce,
             reduced_date: Date.now()
         });
@@ -238,19 +221,39 @@ module.exports = {
     },
 
     deleteTrip: async (req, res, next) => {
-        Trip.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.tripId)}, (err) => {
-            if (err) {
-                res.json({
-                    result: "failed",
-                    data: [],
-                    message: `Cannot delete  trip_id ${req.params.tripId} Error is : ${err}`
-                })
+        // Trip.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.tripId)}, (err) => {
+        //     if (err) {
+        //         res.json({
+        //             result: "failed",
+        //             data: [],
+        //             message: `Cannot delete  trip_id ${req.params.tripId} Error is : ${err}`
+        //         })
+        //     }
+        //     res.json({
+        //         result: "ok",
+        //         message: `Delete trip_id ${req.params.tripId} successfully`
+        //     })
+        // });
+
+        let trip = await Trip.findOneAndUpdate(
+            {
+                _id: mongoose.Types.ObjectId(req.params.tripId)
+            },
+            {
+                $set: {
+                    isDelete: true,
+                    delete_date: Date.now()
+                }
+            },
+            {
+                options: {
+                    new: true,
+                    multi: true
+                }
             }
-            res.json({
-                result: "ok",
-                message: `Delete trip_id ${req.params.tripId} successfully`
-            })
-        });
+        );
+
+        await res.json(trip);
 
         let trip_id = req.params.tripId;
         let a = await TripUser.deleteMany({trip_id: trip_id});
@@ -259,16 +262,12 @@ module.exports = {
         console.log(a);
         console.log(b);
         console.log(c);
-        let delete_date = Date.now();
-        let userDeleteTrip = new UserAction({
+        let userDeleteTrip = new UserActivity({
             user_id: req.body.user_id,
             trip_id: req.params.tripId,
             type: "deleted",
-            delete_date: delete_date
+            delete_date: Date.now()
         });
         userDeleteTrip.save();
-        let activityTrip = await ActivityTrip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)});
-        activityTrip.delete_date = delete_date;
-        activityTrip.save();
     }
 };

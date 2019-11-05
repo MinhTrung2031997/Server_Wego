@@ -1,26 +1,30 @@
 const mongoose = require('mongoose');
 const Transaction = require("../models/transaction.model");
 const TransactionUser = require("../models/transactionUser.model");
-const UserAction = require("../models/userAction.model");
-const ActivityTransaction = require("../models/activityTransaction.model");
+const UserActivity = require("../models/userActivity.model");
 
 module.exports = {
-    getAllTransaction: (req, res, next) => {
-        Transaction.find()
-            .then(transaction => {
-                res.json({
-                    result: "ok",
-                    data: transaction,
-                    message: "Query list of transaction successfully"
-                })
-            })
-            .catch(err => {
-                res.json({
-                    result: "failed",
-                    data: [],
-                    message: `error is : ${err}`
-                })
-            })
+    getAllTransaction: async (req, res, next) => {
+     let transaction = await Transaction.find();
+     let transactions = [];
+     if (transaction){
+        for (let i = 0 ; i<transaction.length; i++){
+            if (transaction[i].isDelete === false){
+                transactions.push(transaction[i])
+            }
+            else {
+                console.log("deleted");
+            }
+        }
+        await res.json(transactions)
+     } else {
+         await res.json({
+             result:"failed",
+             data:[],
+             message:"query not successfully"
+         })
+     }
+
     },
     getTransactionByTripId: async (req, res, next) => {
         Transaction.find({trip_id: mongoose.Types.ObjectId(req.params.tripId)})
@@ -88,7 +92,7 @@ module.exports = {
                         console.log(`type -1`);
                     }
                 }
-                let userCreateTransaction = new UserAction({
+                let userCreateTransaction = new UserActivity({
                     user_id: author,
                     transaction_id: transaction._id,
                     trip_id: trip_id,
@@ -96,14 +100,6 @@ module.exports = {
                     create_date: Date.now()
                 });
                 userCreateTransaction.save();
-                let activityTransaction = new ActivityTransaction({
-                    _id: transaction._id,
-                    name,
-                    author,
-                    amount,
-                    trip_id
-                });
-                activityTransaction.save();
             })
             .catch(err => {
                 res.json({
@@ -142,40 +138,14 @@ module.exports = {
             }
         );
 
-        let userUpdateTransaction = new UserAction({
+        let userUpdateTransaction = new UserActivity({
             user_id: req.body.user_id,
             transaction_id: req.body.transaction_id,
             trip_id: req.body.trip_id,
-            type:"updated",
-            update_date:Date.now()
+            type: "updated",
+            update_date: Date.now()
         });
         await userUpdateTransaction.save();
-        await ActivityTransaction.findOneAndUpdate(
-            {
-                $and: [
-                    {
-                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
-                    },
-                    {
-                        _id: mongoose.Types.ObjectId(req.body.transaction_id)
-                    }
-                ]
-            },
-            {
-                $set: {
-                    update_date: update_date,
-                    name: req.body.name,
-                    amount: req.body.amount
-                }
-            },
-            {
-                options: {
-                    new: true,
-                    multi: true
-                }
-            }
-        );
-
         await res.json(transaction);
         let transactionsUser = await TransactionUser.find(
             {
@@ -365,7 +335,33 @@ module.exports = {
     },
 
     deleteTransaction: async (req, res, next) => {
-        Transaction.findOneAndRemove(
+        // Transaction.findOneAndRemove(
+        //     {
+        //         $and: [
+        //             {
+        //                 trip_id: mongoose.Types.ObjectId(req.body.trip_id)
+        //             },
+        //             {
+        //                 _id: mongoose.Types.ObjectId(req.body.transaction_id)
+        //             }
+        //         ]
+        //     }
+        // ).then(item => {
+        //     res.json({
+        //         result: "ok",
+        //         data: item,
+        //         message: "Query list of transaction successfully"
+        //     })
+        // })
+        //     .catch(err => {
+        //         res.json({
+        //             result: "failed",
+        //             data: [],
+        //             message: `error is : ${err}`
+        //         })
+        //     });
+
+        let transaction = await Transaction.findOneAndUpdate(
             {
                 $and: [
                     {
@@ -375,21 +371,22 @@ module.exports = {
                         _id: mongoose.Types.ObjectId(req.body.transaction_id)
                     }
                 ]
+            },
+            {
+                $set: {
+                    isDelete: true,
+                    delete_date: Date.now()
+                }
+            },
+            {
+                options: {
+                    new: true,
+                    multi: true
+                }
             }
-        ).then(item => {
-            res.json({
-                result: "ok",
-                data: item,
-                message: "Query list of transaction successfully"
-            })
-        })
-            .catch(err => {
-                res.json({
-                    result: "failed",
-                    data: [],
-                    message: `error is : ${err}`
-                })
-            });
+        );
+      await  res.json(transaction);
+
         let a = await TransactionUser.deleteMany(
             {
                 $and: [
@@ -403,7 +400,7 @@ module.exports = {
             }
         );
         console.log(a);
-        let userDeleteTransaction = new UserAction({
+        let userDeleteTransaction = new UserActivity({
             user_id: req.body.user_id,
             transaction_id: req.body.transaction_id,
             trip_id: req.body.trip_id,
@@ -411,19 +408,5 @@ module.exports = {
             delete_date: Date.now()
         });
         userDeleteTransaction.save();
-        let activityTransaction = await ActivityTransaction.findOne(
-            {
-                $and: [
-                    {
-                        trip_id: mongoose.Types.ObjectId(req.body.trip_id)
-                    },
-                    {
-                        _id: mongoose.Types.ObjectId(req.body.transaction_id)
-                    }
-                ]
-            }
-        );
-        activityTransaction.delete_date = Date.now();
-        activityTransaction.save();
     }
 };
