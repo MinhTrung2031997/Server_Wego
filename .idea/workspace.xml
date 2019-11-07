@@ -4,8 +4,6 @@
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/userActivity.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/userActivity.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/transaction.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/transaction.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/userActivity.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/userActivity.model.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/userActivity.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/userActivity.router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -139,7 +137,7 @@
       <workItem from="1573031816931" duration="203000" />
       <workItem from="1573050616397" duration="1614000" />
       <workItem from="1573055882643" duration="214000" />
-      <workItem from="1573122899230" duration="949000" />
+      <workItem from="1573122899230" duration="2110000" />
     </task>
     <servers />
   </component>
