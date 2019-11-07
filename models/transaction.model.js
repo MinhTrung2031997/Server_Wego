@@ -61,7 +61,7 @@ const transactionSchema = new Schema({
         type: Date,
         default: ""
     }
-}, {collection: 'transaction'});
+}, { collection: 'transaction' });
 
 transactionSchema.path('name').set((inputString) => {
     return inputString[0].toUpperCase() + inputString.slice(1);

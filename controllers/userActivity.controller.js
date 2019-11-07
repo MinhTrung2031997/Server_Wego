@@ -3,7 +3,7 @@ const UserActivity = require('../models/userActivity.model');
 
 module.exports = {
     getAllUserActivity: (req, res, next) => {
-        UserActivity.find()
+       let a = UserActivity.find()
             .populate('user_id')
             .populate('list_user.user_id')
             .populate('transaction_id')
