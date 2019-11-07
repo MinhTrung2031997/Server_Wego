@@ -118,7 +118,7 @@ module.exports = {
                     user_id: author,
                     transaction_id: transaction._id,
                     trip_id: trip_id,
-                    type: "created",
+                    type: "created_transaction",
                     create_date: Date.now()
                 });
                 userCreateTransaction.save();

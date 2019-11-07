@@ -54,6 +54,7 @@ module.exports = {
         await res.json({ listUser });
     },
     getMoneyByUserIdAllTrip: async (req, res, next) => {
+        // find all trip have user by id
         let allTripHaveUser = await TripUser.aggregate([
             {
                 $match: { user_id: mongoose.Types.ObjectId(req.params.userId) }
@@ -64,6 +65,8 @@ module.exports = {
                 }
             }
         ]);
+
+        // find trip from transactionUser by id user
         let tripMoney = await TransactionUser.aggregate([
             {
                 $match: { user_id: mongoose.Types.ObjectId(req.params.userId) }
@@ -75,31 +78,34 @@ module.exports = {
                 }
             }
         ]);
-        let listTrip = [];
+        let listTrip = []; 
+        // assign money of trip
         for (let i = 0; i < tripMoney.length; i++) {
             let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(tripMoney[i]._id) });
             a.oweUser = tripMoney[i].totalBalance;
             listTrip.push(a);
         }
-
-        for (let i = 0; i < allTripHaveUser.length; i++) {
-            if (tripMoney.length > 0) {
-                for (let j = 0; j < tripMoney.length; j++) {
-                    if (allTripHaveUser[i]._id.toString() !== tripMoney[j]._id.toString()) {
-                           let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(allTripHaveUser[i]._id) });
-                           a.oweUser = 0;
-                           listTrip.push(a);
-
-                    }
+        function findTripNoMoney(x) {
+            for (let i = 0; i < tripMoney.length; i++) {
+                if (tripMoney[i]._id.toString() === x.toString()) {
+                    return true;
                 }
-            } else {
-                let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(allTripHaveUser[i]._id) });
-                a.oweUser = 0;
-                listTrip.push(a);
             }
-
+            return false;
         }
-
+        var tripNoMoney = [];
+        // find trip haven't transaction
+        for (let i = 0; i < allTripHaveUser.length; i++) {
+            if (!findTripNoMoney(allTripHaveUser[i]._id)) {
+                tripNoMoney.push(allTripHaveUser[i]._id)
+            }
+        }
+        // assign 0 for trip haven't transaction
+        for (let i = 0; i < tripNoMoney.length; i++) {
+            let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(tripNoMoney[i]._id) });
+            a.oweUser = 0;
+            listTrip.push(a);
+        }
 
         await res.json({ data: listTrip });
     },

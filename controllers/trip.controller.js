@@ -52,7 +52,7 @@ module.exports = {
         const userAuthor = await User.findOne({ _id: req.body.author });
         let nameTrip = await Trip.findOne({ name: req.body.name });
         if (nameTrip) {
-            return res.status(400).json({ error: "trip already exists" });
+            return res.status(400).json({ error: "Name trip already exists" });
         }
 
         let trip = new Trip({ name, author });
@@ -120,7 +120,7 @@ module.exports = {
                 {
                     user_id: author,
                     trip_id: saveTrip._id,
-                    type: "created",
+                    type: "created_trip",
                     create_date: Date.now()
                 });
             let saveUserCreateTrip = await userCreateTrip.save();
