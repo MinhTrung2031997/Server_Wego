@@ -20,7 +20,7 @@ const transactionSchema = new Schema({
         require: true,
         ref: 'trip'
     },
-    isDelete: {
+        isDelete: {
         type: Boolean,
         default: false
     },

@@ -3,16 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/userAction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/userActivity.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activityTransaction.model.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activityTrip.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/userActivity.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/userActivity.controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/transaction.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/transaction.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/trip.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/trip.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/userAction.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/userActivity.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/userAction.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/userActivity.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/userActivity.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/userActivity.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/userActivity.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/userActivity.router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -140,6 +134,12 @@
       <workItem from="1572789883921" duration="5231000" />
       <workItem from="1572823996604" duration="19626000" />
       <workItem from="1572930447039" duration="9009000" />
+      <workItem from="1572948128800" duration="50000" />
+      <workItem from="1573018129875" duration="2524000" />
+      <workItem from="1573031816931" duration="203000" />
+      <workItem from="1573050616397" duration="1614000" />
+      <workItem from="1573055882643" duration="214000" />
+      <workItem from="1573122899230" duration="949000" />
     </task>
     <servers />
   </component>

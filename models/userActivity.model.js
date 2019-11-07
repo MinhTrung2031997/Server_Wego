@@ -9,12 +9,12 @@ const userActivitySchema = new Schema({
     },
     transaction_id: {
         type: Schema.Types.ObjectId,
-        ref: 'Transaction',
+        ref: 'transaction',
     },
     trip_id: {
         type:Schema.Types.ObjectId,
         require: true,
-        ref:'Trip'
+        ref:'trip'
     },
     list_user: [
         {
@@ -25,7 +25,7 @@ const userActivitySchema = new Schema({
         }
     ],
     type:{
-      type: String,
+        type: String,
       require:true,
     },
     create_date: {
