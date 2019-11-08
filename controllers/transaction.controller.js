@@ -426,7 +426,7 @@ module.exports = {
             user_id: req.body.user_id,
             transaction_id: req.body.transaction_id,
             trip_id: req.body.trip_id,
-            type: "deleted",
+            type: "deleted_transaction",
             delete_date: Date.now()
         });
         userDeleteTransaction.save();

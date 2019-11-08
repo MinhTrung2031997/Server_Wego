@@ -177,10 +177,10 @@ module.exports = {
         await userUpdateTrip.save();
     },
     addMemberToTrip: async (req, res, next) => {
-        const {list_user} = req.body;
+        const { list_user } = req.body;
         let list_user_add = [];
-        let trip = await Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)});
-        await res.json({trip});
+        let trip = await Trip.findOne({ _id: mongoose.Types.ObjectId(req.params.tripId) });
+        await res.json({ trip });
         if (trip) {
             for (let i = 0; i < list_user.length; i++) {
                 let user = new User({
@@ -212,7 +212,7 @@ module.exports = {
         await userAddMembers.save();
     },
     deleteMemberToTrip: async (req, res, next) => {
-        const {list_user} = req.body;
+        const { list_user } = req.body;
         let list_user_reduce = [];
         for (let i = 0; i < list_user.length; i++) {
             console.log(list_user[i]);
@@ -278,19 +278,37 @@ module.exports = {
             }
         );
 
+        let transaction = Transaction.updateMany(
+            {
+                trip_id: mongoose.Types.ObjectId(req.params.tripId)
+            },
+            {
+                $set: {
+                    isDelete: true,
+                    delete_date: Date.now()
+                }
+            },
+            {
+                options: {
+                    new: true,
+                    multi: true
+                }
+            },
+        );
+
+
         await res.json(trip);
 
         let trip_id = req.params.tripId;
         let a = await TripUser.deleteMany({ trip_id: trip_id });
-        let b = await Transaction.deleteMany({ trip_id: trip_id });
+        // let b = await Transaction.deleteMany({ trip_id: trip_id });
         let c = await TransactionUser.deleteMany({ trip_id: trip_id });
         console.log(a);
-        console.log(b);
         console.log(c);
         let userDeleteTrip = new UserActivity({
             user_id: req.body.user_id,
             trip_id: req.params.tripId,
-            type: "deleted",
+            type: "deleted_trip",
             delete_date: Date.now()
         });
         userDeleteTrip.save();

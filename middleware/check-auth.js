@@ -13,7 +13,7 @@ module.exports = {
         //  Now find the user by their email address
         let user = await User.findOne({ email: req.body.email });
         if (!user) {
-            return res.status(400).json({error: 'incorrect email or password'});
+            return res.status(400).json({error: 'Incorrect email or password'});
         }
 
         // Check if email has been verified
