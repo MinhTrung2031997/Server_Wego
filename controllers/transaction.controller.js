@@ -30,8 +30,8 @@ module.exports = {
 
     },
     getTransactionByTripId: async (req, res, next) => {
-        var listTransaction = [];
-        var numberUserInTrip = 0;
+        let listTransaction = [];
+        let numberUserInTrip = 0;
         await TripUser.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
             .populate('user_id')
             .exec((err, users) => {
@@ -40,7 +40,7 @@ module.exports = {
                 } else {
                     numberUserInTrip = users.length;
                 }
-            })
+            });
         await Transaction.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
             .then(transactionByTripId => {
                 listTransaction = transactionByTripId
@@ -56,8 +56,8 @@ module.exports = {
                         listTransaction[i].namePayer = user.name;
                         listTransaction[i].moneyPayer = listTransaction[i].list_user[j].type
                     }
-                }  
-            }             
+                }
+            }
         }
 
         await res.json({

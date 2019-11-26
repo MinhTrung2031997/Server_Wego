@@ -1,23 +1,23 @@
 const bcrypt = require('bcrypt');
-const lodash = require('lodash');
+let fs = require('fs');
 const mailer = require("../nodemailer/mailer");
-var rn = require('random-number');
-const { User, validate } = require("../models/user.model");
+const rn = require('random-number');
+const {User, validate} = require("../models/user.model");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 module.exports = {
     getInfoUser: async (req, res) => {
         try {
-            const { token } = req.body;
+            const {token} = req.body;
             // decode token retrieve id user
             let decoded = jwt.verify(token, 'PrivateKey');
-            var userId = decoded._id;
-            // Fetch the user by id 
-            let user = await User.findOne({ _id: userId });
+            let userId = decoded._id;
+            // Fetch the user by id
+            let user = await User.findOne({_id: userId});
             res.status(200).send(user);
         } catch (error) {
-            return res.status(400).json({ error: 'Cannot get info user' });
+            return res.status(400).json({error: 'Cannot get info user'});
         }
     },
     createUser: async (req, res) => {
@@ -33,27 +33,23 @@ module.exports = {
         });
         const secretToken = gen();
         // Check if this user already exists
-        let nameUser = await User.findOne({ name: req.body.name });
-        let user = await User.findOne({ email: req.body.email });
+        let nameUser = await User.findOne({name: req.body.name});
+        let user = await User.findOne({email: req.body.email});
         if (nameUser) {
-            return res.status(400).json({ error: 'That user already exists!' });
-        } else 
-        if (user) {
+            return res.status(400).json({error: 'That user already exists!'});
+        } else if (user) {
 
             if (!user.password) {
                 const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash (req.body.password, salt);
+                user.password = await bcrypt.hash(req.body.password, salt);
                 user.secretToken = secretToken;
                 user.active = false;
                 user.save();
-                return ;
+                return;
+            } else {
+                return res.status(400).json({error: 'That email already exists'});
             }
-            else {
-                return res.status(400).json({ error: 'That email already exists' });
-            }
-        }
-
-        else {
+        } else {
 
             // Generate secret token
 
@@ -104,11 +100,11 @@ module.exports = {
     },
     verifyUser: async (req, res) => {
         try {
-            const { secretToken } = req.body;
+            const {secretToken} = req.body;
             // Find account with matching secret token
-            const user = await User.findOne({ 'secretToken': secretToken });
+            const user = await User.findOne({'secretToken': secretToken});
             if (!user) {
-                res.status(400).json({ error: 'Sorry, PIN code invalid' })
+                res.status(400).json({error: 'Sorry, PIN code invalid'})
                 return;
             }
 
@@ -116,8 +112,8 @@ module.exports = {
             user.secretToken = '';
             await user.save();
 
-            const token = jwt.sign({ _id: user._id }, 'PrivateKey');
-            res.status(200).json({ token });
+            const token = jwt.sign({_id: user._id}, 'PrivateKey');
+            res.status(200).json({token});
 
         } catch (error) {
             res.send(error);
@@ -144,7 +140,7 @@ module.exports = {
         const options = {
             new: true
         };
-        User.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateUser) => {
+        User.findOneAndUpdate(conditions, {$set: newValues}, options, (err, updateUser) => {
             if (err) {
                 res.json({
                     result: "failed",
@@ -159,5 +155,48 @@ module.exports = {
                 })
             }
         })
-    }
+    },
+    uploadAvatar: async (req, res, next) => {
+        let formidable = require('formidable');
+        let form = new formidable.IncomingForm();
+        form.uploadDir = "./uploads";
+        form.keepExtensions = true;
+        form.maxFieldsSize = 10 * 1024 * 1024;
+        form.multiples = true;
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                await res.json({
+                    result: "failed",
+                    data: [],
+                    message: `cannot up load images. Error is ${err}`
+                })
+            } else {
+                let uri = files.photo.path.split("\\")[1];
+                await res.json({
+                    result: "ok",
+                    data: "uploads/" + uri,
+                    numberOfImages: 1,
+                    message: "Successfully images to upload!"
+                });
+                await User.findOneAndUpdate(
+                    {
+                        _id: mongoose.Types.ObjectId(req.params.userId)
+                    },
+                    {
+                        $set: {
+                            update_date: Date.now(),
+                            avatar: "uploads/" + uri,
+                        }
+                    },
+                    {
+                        options: {
+                            new: true,
+                            multi: true
+                        }
+                    }
+                )
+            }
+        });
+    },
+
 };

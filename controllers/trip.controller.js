@@ -28,25 +28,7 @@ module.exports = {
             })
         }
     },
-    getUsersByTripId: (req, res, next) => {
-        Trip.findOne({ _id: mongoose.Types.ObjectId(req.params.tripId) })
-            .populate('list_user._id')
-            .exec((err, users) => {
-                if (err) {
-                    res.json({
-                        result: "failed",
-                        data: [],
-                        message: "query failed"
-                    })
-                } else {
-                    res.json({
-                        result: "ok",
-                        data: users,
-                        message: "query successfully"
-                    })
-                }
-            })
-    },
+
     createTrip: async (req, res, next) => {
         const { name, author, list_user } = req.body;
         const userAuthor = await User.findOne({ _id: req.body.author });
@@ -85,7 +67,7 @@ module.exports = {
             function getRandomInt(max) {
                 return Math.floor(Math.random() * Math.floor(max));
             }
-            async function senMailInvite(email, nameAuthor, emailAuthor, nameTrip) {
+            async function sendMailInvite(email, nameAuthor, emailAuthor, nameTrip) {
                 // Compose email
                 const html = `Hi there,
                     <br/>
@@ -109,7 +91,7 @@ module.exports = {
                     avatar: getRandomInt(6)
                 });
                 let saveUser = await user.save();
-                senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
+                await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
                 let tripUser = new TripUser({
                     user_id: saveUser._id,
                     trip_id: saveTrip._id
