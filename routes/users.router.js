@@ -4,7 +4,7 @@ const router = express.Router();
 const userController = require('../controllers/users.controller');
 
 
-
+router.get('/get_image/:name',userController.getImage);
 router.post('/get_info_user', userController.getInfoUser);
 router.post('/insert_a_user',userController.createUser);
 router.post('/upload_avatar/:userId', userController.uploadAvatar);

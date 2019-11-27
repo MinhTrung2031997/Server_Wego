@@ -5,6 +5,7 @@ const rn = require('random-number');
 const {User, validate} = require("../models/user.model");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 module.exports = {
     getInfoUser: async (req, res) => {
@@ -174,7 +175,7 @@ module.exports = {
                 let uri = files.photo.path.split("\\")[1];
                 await res.json({
                     result: "ok",
-                    data: "uploads/" + uri,
+                    data: uri,
                     numberOfImages: 1,
                     message: "Successfully images to upload!"
                 });
@@ -185,7 +186,7 @@ module.exports = {
                     {
                         $set: {
                             update_date: Date.now(),
-                            avatar: "uploads/" + uri,
+                            avatar: uri,
                         }
                     },
                     {
@@ -198,5 +199,16 @@ module.exports = {
             }
         });
     },
-
+    getImage: (req,res,next) => {
+        const fileName = req.params.name;
+        if (!fileName) {
+            return res.send({
+                status: false,
+                message: 'no filename specified',
+            })
+        }
+        // res.sendFile(__dirname + (`./uploads/${fileName}`));
+        // console.log(path.resolve(`./uploads/${fileName}`));
+        res.sendfile(path.resolve(`./uploads/${fileName}`));
+    }
 };
