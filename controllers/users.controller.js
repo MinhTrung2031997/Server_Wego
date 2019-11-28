@@ -7,6 +7,10 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 module.exports = {
+    checkUserExists: async (req, res) => {
+        let user = await User.find({ email: { "$regex": req.body.email, "$options": "i" } });
+        res.send({data: user});
+    },
     getInfoUser: async (req, res) => {
         try {
             const { token } = req.body;
