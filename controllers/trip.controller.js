@@ -105,7 +105,6 @@ module.exports = {
             for (let i = 0; i < list_user.length; i++) {
                 let UserExist = await User.findOne({ email: list_user[i].email });
                 if(UserExist){
-                    console.log(list_user[i].email)
                     senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
 
                     let tripUser = new TripUser({
@@ -114,7 +113,6 @@ module.exports = {
                     });
                     tripUser.save();
                 }else {
-                    console.log(list_user[i].email)
                     let user = new User({
                         name: list_user[i].name,
                         email: list_user[i].email,
