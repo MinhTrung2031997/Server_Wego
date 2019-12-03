@@ -110,6 +110,32 @@ const data = [
                 "image": "images/details/thumb/hochiminh/29e2dcfb7f9e1890556ba1ab31b3acc6cee38956.jpg",
                 "desc": "Âm nhạc"
             }
+        ],
+        "plantrip": [
+            {
+                "desc": "Chợ nổi tiếng để mua đồ thủ công, lưu niệm, quần áo & hàng hóa khác đồng thời thưởng thức ẩm thực địa phương.",
+                "title": "Chợ Bến Thành",
+                "image": "images/plantrip/hochiminh/46210e4f92fb78a9a72aa5aa97c20dd33012c8b8.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Bưu điện trung tâm hoành tráng hoàn thành năm 1891, với sảnh chính có mái vòm & mặt sơn mang dấu ấn thời gian.",
+                "title": "Bưu Điện Trung Tâm Thành Phố",
+                "image": "images/plantrip/hochiminh/7a1e290791adba3d1893bb7286e58c3dab1f2f3f.jpg",
+                "timemove": "15 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Nhà thờ Công giáo được xây dựng bằng gạch Pháp vào những năm 1880 và có các tháp chuông Rô-măng cao 58m.",
+                "title": "Nhà thờ Đức Bà Sài Gòn",
+                "image": "images/plantrip/hochiminh/003e3183295e5a39c81bc8f1041b762d8c14b93c.jpg",
+                "timemove": "Ít hơn 5 phút bằng xe hơi"
+            },
+            {
+                "desc": "Quần thể địa đạo rộng lớn từng được sử dụng bởi quân đội Việt Cộng, cùng các vật trưng bày và đài tưởng niệm.",
+                "title": "Khu di tích lịch sử Địa Đạo Củ Chi",
+                "image": "images/plantrip/hochiminh/b306f93327cc3678e366369e983886166eb386df.jpg",
+                "timemove": "1,5 giờ bằng xe hơi"
+            }
         ]
     },
     {
@@ -216,6 +242,50 @@ const data = [
                 "title": "Công viên vịnh Rồng",
                 "image": "images/details/thumb/vinhhalong/fc4d14d4505e8c12074e458fd46c2e029e62f8d6.jpg",
                 "desc": "Công viên"
+            }
+        ],
+        "plantrip": [
+            {
+                "desc": "Tuần Châu là một phường đảo thuộc thành phố Hạ Long, Quảng Ninh, Việt Nam.",
+                "title": "Đảo Tuần Châu",
+                "image": "images/plantrip/vinhhalong/493f88f77109c9d9e1f9f7d9c2948005269b146e.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Not yet description",
+                "title": "Halong Majestic Cruise",
+                "image": "images/plantrip/vinhhalong/2caec1f36905381a04f2eba228ecf94b83a3d272.jpg",
+                "timemove": "20 phút bằng xe hơi"
+            },
+            {
+                "desc": "Not yet description",
+                "title": "Vịnh Hạ Long",
+                "image": "images/plantrip/vinhhalong/a2e8d606ce15d543275e50ecad787b2798b1e388.jpg",
+                "timemove": "3"
+            },
+            {
+                "desc": "Công viên và công viên giải trí",
+                "title": "Halong Park (Dragon Park)",
+                "image": "images/plantrip/vinhhalong/98484fcd0a5cbac196f4659d9dc60dbdad3bd1af.jpg",
+                "timemove": "4"
+            },
+            {
+                "desc": "Cầu Bãi Cháy nằm trên quốc lộ 18, nối hai phần của thành phố Hạ Long là Hòn Gai và Bãi Cháy qua vịnh Cửa Lục nơi đổ ra vịnh Hạ Long, thuộc địa phận tỉnh Quảng Ninh.",
+                "title": "Cầu Bãi Cháy",
+                "image": "images/plantrip/vinhhalong/4231da9bef200df9d6dce09b4949ed9a012d3101.jpg",
+                "timemove": "Ít hơn 5 phút bằng xe hơi"
+            },
+            {
+                "desc": "Leo và núi",
+                "title": "Núi Bài Thơ",
+                "image": "images/plantrip/vinhhalong/2c18a5230548803f4a838edf45f4987dd0c38d0f.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Not yet description",
+                "title": "Vòng Quay Mặt Trời Hạ Long",
+                "image": "images/plantrip/vinhhalong/b68d885a58d65b790eb913d93a351336e2a02c55.jpg",
+                "timemove": "10 phút bằng xe hơi"
             }
         ]
     },
@@ -324,6 +394,62 @@ const data = [
                 "image": "images/details/thumb/hanoi/768d453abb9819d3e846ee2bd1802e89d3d24dfb.jpg",
                 "desc": "Triển lãm thời tiền sử và hiện đại"
             }
+        ],
+        "plantrip": [
+            {
+                "desc": "Hồ Hoàn Kiếm còn được gọi là Hồ Gươm, là một hồ nước ngọt tự nhiên nằm ở trung tâm thành phố Hà Nội.",
+                "title": "Hồ Hoàn Kiếm",
+                "image": "images/plantrip/hanoi/ed444934b11241ea05f74196fa218eadc2822f2a.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Nhà thờ Lớn Hà Nội là nhà thờ chính tòa của Tổng giáo phận Hà Nội, nơi có ngai tòa của tổng Giám mục.",
+                "title": "Nhà Thờ Lớn Hà Nội",
+                "image": "images/plantrip/hanoi/84a14845dba044ce26904c4ddedc27ec6b71bd77.jpg",
+                "timemove": "Ít hơn 5 phút bằng xe hơi"
+            },
+            {
+                "desc": "Tàn tích của nhà tù nhiều tầng dành cho tù binh ch.tranh Việt Nam chỉ còn lại khu canh gác, nay là bảo tàng.",
+                "title": "Di Tích Lịch Sử Nhà Tù Hỏa Lò",
+                "image": "images/plantrip/hanoi/9262df1c16f9499aa5c82df412c54b6cbe20ecc9.jpg",
+                "timemove": "10 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Văn Miếu - Quốc Tử Giám là quần thể di tích đa dạng và phong phú hàng đầu của thành phố Hà Nội, nằm ở phía nam Kinh thành Thăng Long.",
+                "title": "Văn Miếu - Quốc Tử Giám",
+                "image": "images/plantrip/hanoi/4dcfdf5ac79dd9ccd48de9581a4a52c70401df0e.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Ngôi chùa thờ Phật đã được xây lại, vốn được dựng lên vào năm 1049 với thiết kế hoa sen.",
+                "title": "Chùa Một Cột",
+                "image": "images/plantrip/hanoi/4a18d04b17b339ddc3e806fc53f55934d24d8a5e.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Bảo tàng được xây dựng vào năm 1979, là nơi lưu giữ các kỷ vật và hình ảnh về Chủ tịch Hồ Chí Minh.",
+                "title": "Bảo Tàng Hồ Chí Minh",
+                "image": "images/plantrip/hanoi/0db30e120cc67476352affb2d9ebaad1f5c78fb0.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Thi hài của Chủ tịch Hồ Chí Minh, lãnh tụ nước Việt Nam, được đặt tại lăng mộ và khu di tích lịch sử này.",
+                "title": "Lăng Chủ tịch Hồ Chí Minh",
+                "image": "images/plantrip/hanoi/e130e5776f2667f2c7aabeda6a71d255fa789f96.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Đền Quán Thánh, tên chữ là Trấn Vũ Quán, có từ đời Lý Thái Tổ, thờ Huyền Thiên Trấn Vũ, là một trong bốn vị thần được lập đền thờ để trấn giữ bốn cửa ngõ thành Thăng Long khi xưa.",
+                "title": "Đền Quán Thánh",
+                "image": "images/plantrip/hanoi/cbf2983e66bb83c93a564e711332262a57047f9a.jpg",
+                "timemove": "10 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Chùa Phật giáo được xây trong thế kỷ 6 tọa lạc trên một hòn đảo nhỏ và thơ mộng có nhiều mộ tháp.",
+                "title": "Chùa Trấn Quốc",
+                "image": "images/plantrip/hanoi/49b562dc5cd260d7a51bcc334b97217c7daab7d4.jpg",
+                "timemove": "10 phút bằng cách đi bộ"
+            }
         ]
     },
     {
@@ -425,6 +551,44 @@ const data = [
                 "title": "Làng gốm Thanh Hà, Hội An",
                 "image": "images/details/thumb/hanoi/c97cc113ee3dea436fb0172f5144fd388a7bc90d.jpg",
                 "desc": "Điểm thu hút khách du lịch"
+            }
+        ],
+        "plantrip": [
+            {
+                "desc": "Đền",
+                "title": "Quan Công Miếu",
+                "image": "images/plantrip/hoian/4f6d35da36f9ff0e3c3410f652e4b68e04cca245.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Khu di tích nhộn nhịp có cảng thị được bảo tồn và trung tâm thương mại phản ánh sự ảnh hưởng từ nước ngoài.",
+                "title": "Phố Cổ Hội An",
+                "image": "images/plantrip/hoian/b769b92cce5b496fc19df448bccd7514f7695901.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Not yet description",
+                "title": "Nhà Cổ Tấn Ký",
+                "image": "images/plantrip/hoian/efb8b523ec45cdbea63823833887402f54fff9a5.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Not yet description",
+                "title": "Nhà Cổ Tấn Ký",
+                "image": "images/plantrip/hoian/efb8b523ec45cdbea63823833887402f54fff9a5.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Cây cầu gỗ từ thế kỷ 18 được chạm khắc tinh xảo & có lối đi dành cho người đi bộ.",
+                "title": "Chùa Cầu Hội An Quảng Nam",
+                "image": "images/plantrip/hoian/0f3f4015dff6c9ad258c200ef63ee29ac059b869.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Bãi biển yên tĩnh, rợp bóng cây với bãi cát trắng, mái che nắng, ghế dài và quán ăn.",
+                "title": "Bãi biển An Bàng",
+                "image": "images/plantrip/hoian/9239b5b0fb705e0df8cc57c89ab71ce6026250c2.jpg",
+                "timemove": "15 phút bằng xe hơi"
             }
         ]
     },
@@ -533,6 +697,56 @@ const data = [
                 "image": "images/details/thumb/hue/6f2d8cc0bceafe145e0c3972e3eb5bc21e01fa31.jpg",
                 "desc": "Điện thờ"
             }
+        ],
+        "plantrip": [
+            {
+                "desc": "Lăng mộ của một hoàng đế Việt Nam với kiến ​​trúc phức tạp và các chi tiết trang trí công phu.",
+                "title": "Lăng Khải Định",
+                "image": "images/plantrip/hue/c7185f77ea140551a883e7d2b92e7b4230c894ce.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Quần thể lăng mộ và đền thờ tôn vinh một vị vua thế kỷ 19 với khung cảnh nên thơ và hồ sen.",
+                "title": "Lăng Tự Đức",
+                "image": "images/plantrip/hue/1f49092418431137310e490ba549334779a95e55.jpg",
+                "timemove": "15 phút bằng xe hơi"
+            },
+            {
+                "desc": "Cung điện truyền thống từ thế kỷ 19 tổ chức tham quan và triển lãm về hoàng thành và triều Nguyễn.",
+                "title": "Điện Thái Hòa",
+                "image": "images/plantrip/hue/8a04e994e7851c6f042358b935405ef04a58eb98.jpg",
+                "timemove": "15 phút bằng xe hơi"
+            },
+            {
+                "desc": "Cổng chính dẫn vào Hoàng thành được xây năm 1833 có lầu nằm bên trên được sử dụng để tổ chức các nghi lễ.",
+                "title": "Ngọ Môn",
+                "image": "images/plantrip/hue/db02c0ed715104e7e9024ce2b6a363b3a5b7bb0e.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Hoàng cung cổ kính tọa lạc trong quần thể rộng lớn có tường bao quanh của tử cấm thành.",
+                "title": "Kinh thành Huế",
+                "image": "images/plantrip/hue/b3b64303d450fe79a23c9fc804ad5e702a757e1e.jpg",
+                "timemove": "5"
+            },
+            {
+                "desc": "Ngôi chùa 7 tầng nổi tiếng này là nơi cư trú của các nhà sư, có cảnh quan đẹp, được xây dựng vào năm 1601.",
+                "title": "Chùa Thiên Mụ",
+                "image": "images/plantrip/hue/fb0d9a1f17f213338e7de16569b47f7cb313f8ab.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Cầu Trường Tiền còn được gọi là Cầu Tràng Tiền, là chiếc cầu dài 402,60 m, gồm 6 nhịp dầm thép hình vành lược, khẩu độ mỗi nhịp 67 m.",
+                "title": "Cầu Trường Tiền",
+                "image": "images/plantrip/hue/5d306e0c9930f79cbbb57885ae76d71185c43e47.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Núi Ngự Bình, gọi ngắn gọn là núi Ngự, trước có tên là Hòn Mô hay Núi Bằng; là một hòn núi đất cao 103 m ở bờ phải sông Hương, cách trung tâm thành phố Huế 4 km về phía Nam.",
+                "title": "núi Ngự Bình",
+                "image": "images/plantrip/hue/3b71b1c286f82890261f6ac535e624df494171bc.jpg",
+                "timemove": "15 phút bằng xe hơi"
+            }
         ]
     },
     {
@@ -639,6 +853,32 @@ const data = [
                 "title": "Kinh thành Huế",
                 "image": "images/details/thumb/danang/1959e42daa1d94094d0820f957daaf7f1d5999b3.jpg",
                 "desc": "Hoàng cung trong tử cấm thành"
+            }
+        ],
+        "plantrip": [
+            {
+                "desc": "Thắng cảnh Ngũ Hành Sơn có nhiều hang động và chùa chiền được xây cất công phu với cảnh sắc hữu tình.",
+                "title": "Núi Ngũ Hành Sơn Đà Nẵng",
+                "image": "images/plantrip/danang/85a4b37b480434d29f4913446c18148322c295ed.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Cầu Rồng là cây cầu thứ 6 và là cây cầu mới nhất bắc qua sông Hàn.",
+                "title": "Cầu Rồng",
+                "image": "images/plantrip/danang/49634d948d10abf313e6662e0d981daae5e465ec.jpg",
+                "timemove": "20 phút bằng xe hơi"
+            },
+            {
+                "desc": "Bảo tàng nhỏ gọn trưng bày một bộ sưu tập các tác phẩm điêu khắc và văn hóa như trang phục và dụng cụ.",
+                "title": "Bảo tàng Điêu khắc Chăm Đà Nẵng",
+                "image": "images/plantrip/danang/f0022196d9925483223752ad5ec8ce96d274a6f3.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Hoàng cung cổ kính tọa lạc trong quần thể rộng lớn có tường bao quanh của tử cấm thành.",
+                "title": "Kinh thành Huế",
+                "image": "images/plantrip/danang/b3b64303d450fe79a23c9fc804ad5e702a757e1e.jpg",
+                "timemove": "2 giờ bằng xe hơi"
             }
         ]
     },
@@ -747,6 +987,38 @@ const data = [
                 "image": "images/details/thumb/nhatrang/65626e60add97fcc695112ebea086f19966ec6b8.jpg",
                 "desc": "Điểm thu hút khách du lịch"
             }
+        ],
+        "plantrip": [
+            {
+                "desc": "Ngôi chùa thờ Phật hiện đại với một tượng Phật lớn trên đỉnh đồi và tầm nhìn toàn cảnh thành phố.",
+                "title": "Chùa Long Sơn",
+                "image": "images/plantrip/nhatrang/3ee30acec33527868bde19a13bf00f27929ab260.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Nhà thờ phong cách Gô-tích có niên đại từ đầu thế kỷ 20, với tháp chuông, trần nhà mái vòm và kính màu.",
+                "title": "Nhà thờ Chánh Tòa Kitô Vua",
+                "image": "images/plantrip/nhatrang/fda52ebdfaa627ee0e3ce565957bff4ec09f88de.jpg",
+                "timemove": "Ít hơn 5 phút bằng xe hơi"
+            },
+            {
+                "desc": "Là khu chợ chính của thành phố, tòa nhà 3 tầng này có rất nhiều quầy bán thực phẩm và đồ lưu niệm.",
+                "title": "Chợ Đầm",
+                "image": "images/plantrip/nhatrang/8d1ceef51c09a4c944c092c72056f4844b5b2c4b.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Nhà cũ của vị bác sĩ phát hiện ra vi khuẩn dịch hạch và thành lập nên Viện Pasteur.",
+                "title": "Bảo Tàng Alexandre Yersin",
+                "image": "images/plantrip/nhatrang/e762e1e176ca7190ed5829810c18c662ef590419.jpg",
+                "timemove": "10 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Ngôi đền 3 tầng thanh bình nằm trên đỉnh núi với 2 tháp nhà thờ là nơi trưng bày hiện vật & hình ảnh lịch sử.",
+                "title": "Tháp Bà PoNagar",
+                "image": "images/plantrip/nhatrang/945a5a30eaae7d81fd4bc2939513e923b23668c5.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            }
         ]
     },
     {
@@ -854,6 +1126,56 @@ const data = [
                 "image": "images/details/thumb/sapa/813af2a4d32281423d01967ad6f9735380128dc9.jpg",
                 "desc": "Nơi thờ cúng"
             }
+        ],
+        "plantrip": [
+            {
+                "desc": "Thung lũng xinh đẹp nổi tiếng với những lối đi leo bộ xuyên qua những thửa ruộng bậc thang & làng cổ.",
+                "title": "Thung Lũng Mường Hoa",
+                "image": "images/plantrip/sapa/683a9e3d2a29b32bf3675e4b1a83d619f30acabf.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Vườn hoa trên đỉnh núi với các thảm hoa khoe sắc, cây cảnh tạo hình nghệ thuật và khu ngắm toàn cảnh Sa Pa.",
+                "title": "Vườn hoa Hàm Rồng",
+                "image": "images/plantrip/sapa/2dd412c3314723565759ed0c2a702c180aa176c5.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Được người Pháp xây dựng năm 1895, nhà thờ bằng đá này có tháp chuông và kiến trúc Gothic La Mã.",
+                "title": "Nhà Thờ Đá Sapa",
+                "image": "images/plantrip/sapa/f110f6ef66c4db9e4e27a10444b004502c4bf7e4.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Bảo tàng với kiến trúc truyền thống có cửa hàng mỹ nghệ & lưu niệm bán đồ thủ công được làm tại địa phương.",
+                "title": "Sapa Museum",
+                "image": "images/plantrip/sapa/28179a2420241be3f4f013767fe237fa954836ba.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Tuyến cáp treo nối Sapa và đỉnh Fansipan, có đền chùa, nhà hàng và cửa hàng ở cả ga đến và ga đi.",
+                "title": "Cáp treo Fansipan Legend",
+                "image": "images/plantrip/sapa/561ab0ef0b1f11a7fef2d38ca48888d6bb60cfe1.jpg",
+                "timemove": "Ít hơn 5 phút bằng cách đi bộ"
+            },
+            {
+                "desc": "Thác nước lớn nên thơ, có thể thấy từ đường lớn, là điểm đến ưa thích của người đi xe đạp và đi bộ đường dài.",
+                "title": "Khu du lịch Thác Bạc",
+                "image": "images/plantrip/sapa/69a444dedffe1a72f9809fc2d23b37137bbf69c6.jpg",
+                "timemove": "35 phút bằng xe hơi"
+            },
+            {
+                "desc": "Đèo Ô Quý Hồ, đèo Ô Quy Hồ hay đèo Hoàng Liên Sơn là đèo trên quốc lộ 4D ở vùng giáp ranh hai tỉnh Lào Cai và Lai Châu, Việt Nam.",
+                "title": "Đèo Ô Quy Hồ",
+                "image": "images/plantrip/sapa/f0f66763487f3b6c049978d8dbcc37ba8a198e45.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            },
+            {
+                "desc": "Núi",
+                "title": "Đỉnh Phan Xi Păng",
+                "image": "images/plantrip/sapa/bb76638053018ab328ecff70e8741f72741f9a62.jpg",
+                "timemove": "10 phút bằng xe hơi"
+            }
         ]
     },
     {
@@ -960,6 +1282,44 @@ const data = [
                 "title": "Đồi Mộng Mơ",
                 "image": "images/details/thumb/dalat/dca3c31631ce6a6355e24ecad40fd1a0ebda3ac3.jpg",
                 "desc": "Điểm quan tâm"
+            }
+        ],
+        "plantrip": [
+            {
+                "desc": "Khu trưng bày nghệ thuật với các tác phẩm điêu khắc bằng đất sét khổng lồ đủ thể loại từ thằn lằn đến tàu hỏa.",
+                "title": "Đường Hầm Điêu Khắc",
+                "image": "images/plantrip/dalat/079ddfe6126000b7af5fcabe1d9d760cdc4b6a5a.jpg",
+                "timemove": "1"
+            },
+            {
+                "desc": "Hồ Tuyền Lâm là một hồ nước thuộc thành phố Đà Lạt tỉnh Lâm Đồng.",
+                "title": "Hồ Tuyền Lâm",
+                "image": "images/plantrip/dalat/fbcea65bb8f81199bd0cb4d51a50f508fe0415bb.jpg",
+                "timemove": "25 phút bằng xe hơi"
+            },
+            {
+                "desc": "Thiền Viện Trúc Lâm là thiền viện thuộc thiền phái Trúc Lâm Yên Tử.",
+                "title": "Thiền viện Trúc Lâm Phụng Hoàng",
+                "image": "images/plantrip/dalat/a4bda03b81296d0d5a9d6495642941b86070bcd5.jpg",
+                "timemove": "5 phút bằng xe hơi"
+            },
+            {
+                "desc": "Danh thắng có nhiều thác nước nhỏ, xe lượn, cáp treo và đường đi bộ đông đảo khách du lịch ghé thăm.",
+                "title": "Khu Du Lịch Thác Datanla",
+                "image": "images/plantrip/dalat/6ccd5865a26a93dee1d1a393415713be7c68c17a.jpg",
+                "timemove": "5 phút bằng xe hơi"
+            },
+            {
+                "desc": "Biệt thự cổ quái có kiến trúc mô phỏng thân cây cổ thụ; du khách có thể nhìn toàn cảnh thành phố từ mái nhà.",
+                "title": "Biệt thự Hằng Nga",
+                "image": "images/plantrip/dalat/ce29414e41819cbcca948a6bd9c59973f9cd33e4.jpg",
+                "timemove": "15 phút bằng xe hơi"
+            },
+            {
+                "desc": "Nhà thờ Domaine de Marie còn được gọi là Nhà thờ Vinh Sơn, Nhà thờ Mai Anh.",
+                "title": "Nhà Thờ Domaine De Marie",
+                "image": "images/plantrip/dalat/d5390b0b00fa22abbc342376c970789a98a6f0c9.jpg",
+                "timemove": "10 phút bằng xe hơi"
             }
         ]
     },
