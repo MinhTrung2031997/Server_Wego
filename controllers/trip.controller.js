@@ -5,7 +5,8 @@ const TransactionUser = require("../models/transactionUser.model");
 const UserActivity = require('../models/userActivity.model');
 const {User} = require("../models/user.model");
 const mongoose = require('mongoose');
-const mailer = require("../nodemailer/mailer")
+const mailer = require("../nodemailer/mailer");
+let fs = require("fs");
 
 module.exports = {
     getAllTrip: async (req, res, next) => {
@@ -316,20 +317,15 @@ module.exports = {
         form.maxFieldsSize = 10 * 1024 * 1024;
         form.multiples = true;
         form.parse(req, async (err, fields, files) => {
-            if (err) {
-                await res.json({
-                    result: "failed",
-                    data: [],
-                    message: `cannot up load images. Error is ${err}`
-                })
-            } else {
-                // let uri = files.video.path.split("\\")[1];
-                await res.json({
-                    result: "ok",
-                    data: files,
-                    message: "Successfully images to upload!"
-                });
-            }
+            if (err) throw err;
+
+            let tmpPath = files.video.path ;
+            let newPath =   files.video.path +".mp4";
+            fs.rename(tmpPath, newPath, (err) => {
+                if ( err ) console.log('ERROR: ' + err);
+                let newPath = files.video.path.split("\\")[2] + ".mp4";
+                res.json({newPath});
+            })
         });
     },
 };
