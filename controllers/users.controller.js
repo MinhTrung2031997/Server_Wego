@@ -9,6 +9,10 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 
 module.exports = {
+    checkUserExists: async (req, res) => {
+        let user = await User.find({ email: { "$regex": req.body.email, "$options": "i" } });
+        res.send({data: user});
+    },
     getInfoUser: async (req, res) => {
         try {
             const {token} = req.body;
@@ -121,7 +125,7 @@ module.exports = {
             res.send(error);
         }
     },
-    updateUser: (req, res, next) => {
+    updateUser: async (req, res, next) => {
         let conditions = {};
         if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
             conditions._id = mongoose.Types.ObjectId(req.params.userId)
@@ -133,10 +137,23 @@ module.exports = {
             })
         }
 
+        const  email  = req.body.email;
+        let user = await User.findOne({ 'email': email });
+        if (user && user._id != req.params.userId) {
+            res.json({
+                result: "failed",
+                data: [],
+                message: "Email exists, Please enter another email."
+            })
+            return;
+        }
+
         let newValues = {};
         if (req.body.name && req.body.name.length > 2) {
             newValues = {
-                name: req.body.name
+                name: req.body.name,
+                email: req.body.email,
+                update_date: Date.now(),
             }
         }
         const options = {

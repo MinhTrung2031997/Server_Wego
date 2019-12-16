@@ -86,18 +86,30 @@ module.exports = {
 
             await tripUser.save();
             for (let i = 0; i < list_user.length; i++) {
-                let user = new User({
-                    name: list_user[i].name,
-                    email: list_user[i].email,
-                    avatar: getRandomInt(6)
-                });
-                let saveUser = await user.save();
-                await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
-                let tripUser = new TripUser({
-                    user_id: saveUser._id,
-                    trip_id: saveTrip._id
-                });
-                tripUser.save();
+                let UserExist = await User.findOne({ email: list_user[i].email });
+                if(UserExist){
+                    senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
+
+                    let tripUser = new TripUser({
+                        user_id: UserExist._id,
+                        trip_id: saveTrip._id
+                    });
+                    tripUser.save();
+                }else {
+                    let user = new User({
+                        name: list_user[i].name,
+                        email: list_user[i].email,
+                        avatar: getRandomInt(6)
+                    });
+                    let saveUser = await user.save();
+                    senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
+
+                    let tripUser = new TripUser({
+                        user_id: saveUser._id,
+                        trip_id: saveTrip._id
+                    });
+                    tripUser.save();
+                }
             }
             let userCreateTrip = new UserActivity(
                 {

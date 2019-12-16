@@ -107,7 +107,14 @@ module.exports = {
             listTrip.push(a);
         }
 
-        await res.json({ data: listTrip });
+        // sort list trip
+        const sortListTrip = listTrip.sort(function (a, b) {
+            // Turn your strings into dates, and then subtract them
+            // to get a value that is either negative, positive, or zero.
+            return new Date(a.create_date) - new Date(b.create_date);
+        });
+
+        await res.json({ data: sortListTrip });
     },
     getTotalMoneyUserAllTransactionInOneTrip: async (req, res, next) => {
         TransactionUser.find({
