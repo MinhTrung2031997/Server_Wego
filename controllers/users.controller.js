@@ -182,6 +182,7 @@ module.exports = {
             newValues = {
                 name: req.body.name,
                 email: req.body.email,
+                avatar: req.body.avatar,
                 update_date: Date.now(),
             }
         }
