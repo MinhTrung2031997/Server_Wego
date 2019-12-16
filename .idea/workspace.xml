@@ -3,9 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/users.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/trip.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/trip.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/video/upload_07da907b1aac0f4247b498e571866588.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/video/upload_6eb722a3961d1317cc3ab94328bf25b5.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/video/upload_70923cad3d9a50588c5a648191704e5c.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/video/upload_8060cf5cb0a3669a125b9b218fc34c24.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/video/upload_eb14be3030ab17700321a25d40055e7a.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/video/upload_f36033bd375cfd698bb827c73e40ac8b.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/video/upload_f9bdc27baf9a20f0328c0a83d11d40b2.mp4" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/users.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -189,7 +194,9 @@
       <workItem from="1575292359627" duration="599000" />
       <workItem from="1575337775174" duration="8925000" />
       <workItem from="1576225351258" duration="1787000" />
-      <workItem from="1576470492898" duration="17220000" />
+      <workItem from="1576470492898" duration="17339000" />
+      <workItem from="1576489823671" duration="268000" />
+      <workItem from="1576502271573" duration="2999000" />
     </task>
     <servers />
   </component>

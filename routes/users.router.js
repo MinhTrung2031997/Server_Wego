@@ -13,7 +13,7 @@ router.post('/insert_a_user',userController.createUser);
 
 router.post('/upload_avatar/:userId', userController.uploadAvatar);
 
-router.post('/send_money_all_mail',userController.sendMoneyAllMail);
+router.post('/send_money_all_mail/:tripId',userController.sendMoneyAllMail);
 
 router.post('/remind_payment_user', userController.remindPaymentUser);
 

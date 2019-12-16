@@ -229,8 +229,7 @@ module.exports = {
         res.sendfile(path.resolve(`./uploads/${fileName}`));
     },
     sendMoneyAllMail: (req, res, next) => {
-        // const tripId = req.params.tripId;
-        let tripId = '5dd20e6062dd5c39d41b6009';
+        const tripId = req.params.tripId;
         const html = `Click link to see the total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Click here</a>`;
         mailer.sendEmail('tranvler4444@gmail.com', 'minhtrung2031997@gmail.com', 'Please click the link below to see the total trip cost', html);
         res.json("ok");
