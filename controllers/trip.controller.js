@@ -365,4 +365,14 @@ module.exports = {
             })
         });
     },
+    getVideo: async (req, res, next) => {
+        var data = [];
+        const testFolder = './public/video';
+        const fs = require('fs');
+
+        fs.readdirSync(testFolder).forEach(file => {
+            data.push(file);
+        });
+        res.json({data: data})
+    }
 };
