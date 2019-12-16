@@ -6,11 +6,10 @@ const {User} = require("../models/user.model");
 const Trip = require("../models/trip.model");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 
 module.exports = {
     checkUserExists: async (req, res) => {
-        let user = await User.find({ email: { "$regex": req.body.email, "$options": "i" } });
+        let user = await User.find({email: {"$regex": req.body.email, "$options": "i"}});
         res.send({data: user});
     },
     getInfoUser: async (req, res) => {
@@ -137,8 +136,8 @@ module.exports = {
             })
         }
 
-        const  email  = req.body.email;
-        let user = await User.findOne({ 'email': email });
+        const email = req.body.email;
+        let user = await User.findOne({'email': email});
         if (user && user._id != req.params.userId) {
             res.json({
                 result: "failed",
@@ -226,8 +225,7 @@ module.exports = {
                 message: 'no filename specified',
             })
         }
-        // res.sendFile(__dirname + (`./uploads/${fileName}`));
-        // console.log(path.resolve(`./uploads/${fileName}`));
+
         res.sendfile(path.resolve(`./uploads/${fileName}`));
     },
     sendMoneyAllMail: (req, res, next) => {

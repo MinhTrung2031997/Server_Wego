@@ -307,5 +307,29 @@ module.exports = {
             delete_date: Date.now()
         });
         userDeleteTrip.save();
-    }
+    },
+    uploadVideo: async (req, res, next) => {
+        let formidable = require('formidable');
+        let form = new formidable.IncomingForm();
+        form.uploadDir = "./public/video";
+        form.keepExtensions = true;
+        form.maxFieldsSize = 10 * 1024 * 1024;
+        form.multiples = true;
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                await res.json({
+                    result: "failed",
+                    data: [],
+                    message: `cannot up load images. Error is ${err}`
+                })
+            } else {
+                // let uri = files.video.path.split("\\")[1];
+                await res.json({
+                    result: "ok",
+                    data: files,
+                    message: "Successfully images to upload!"
+                });
+            }
+        });
+    },
 };
