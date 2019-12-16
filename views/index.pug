@@ -1,5 +1,26 @@
-extends layout
+doctype html
+html
+    head
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+        style
+            include index.css
+    body
+        .container.text-center
+            h1 WeGo
+            h3 Cost statistic table of all members of the trip
+            table.table.table-hover
+                thead
+                    tr
+                        th Name
+                        th Email
+                        th Total Money
+                tbody
+                    each user in users
+                        tr
+                            td= user.name
+                            td= user.email
+                            td= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
 
-block content
-  h1= title
-  p Welcome to #{title}
+
+
+

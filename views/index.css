@@ -1,0 +1,11 @@
+
+.text-center {
+    text-align: center;
+}
+
+h1,h3 {
+    color:rgba(247,189,66,1)
+}
+h3 {
+    margin-bottom: 50px;
+}

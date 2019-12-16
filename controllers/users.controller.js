@@ -1,27 +1,28 @@
 const bcrypt = require('bcrypt');
-const lodash = require('lodash');
+let fs = require('fs');
 const mailer = require("../nodemailer/mailer");
-var rn = require('random-number');
-const { User, validate } = require("../models/user.model");
+const rn = require('random-number');
+const {User} = require("../models/user.model");
+const Trip = require("../models/trip.model");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 module.exports = {
     checkUserExists: async (req, res) => {
-        let user = await User.find({ email: { "$regex": req.body.email, "$options": "i" } });
+        let user = await User.find({email: {"$regex": req.body.email, "$options": "i"}});
         res.send({data: user});
     },
     getInfoUser: async (req, res) => {
         try {
-            const { token } = req.body;
+            const {token} = req.body;
             // decode token retrieve id user
             let decoded = jwt.verify(token, 'PrivateKey');
-            var userId = decoded._id;
-            // Fetch the user by id 
-            let user = await User.findOne({ _id: userId });
+            let userId = decoded._id;
+            // Fetch the user by id
+            let user = await User.findOne({_id: userId});
             res.status(200).send(user);
         } catch (error) {
-            return res.status(400).json({ error: 'Cannot get info user' });
+            return res.status(400).json({error: 'Cannot get info user'});
         }
     },
     createUser: async (req, res) => {
@@ -37,35 +38,31 @@ module.exports = {
         });
         const secretToken = gen();
         // Check if this user already exists
-        let nameUser = await User.findOne({ name: req.body.name });
-        let user = await User.findOne({ email: req.body.email });
+        let nameUser = await User.findOne({name: req.body.name});
+        let user = await User.findOne({email: req.body.email});
         if (nameUser) {
-            return res.status(400).json({ error: 'That user already exists!' });
-        } else 
-        if (user) {
+            return res.status(400).json({error: 'That user already exists!'});
+        } else if (user) {
 
             if (!user.password) {
                 const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash (req.body.password, salt);
+                user.password = await bcrypt.hash(req.body.password, salt);
                 user.secretToken = secretToken;
                 user.active = false;
                 user.save();
-                return ;
+                return;
+            } else {
+                return res.status(400).json({error: 'That email already exists'});
             }
-            else {
-                return res.status(400).json({ error: 'That email already exists' });
-            }
-        }
-
-        else {
+        } else {
 
             // Generate secret token
 
-            var gen = rn.generator({
+            let gen = rn.generator({
                 min: 10000
                 , max: 99999
                 , integer: true
-            })
+            });
             const secretToken = gen();
 
             // random avatar
@@ -108,11 +105,11 @@ module.exports = {
     },
     verifyUser: async (req, res) => {
         try {
-            const { secretToken } = req.body;
+            const {secretToken} = req.body;
             // Find account with matching secret token
-            const user = await User.findOne({ 'secretToken': secretToken });
+            const user = await User.findOne({'secretToken': secretToken});
             if (!user) {
-                res.status(400).json({ error: 'Sorry, PIN code invalid' })
+                res.status(400).json({error: 'Sorry, PIN code invalid'})
                 return;
             }
 
@@ -120,8 +117,8 @@ module.exports = {
             user.secretToken = '';
             await user.save();
 
-            const token = jwt.sign({ _id: user._id }, 'PrivateKey');
-            res.status(200).json({ token });
+            const token = jwt.sign({_id: user._id}, 'PrivateKey');
+            res.status(200).json({token});
 
         } catch (error) {
             res.send(error);
@@ -139,8 +136,8 @@ module.exports = {
             })
         }
 
-        const  email  = req.body.email;
-        let user = await User.findOne({ 'email': email });
+        const email = req.body.email;
+        let user = await User.findOne({'email': email});
         if (user && user._id != req.params.userId) {
             res.json({
                 result: "failed",
@@ -161,7 +158,7 @@ module.exports = {
         const options = {
             new: true
         };
-        User.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateUser) => {
+        User.findOneAndUpdate(conditions, {$set: newValues}, options, (err, updateUser) => {
             if (err) {
                 res.json({
                     result: "failed",
@@ -176,5 +173,79 @@ module.exports = {
                 })
             }
         })
+    },
+    uploadAvatar: async (req, res, next) => {
+        let formidable = require('formidable');
+        let form = new formidable.IncomingForm();
+        form.uploadDir = "./uploads";
+        form.keepExtensions = true;
+        form.maxFieldsSize = 10 * 1024 * 1024;
+        form.multiples = true;
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                await res.json({
+                    result: "failed",
+                    data: [],
+                    message: `cannot up load images. Error is ${err}`
+                })
+            } else {
+                let uri = files.photo.path.split("\\")[1];
+                await res.json({
+                    result: "ok",
+                    data: uri,
+                    numberOfImages: 1,
+                    message: "Successfully images to upload!"
+                });
+                await User.findOneAndUpdate(
+                    {
+                        _id: mongoose.Types.ObjectId(req.params.userId)
+                    },
+                    {
+                        $set: {
+                            avatar: uri,
+                            uploadAvatar: true,
+                            update_date: Date.now()
+                        }
+                    },
+                    {
+                        options: {
+                            new: true,
+                            multi: true
+                        }
+                    }
+                )
+            }
+        });
+    },
+    getImage: (req, res, next) => {
+        const fileName = req.params.name;
+        if (!fileName) {
+            return res.send({
+                status: false,
+                message: 'no filename specified',
+            })
+        }
+
+        res.sendfile(path.resolve(`./uploads/${fileName}`));
+    },
+    sendMoneyAllMail: (req, res, next) => {
+        // const tripId = req.params.tripId;
+        let tripId = '5dd20e6062dd5c39d41b6009';
+        const html = `Click link to see the total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Click here</a>`;
+        mailer.sendEmail('tranvler4444@gmail.com', 'minhtrung2031997@gmail.com', 'Please click the link below to see the total trip cost', html);
+        res.json("ok");
+    },
+    remindPaymentUser: async (req, res, next) => {
+        const {tripId, userIdRemind, userIdReminded, amountUserRemind} = req.body;
+        let amount = '600,000';
+        let trip = await Trip.findOne({_id: mongoose.Types.ObjectId(tripId)});
+        let userRemind = await User.findOne({_id: mongoose.Types.ObjectId(userIdRemind)});
+        let userReminded = await User.findOne({_id: mongoose.Types.ObjectId(userIdReminded)});
+        let title = `Please pay the amount you owe during the trip ${trip.name}`;
+        const html = `The amount you are owed is <strong style="color: red">${amount} VNĐ</strong>
+          <p>click link here to see total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${trip._id}">Click here</a></p>
+            `;
+        await mailer.sendEmail(userRemind.email, userReminded.email, title, html);
+        await res.json('ok');
     }
 };

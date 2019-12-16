@@ -43,24 +43,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//$Recycle.Bin
-// const storage = multer.diskStorage({
-//   destination: "./public/uploads/",
-//   filename: function (req, file, cb) {
-//     cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
-//   }
-// });
-
-// const upload = multer({
-//   storage: storage,
-//   limits: { fileSize: 1000000 },
-// }).single("myImage");
-
-// app.post('/upload', function (req, res) {
-//   res.send(req);
-// })
-
-app.use('/', indexRouter);
+app.use('/api/index', indexRouter);
 app.use('/api/verify', verifyRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/forgotPassword', forgotPasswordRouter);

@@ -25,6 +25,10 @@ const UserModel = mongoose.model('User', new mongoose.Schema({
       type: String,
       default:""
     },
+    uploadAvatar:{
+      type: Boolean,
+      default: false
+    },
     secretToken: String,
     active: Boolean,
     pinCode: String,
