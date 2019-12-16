@@ -13,12 +13,20 @@ const tripSchema = new Schema({
         ref: 'User'
     },
     oweUser: {
-      type:Number,
-      default:0
+        type: Number,
+        default: 0
+    },
+    begin_date: {
+        type: String,
+        default: ""
+    },
+    end_date: {
+      type: String,
+      default:""
     },
     isDelete: {
-      type:Boolean,
-      default: false
+        type: Boolean,
+        default: false
     },
     create_date: {
         type: Date,

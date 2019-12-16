@@ -3,7 +3,7 @@ const TripUser = require("../models/tripUser.model");
 const Transaction = require("../models/transaction.model");
 const TransactionUser = require("../models/transactionUser.model");
 const UserActivity = require('../models/userActivity.model');
-const { User } = require("../models/user.model");
+const {User} = require("../models/user.model");
 const mongoose = require('mongoose');
 const mailer = require("../nodemailer/mailer")
 
@@ -30,18 +30,18 @@ module.exports = {
     },
 
     createTrip: async (req, res, next) => {
-        const { name, author, list_user } = req.body;
-        const userAuthor = await User.findOne({ _id: req.body.author });
-        let nameTrip = await Trip.findOne({ name: req.body.name });
+        const {name, author, list_user, begin_date, end_date} = req.body;
+        const userAuthor = await User.findOne({_id: req.body.author});
+        let nameTrip = await Trip.findOne({name: req.body.name});
         if (nameTrip) {
-            return res.status(400).json({ error: "Name trip already exists" });
+            return res.status(400).json({error: "Name trip already exists"});
         }
 
-        let trip = new Trip({ name, author });
+        let trip = new Trip({name, author, begin_date, end_date});
         let saveTrip = await trip.save();
-        await res.json({ saveTrip });
+        await res.json({saveTrip});
         if (!list_user) {
-            let user_create = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.author) });
+            let user_create = await User.findOne({_id: mongoose.Types.ObjectId(req.body.author)});
             let tripUser = new TripUser({
                 user_id: user_create._id,
                 trip_id: saveTrip._id
@@ -57,7 +57,7 @@ module.exports = {
             let saveUserCreateTrip = userCreateTrip.save();
             console.log(saveUserCreateTrip);
         } else {
-            let user_create = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.author) });
+            let user_create = await User.findOne({_id: mongoose.Types.ObjectId(req.body.author)});
             let tripUser = new TripUser({
                 user_id: user_create._id,
                 trip_id: saveTrip._id
@@ -67,6 +67,7 @@ module.exports = {
             function getRandomInt(max) {
                 return Math.floor(Math.random() * Math.floor(max));
             }
+
             async function sendMailInvite(email, nameAuthor, emailAuthor, nameTrip) {
                 // Compose email
                 const html = `Hi there,
@@ -129,13 +130,13 @@ module.exports = {
                 update_date: update_date
             }
         } else {
-            return res.status(400).json({ error: "not be empty" });
+            return res.status(400).json({error: "not be empty"});
         }
         const options = {
             new: true,
             multi: true
         };
-        Trip.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateTrip) => {
+        Trip.findOneAndUpdate(conditions, {$set: newValues}, options, (err, updateTrip) => {
             if (err) {
                 res.json({
                     result: "Failed",
@@ -159,10 +160,10 @@ module.exports = {
         await userUpdateTrip.save();
     },
     addMemberToTrip: async (req, res, next) => {
-        const { list_user } = req.body;
+        const {list_user} = req.body;
         let list_user_add = [];
-        let trip = await Trip.findOne({ _id: mongoose.Types.ObjectId(req.params.tripId) });
-        await res.json({ trip });
+        let trip = await Trip.findOne({_id: mongoose.Types.ObjectId(req.params.tripId)});
+        await res.json({trip});
         if (trip) {
             for (let i = 0; i < list_user.length; i++) {
                 let user = new User({
@@ -181,7 +182,7 @@ module.exports = {
                 list_user_add.push(add_user);
             }
         } else {
-            return res.status(400).json({ error: "trip not exits" });
+            return res.status(400).json({error: "trip not exits"});
         }
 
         let userAddMembers = new UserActivity({
@@ -194,7 +195,7 @@ module.exports = {
         await userAddMembers.save();
     },
     deleteMemberToTrip: async (req, res, next) => {
-        const { list_user } = req.body;
+        const {list_user} = req.body;
         let list_user_reduce = [];
         for (let i = 0; i < list_user.length; i++) {
             console.log(list_user[i]);
@@ -282,9 +283,9 @@ module.exports = {
         await res.json(trip);
 
         let trip_id = req.params.tripId;
-        let a = await TripUser.deleteMany({ trip_id: trip_id });
+        let a = await TripUser.deleteMany({trip_id: trip_id});
         // let b = await Transaction.deleteMany({ trip_id: trip_id });
-        let c = await TransactionUser.deleteMany({ trip_id: trip_id });
+        let c = await TransactionUser.deleteMany({trip_id: trip_id});
         console.log(a);
         console.log(c);
         let userDeleteTrip = new UserActivity({

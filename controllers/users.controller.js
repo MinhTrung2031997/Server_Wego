@@ -2,7 +2,8 @@ const bcrypt = require('bcrypt');
 let fs = require('fs');
 const mailer = require("../nodemailer/mailer");
 const rn = require('random-number');
-const {User, validate} = require("../models/user.model");
+const {User} = require("../models/user.model");
+const Trip = require("../models/trip.model");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const path = require('path');
@@ -54,11 +55,11 @@ module.exports = {
 
             // Generate secret token
 
-            var gen = rn.generator({
+            let gen = rn.generator({
                 min: 10000
                 , max: 99999
                 , integer: true
-            })
+            });
             const secretToken = gen();
 
             // random avatar
@@ -185,8 +186,9 @@ module.exports = {
                     },
                     {
                         $set: {
-                            update_date: Date.now(),
                             avatar: uri,
+                            uploadAvatar: true,
+                            update_date: Date.now()
                         }
                     },
                     {
@@ -199,7 +201,7 @@ module.exports = {
             }
         });
     },
-    getImage: (req,res,next) => {
+    getImage: (req, res, next) => {
         const fileName = req.params.name;
         if (!fileName) {
             return res.send({
@@ -210,5 +212,25 @@ module.exports = {
         // res.sendFile(__dirname + (`./uploads/${fileName}`));
         // console.log(path.resolve(`./uploads/${fileName}`));
         res.sendfile(path.resolve(`./uploads/${fileName}`));
+    },
+    sendMoneyAllMail: (req, res, next) => {
+        // const tripId = req.params.tripId;
+        let tripId = '5dd20e6062dd5c39d41b6009';
+        const html = `Click link to see the total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Click here</a>`;
+        mailer.sendEmail('tranvler4444@gmail.com', 'minhtrung2031997@gmail.com', 'Please click the link below to see the total trip cost', html);
+        res.json("ok");
+    },
+    remindPaymentUser: async (req, res, next) => {
+        const {tripId, userIdRemind, userIdReminded, amountUserRemind} = req.body;
+        let amount = '600,000';
+        let trip = await Trip.findOne({_id: mongoose.Types.ObjectId(tripId)});
+        let userRemind = await User.findOne({_id: mongoose.Types.ObjectId(userIdRemind)});
+        let userReminded = await User.findOne({_id: mongoose.Types.ObjectId(userIdReminded)});
+        let title = `Please pay the amount you owe during the trip ${trip.name}`;
+        const html = `The amount you are owed is <strong style="color: red">${amount} VNĐ</strong>
+          <p>click link here to see total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${trip._id}">Click here</a></p>
+            `;
+        await mailer.sendEmail(userRemind.email, userReminded.email, title, html);
+        await res.json('ok');
     }
 };
