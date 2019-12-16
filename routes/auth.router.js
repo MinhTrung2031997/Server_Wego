@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Authentication = require('../middleware/check-auth');
+const userController = require('../controllers/users.controller');
 
-router.post('/', Authentication.checkAuth);
+router.post('/', userController.checkAuth);
 
 module.exports = router;

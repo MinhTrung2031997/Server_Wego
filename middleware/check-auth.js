@@ -3,36 +3,32 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const { User } = require('../models/user.model');
 module.exports = {
-    checkAuth: async (req, res) => {
-        // First Validate The HTTP Request
-        const { error } = validate(req.body);
-        if (error) {
-            return res.status(400).json({error:error.message});
+    checkToken : (req, res, next) => {
+        let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
+        if (token.startsWith('Bearer ')) {
+            // Remove Bearer from string
+            token = token.slice(7, token.length);
         }
 
-        //  Now find the user by their email address
-        let user = await User.findOne({ email: req.body.email });
-        if (!user) {
-            return res.status(400).json({error: 'Incorrect email or password'});
+        if (token) {
+            jwt.verify(token, config.secret, (err, decoded) => {
+                if (err) {
+                    return res.json({
+                        success: false,
+                        message: 'Token is not valid'
+                    });
+                } else {
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+        } else {
+            return res.json({
+                success: false,
+                message: 'Auth token is not supplied'
+            });
         }
-
-        // Check if email has been verified
-        if (!user.active) {
-            return res.status(400).json({ error: 'Sorry, you must validate email first' });
-        }
-
-        // Then validate the Credentials in MongoDB match
-        // those provided in the request
-        const validPassword = await bcrypt.compare(req.body.password, user.password);
-        if (!validPassword) {
-            return res.status(400).json({error:'incorrect email or password'});
-        }
-
-        const token = jwt.sign({ _id: user._id }, 'PrivateKey');
-        res.status(200).json({token});
-    },
-    
-
+    }
 };
 
 function validate(req) {

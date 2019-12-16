@@ -3,10 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/users.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/trip.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/trip.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/users.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/check-auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/check-auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/auth.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth.router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -189,7 +188,9 @@
       <workItem from="1575292359627" duration="599000" />
       <workItem from="1575337775174" duration="8925000" />
       <workItem from="1576225351258" duration="1787000" />
-      <workItem from="1576470492898" duration="17220000" />
+      <workItem from="1576470492898" duration="17339000" />
+      <workItem from="1576489823671" duration="268000" />
+      <workItem from="1576502271573" duration="3665000" />
     </task>
     <servers />
   </component>
