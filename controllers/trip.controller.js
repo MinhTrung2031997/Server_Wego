@@ -47,15 +47,34 @@ module.exports = {
                 }
             })
     },
+    saveImageInTrip: async (req, res, next) => {
+        var data = req.body.imageBase64;
+        let trip = await Trip.findOne({ _id: req.params.tripId });
+        if(trip){
+            trip.imagesBase64.push(data);
+            await trip.save();
+            res.json({data: 'done'});
+        }else
+            res.json({ data: 'error' });
+    },
+
+    getImageInTrip: async (req, res, next) => {
+        let trip = await Trip.findOne({ _id: req.params.tripId });
+        if (trip) {
+            res.json({ data: trip.imagesBase64 });
+        } else
+            res.json({ data: 'error' });
+    },
+
     createTrip: async (req, res, next) => {
-        const { name, author, list_user } = req.body;
+        const { name, author, list_user, startDay, endDay } = req.body;
         const userAuthor = await User.findOne({ _id: req.body.author });
         let nameTrip = await Trip.findOne({ name: req.body.name });
         if (nameTrip) {
             return res.status(400).json({ error: "Name trip already exists" });
         }
 
-        let trip = new Trip({ name, author });
+        let trip = new Trip({ name, author, startDay, endDay });
         let saveTrip = await trip.save();
         await res.json({ saveTrip });
         if (!list_user) {

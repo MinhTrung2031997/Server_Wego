@@ -16,4 +16,8 @@ router.put('/update_a_trip/:tripId', tripController.updateTrip);
 
 router.delete('/delete_a_trip/:tripId', tripController.deleteTrip);
 
+router.post('/upload_image/:tripId', tripController.saveImageInTrip);
+
+router.get('/get_image_in_trip/:tripId', tripController.getImageInTrip);
+
 module.exports = router;

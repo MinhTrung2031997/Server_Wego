@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const multer = require("multer");
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const Joi = require('joi');
@@ -42,6 +43,23 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//$Recycle.Bin
+// const storage = multer.diskStorage({
+//   destination: "./public/uploads/",
+//   filename: function (req, file, cb) {
+//     cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
+//   }
+// });
+
+// const upload = multer({
+//   storage: storage,
+//   limits: { fileSize: 1000000 },
+// }).single("myImage");
+
+// app.post('/upload', function (req, res) {
+//   res.send(req);
+// })
+
 app.use('/', indexRouter);
 app.use('/api/verify', verifyRouter);
 app.use('/api/auth', authRouter);
@@ -49,9 +67,9 @@ app.use('/api/forgotPassword', forgotPasswordRouter);
 app.use('/api/sendMailGetCode', sendMailGetCode);
 app.use('/api/user', usersRouter);
 app.use('/api/trip', tripRouter);
-app.use('/api/tripUser',tripUserRouter);
-app.use('/api/transaction',transactionRouter );
-app.use('/api/transactionUser',transactionUserRouter);
+app.use('/api/tripUser', tripUserRouter);
+app.use('/api/transaction', transactionRouter);
+app.use('/api/transactionUser', transactionUserRouter);
 app.use('/api/userActivity', userActivityRouter);
 app.use('/api/search', searchRouter);
 

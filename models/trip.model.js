@@ -12,6 +12,20 @@ const tripSchema = new Schema({
         require: true,
         ref: 'User'
     },
+    startDay: {
+        type: String,
+        require: true
+    },
+    endDay: {
+        type: String,
+        require: true
+    },
+    imagesBase64: [
+        {
+            type: String,
+            default: '',
+        }
+    ],
     oweUser: {
       type:Number,
       default:0
