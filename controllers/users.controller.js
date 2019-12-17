@@ -4,6 +4,7 @@ const mailer = require("../nodemailer/mailer");
 const rn = require('random-number');
 const {User} = require("../models/user.model");
 const Trip = require("../models/trip.model");
+const TripUser = require("../models/tripUser.model");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
@@ -16,30 +17,30 @@ module.exports = {
     },
     checkAuth: async (req, res) => {
         // First Validate The HTTP Request
-        const { error } = validate(req.body);
+        const {error} = validate(req.body);
         if (error) {
-            return res.status(400).json({error:error.message});
+            return res.status(400).json({error: error.message});
         }
 
         //  Now find the user by their email address
-        let user = await User.findOne({ email: req.body.email });
+        let user = await User.findOne({email: req.body.email});
         if (!user) {
             return res.status(400).json({error: 'Incorrect email or password'});
         }
 
         // Check if email has been verified
         if (!user.active) {
-            return res.status(400).json({ error: 'Sorry, you must validate email first' });
+            return res.status(400).json({error: 'Sorry, you must validate email first'});
         }
 
         // Then validate the Credentials in MongoDB match
         // those provided in the request
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
-            return res.status(400).json({error:'incorrect email or password'});
+            return res.status(400).json({error: 'incorrect email or password'});
         }
 
-        const token = jwt.sign({ _id: user._id }, 'PrivateKey');
+        const token = jwt.sign({_id: user._id}, 'PrivateKey');
         res.status(200).json({token});
     },
     getInfoUser: async (req, res) => {
@@ -258,11 +259,15 @@ module.exports = {
 
         res.sendfile(path.resolve(`./uploads/${fileName}`));
     },
-    sendMoneyAllMail: (req, res, next) => {
+    sendMoneyAllMail: async (req, res, next) => {
         const tripId = req.params.tripId;
+        let arrMail = await TripUser.find({trip_id: mongoose.Types.ObjectId(req.params.tripId)})
+            .populate('user_id');
         const html = `Click link to see the total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Click here</a>`;
-        mailer.sendEmail('tranvler4444@gmail.com', 'minhtrung2031997@gmail.com', 'Please click the link below to see the total trip cost', html);
-        res.json("ok");
+        for (let i = 0; i < arrMail.length; i++) {
+            await mailer.sendEmail('tranvler4444@gmail.com', arrMail[i].user_id.email, 'Please click the link below to see the total trip cost', html);
+        }
+        await res.json(arrMail.length);
     },
     remindPaymentUser: async (req, res, next) => {
         const {tripId, userIdRemind, userIdReminded, amountUserRemind} = req.body;
@@ -282,7 +287,7 @@ module.exports = {
 
 function validate(req) {
     const schema = {
-        email: Joi.string().min(5).max(255).required().email({ minDomainAtoms: 2 }).error(new Error('email invalid')),
+        email: Joi.string().min(5).max(255).required().email({minDomainAtoms: 2}).error(new Error('email invalid')),
         password: Joi.string().min(5).max(255).required().error(new Error('password must be at least 5 characters'))
     };
 
