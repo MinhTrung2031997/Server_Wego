@@ -126,7 +126,7 @@ module.exports = {
             for (let i = 0; i < list_user.length; i++) {
                 let UserExist = await User.findOne({ email: list_user[i].email });
                 if(UserExist){
-                    senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
+                    sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
 
                     let tripUser = new TripUser({
                         user_id: UserExist._id,
@@ -140,7 +140,7 @@ module.exports = {
                         avatar: getRandomInt(6)
                     });
                     let saveUser = await user.save();
-                    senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
+                    sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
 
                     let tripUser = new TripUser({
                         user_id: saveUser._id,
