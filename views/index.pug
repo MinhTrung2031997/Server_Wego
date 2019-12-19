@@ -2,25 +2,30 @@ doctype html
 html
     head
         link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+        meta(charset='utf-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1')
+        script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+        script
+            include index.js
         style
             include index.css
     body
-        .container.text-center
-            h1 WeGo
-            h3 Cost statistic table of all members of the trip
-            table.table.table-hover
-                thead
-                    tr
-                        th Name
-                        th Email
-                        th Total Money
-                tbody
-                    each user in users
-                        tr
-                            td= user.name
-                            td= user.email
-                            td= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
-
-
-
+        .container
+            .row
+                .col-xs-8.col-sm-8.col-md-8.col-lg-12.col-md-push-2
+                    .text-center
+                        h1 WeGo
+                        h3 Cost statistic table of all members of the trip
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Name
+                                th Email
+                                th Total Money
+                        tbody
+                            each user in users
+                                tr.clickable-row(data-href=`http://localhost:3001/api/index/sendMailTotalMoney/${tripId}`)
+                                    td= user.name
+                                    td= user.email
+                                    td= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
 

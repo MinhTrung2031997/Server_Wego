@@ -24,7 +24,11 @@ router.get('/sendMailTotalMoney/:tripId', async (req, res, next) => {
         a.totalBalanceTrip = moneyUser[i].totalBalance;
         listUser.push(a);
     }
-    res.render('index', {users: listUser});
+  // await res.json(listUser);
+    res.render('index', {
+        users: listUser,
+        tripId:req.params.tripId
+    });
 });
 
 module.exports = router;
