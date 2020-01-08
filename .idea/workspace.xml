@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3a5e1c3b-71af-4b58-8b9c-24a060889d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/trip.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/trip.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/users.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/mongoose/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/mongoose/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/nodemon/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/nodemon/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.pug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/transaction.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/transaction.controller.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +207,8 @@
       <workItem from="1578042478410" duration="1082000" />
       <workItem from="1578400250470" duration="524000" />
       <workItem from="1578457183978" duration="20000" />
-      <workItem from="1578457211366" duration="10154000" />
+      <workItem from="1578457211366" duration="10572000" />
+      <workItem from="1578498896758" duration="3862000" />
     </task>
     <servers />
   </component>
@@ -253,5 +249,9 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state width="1659" height="165" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1578420456845" />
+    <state x="596" y="221" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1578502346189">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="596" y="221" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1578502346189" />
   </component>
 </project>
