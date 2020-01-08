@@ -1,40 +1,26 @@
 doctype html
 html
     head
-        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
-        meta(charset='utf-8')
-        meta(name='viewport' content='width=device-width, initial-scale=1')
-        script(src='https://code.jquery.com/jquery-3.3.1.min.js')
-        script
-            include index.js
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
         style
             include index.css
     body
-        .container
-            .row
-                .col-xs-8.col-sm-8.col-md-12.col-lg-10.col-lg-push-1
-                    .text-center
-                        h1 WeGo
-                        h3 Cost statistic table of all members of the trip
-                    table.table.table-hover.table-bordered
-                        thead
-                            tr
-                                th Name
-                                th Email
-                                th Total Money
-                                th Detail
-                        tbody
-                             each user in users
-                                     tr.click-row(idUser=user._id)(tripId=tripId)
-                                         td= user.name
-                                         td= user.email
-                                         if (user.totalBalanceTrip < 0)
-                                             td(style='color:red;')= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
-                                         else
-                                             td(style='color:green;')= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
-                                         td
-                                             button.btn(type='button')
-                                                 a(href=`http://localhost:3001/api/index/sendMailTotalMoneyDetails/${tripId}/${user._id}`) Detail
+        .container.text-center
+            h1 WeGo
+            h3 Cost statistic table of all members of the trip
+            table.table.table-hover
+                thead
+                    tr
+                        th Name
+                        th Email
+                        th Total Money
+                tbody
+                    each user in users
+                        tr
+                            td= user.name
+                            td= user.email
+                            td= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
+
 
 
 

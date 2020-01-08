@@ -279,6 +279,20 @@ module.exports = {
     },
 
     deleteTrip: async (req, res, next) => {
+        // Trip.findOneAndRemove({_id: mongoose.Types.ObjectId(req.params.tripId)}, (err) => {
+        //     if (err) {
+        //         res.json({
+        //             result: "failed",
+        //             data: [],
+        //             message: `Cannot delete  trip_id ${req.params.tripId} Error is : ${err}`
+        //         })
+        //     }
+        //     res.json({
+        //         result: "ok",
+        //         message: `Delete trip_id ${req.params.tripId} successfully`
+        //     })
+        // });
+
         let trip = await Trip.findOneAndUpdate(
             {
                 _id: mongoose.Types.ObjectId(req.params.tripId)
