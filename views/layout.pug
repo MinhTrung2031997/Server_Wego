@@ -1,7 +1,42 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+    head
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+        meta(charset='utf-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1')
+        script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+        script
+            include layout.js
+        style
+            include layout.css
+    body
+        .container
+            .row
+                .col-xs-8.col-sm-8.col-md-12.col-lg-12
+                    .text-center
+                        h1 WeGo
+                        h3 Cost statistic table of all members of the trip
+                    table.table.table-hover.table-bordered#myTable
+                        thead
+                            tr
+                                th Transaction
+                                th Amount
+                                th User Name
+                                th Email
+                                th TotalMoney
+                        tbody
+                            each transactionUser in transactionUsers
+                                tr.clickable-row
+                                    td= transactionUser.transaction_id.name
+                                    td= transactionUser.transaction_id.amount
+                                    td= transactionUser.user_id.name
+                                    td= transactionUser.user_id.email
+                                    if (transactionUser.total < 0)
+                                        td(style='color:red;')= transactionUser.total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
+                                    else
+                                        td(style='color:green;')= transactionUser.total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
+
+
+
+
+
