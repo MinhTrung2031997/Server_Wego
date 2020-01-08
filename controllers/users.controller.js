@@ -5,6 +5,7 @@ const rn = require('random-number');
 const {User} = require("../models/user.model");
 const Trip = require("../models/trip.model");
 const TripUser = require("../models/tripUser.model");
+const TransactionUser = require("../models/transactionUser.model");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
@@ -271,17 +272,33 @@ module.exports = {
         await res.json(arrMail.length);
     },
     remindPaymentUser: async (req, res, next) => {
-        const {tripId, userIdRemind, userIdReminded, amountUserRemind} = req.body;
-        let amount = '600,000';
+        const {tripId, userIdReminded, amountUserRemind} = req.body;
         let trip = await Trip.findOne({_id: mongoose.Types.ObjectId(tripId)});
-        let userRemind = await User.findOne({_id: mongoose.Types.ObjectId(userIdRemind)});
         let userReminded = await User.findOne({_id: mongoose.Types.ObjectId(userIdReminded)});
-        let title = `Please pay the amount you owe during the trip ${trip.name}`;
-        const html = `The amount you are owed is <strong style="color: red">${amount} VNĐ</strong>
-          <p>click link here to see total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${trip._id}">Click here</a></p>
-            `;
-        await mailer.sendEmail(userRemind.email, userReminded.email, title, html);
+        let moneyUser = await TransactionUser.aggregate([
+            {
+                $match: {trip_id: mongoose.Types.ObjectId(req.body.tripId)}
+            },
+            {
+                $group: {
+                    _id: "$user_id",
+                    totalBalance: {$sum: "$total"}
+                }
+            }
+        ]);
+        let userMax = await moneyUser.reduce((prev, current) => {
+            return (prev.totalBalance > current.totalBalance) ? prev : current
+        });
+        let userMoneyMax = await User.findOne({_id: mongoose.Types.ObjectId(userMax._id)});
+        let amountUserRemindConvert = amountUserRemind.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+        let strong = `<strong style=${amountUserRemind > 0 ? "color:green" : "color:red"}>${amountUserRemindConvert} VND</strong>`;
+        let WhoPaid = `${amountUserRemind > 0 ? "from" : ",you have to pay for"} <strong>${userMoneyMax.name}</strong>`;
+        let detail = `<p>Click link to see the total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${req.body.tripId}">Click here</a></p>`;
+        let title = `Please pay the amount you owe during the trip ${trip.name} `;
+        const html = `The amount you ${amountUserRemind > 0 ? "gets back" : "owes"} ${strong} ${WhoPaid} ${detail}`;
+        await mailer.sendEmail('tranvler4444@gmail.com', userReminded.email, title, html);
         await res.json('ok');
+
     }
 };
 

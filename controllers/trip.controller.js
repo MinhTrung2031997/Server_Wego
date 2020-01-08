@@ -114,7 +114,7 @@ module.exports = {
                     <br/>
                     <p>${nameAuthor} - ${emailAuthor} just added you to the group "${nameTrip}" on Wego.</p>
                     <br/>
-                    Visit now: ...
+                    Visit now: <p>click link here to see total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${saveTrip._id}">Click here</a></p>
                     <br/>
                     <br/><br/>
                     Have a pleasant day.`
