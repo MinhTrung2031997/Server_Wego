@@ -31,7 +31,6 @@ mongoose.connect("mongodb://localhost:27017/wego", { useNewUrlParser: true, useC
     console.log(`err :${err}`);
   }
 );
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

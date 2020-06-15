@@ -56,6 +56,7 @@ module.exports = {
             return res.status(400).json({error: 'Cannot get info user'});
         }
     },
+
     createUser: async (req, res) => {
         // First Validate The Request
         // const { error } = validate(req.body);
@@ -74,7 +75,6 @@ module.exports = {
         if (nameUser) {
             return res.status(400).json({error: 'That user already exists!'});
         } else if (user) {
-
             if (!user.password) {
                 const salt = await bcrypt.genSalt(10);
                 user.password = await bcrypt.hash(req.body.password, salt);
@@ -115,7 +115,7 @@ module.exports = {
             const salt = await bcrypt.genSalt(10);
             newUser.password = await bcrypt.hash(newUser.password, salt);
             await newUser.save();
-            res.send(newUser);
+            await res.send(newUser);
             //res.send(lodash.pick(user, ['_id', 'name', 'email', 'password']));
 
             // Compose email
@@ -128,7 +128,7 @@ module.exports = {
             PIN: <b>${secretToken}</b>
             <br/>
             <br/><br/>
-            Have a pleasant day.`
+            Have a pleasant day.`;
 
             // Send email
             await mailer.sendEmail('tranvler344@gmail.com', req.body.email, 'Please verify your email!', html);
@@ -140,7 +140,7 @@ module.exports = {
             // Find account with matching secret token
             const user = await User.findOne({'secretToken': secretToken});
             if (!user) {
-                res.status(400).json({error: 'Sorry, PIN code invalid'})
+                res.status(400).json({error: 'Sorry, PIN code invalid'});
                 return;
             }
 
