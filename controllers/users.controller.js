@@ -128,10 +128,10 @@ module.exports = {
             PIN: <b>${secretToken}</b>
             <br/>
             <br/><br/>
-            Have a pleasant day.`
+            Have a pleasant day.`;
 
             // Send email
-            await mailer.sendEmail('tranvler344@gmail.com', req.body.email, 'Please verify your email!', html);
+            await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Please verify your email!', html);
         }
     },
     verifyUser: async (req, res) => {
@@ -265,18 +265,17 @@ module.exports = {
             .populate('user_id');
         const html = `Click link to see the total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Click here</a>`;
         for (let i = 0; i < arrMail.length; i++) {
-            await mailer.sendEmail('tranvler4444@gmail.com', arrMail[i].user_id.email, 'Please click the link below to see the total trip cost', html);
+            await mailer.sendEmail('minhtrung2031997@gmail.com', arrMail[i].user_id.email, 'Please click the link below to see the total trip cost', html);
         }
         await res.json(arrMail.length);
     },
     remindPaymentUser: async (req, res, next) => {
-        const {tripId, userIdRemind, userIdReminded, amountUserRemind} = req.body;
-        let amount = '600,000';
+        const {tripId, userIdReminded, amountUserRemind} = req.body;
         let trip = await Trip.findOne({_id: mongoose.Types.ObjectId(tripId)});
-        let userRemind = await User.findOne({_id: mongoose.Types.ObjectId(userIdRemind)});
+        let userRemind = await User.findOne({_id: mongoose.Types.ObjectId(trip.author)});
         let userReminded = await User.findOne({_id: mongoose.Types.ObjectId(userIdReminded)});
         let title = `Please pay the amount you owe during the trip ${trip.name}`;
-        const html = `The amount you are owed is <strong style="color: red">${amount} VNĐ</strong>
+        const html = `The amount you are owed is <strong style="color: red">${amountUserRemind} VNĐ</strong>
           <p>click link here to see total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${trip._id}">Click here</a></p>
             `;
         await mailer.sendEmail(userRemind.email, userReminded.email, title, html);

@@ -31,14 +31,15 @@ module.exports = {
     },
 
     createTrip: async (req, res, next) => {
-        const {name, author, list_user, begin_date, end_date} = req.body;
+        //const {name, author, list_user, begin_date, end_date} = req.body;
+        const {name, author, list_user} = req.body;
         const userAuthor = await User.findOne({_id: req.body.author});
         let nameTrip = await Trip.findOne({name: req.body.name});
         if (nameTrip) {
             return res.status(400).json({error: "Name trip already exists"});
         }
 
-        let trip = new Trip({name, author, begin_date, end_date});
+        let trip = new Trip({name, author});
         let saveTrip = await trip.save();
         await res.json({saveTrip});
         if (!list_user) {
@@ -64,6 +65,7 @@ module.exports = {
                 trip_id: saveTrip._id
             });
 
+            await tripUser.save();
             // random avatar
             function getRandomInt(max) {
                 return Math.floor(Math.random() * Math.floor(max));
@@ -85,12 +87,11 @@ module.exports = {
                 await mailer.sendEmail('tranvler344@gmail.com', email, 'Welcome to Wego', html);
             }
 
-            await tripUser.save();
+
             for (let i = 0; i < list_user.length; i++) {
                 let UserExist = await User.findOne({ email: list_user[i].email });
                 if(UserExist){
-                    senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
-
+                    await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
                     let tripUser = new TripUser({
                         user_id: UserExist._id,
                         trip_id: saveTrip._id
@@ -103,7 +104,7 @@ module.exports = {
                         avatar: getRandomInt(6)
                     });
                     let saveUser = await user.save();
-                    senMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name)
+                   await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
 
                     let tripUser = new TripUser({
                         user_id: saveUser._id,
@@ -129,7 +130,7 @@ module.exports = {
         {
             conditions._id = mongoose.Types.ObjectId(req.params.tripId);//object want update
         } else {
-            res.json({
+            await res.json({
                 result: "failed",
                 data: [],
                 message: "You must enter trip_id to update"

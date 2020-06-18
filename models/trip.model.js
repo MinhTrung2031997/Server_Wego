@@ -16,14 +16,14 @@ const tripSchema = new Schema({
         type: Number,
         default: 0
     },
-    begin_date: {
-        type: String,
-        default: ""
-    },
-    end_date: {
-      type: String,
-      default:""
-    },
+    // begin_date: {
+    //     type: String,
+    //     default: ""
+    // },
+    // end_date: {
+    //   type: String,
+    //   default:""
+    // },
     isDelete: {
         type: Boolean,
         default: false

@@ -1,4 +1,4 @@
 module.exports = {
-    MAIL_USER: 'tranvler344@gmail.com',
-    MAIL_PASS: 'habokuxin02'
+    MAIL_USER: 'minhtrung2031997@gmail.com',
+    MAIL_PASS: 'minhtrung!!'
 };
