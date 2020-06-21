@@ -32,14 +32,14 @@ module.exports = {
 
     createTrip: async (req, res, next) => {
         //const {name, author, list_user, begin_date, end_date} = req.body;
-        const {name, author, list_user} = req.body;
+        const {name, author, list_user, startDay, endDay } = req.body;
         const userAuthor = await User.findOne({_id: req.body.author});
         let nameTrip = await Trip.findOne({name: req.body.name});
         if (nameTrip) {
             return res.status(400).json({error: "Name trip already exists"});
         }
 
-        let trip = new Trip({name, author});
+        let trip = new Trip({name, author, startDay, endDay});
         let saveTrip = await trip.save();
         await res.json({saveTrip});
         if (!list_user) {
