@@ -36,7 +36,12 @@ module.exports = {
         const userAuthor = await User.findOne({_id: req.body.author});
         let nameTrip = await Trip.findOne({name: req.body.name});
         if (nameTrip) {
-            return res.status(400).json({error: "Name trip already exists"});
+                if (nameTrip.isDelete === false)
+                return res.status(400).json({error: "Name trip already exists"});
+                else {
+                    let trip = new Trip({name, author});
+                    await trip.save();
+                }
         }
 
         let trip = new Trip({name, author});
