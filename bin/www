@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+const Chat = require('../models/chat.model');
 const app = require('../app');
 const debug = require('debug')('untitled:server');
 const http = require('http');
@@ -21,8 +22,13 @@ const io = require("socket.io").listen(server);
 
 io.on("connection", socket => {
     console.log("a user connected :D");
-    socket.on("chat message", msg => {
-        console.log(msg);
+    socket.on("chat message",async msg => {
+        let chat = new Chat({
+            trip_id: msg[0],
+            user_id_sender: msg[1],
+            message: msg[2]
+        });
+        await chat.save();
         io.emit("chat message", msg);
     });
 });
@@ -94,3 +100,4 @@ function onListening() {
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
 }
+

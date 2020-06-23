@@ -20,6 +20,7 @@ const transactionRouter = require('./routes/transaction.router');
 const transactionUserRouter = require('./routes/transactionUser.router');
 const userActivityRouter = require('./routes/userActivity.router');
 const searchRouter = require('./routes/search.router');
+const chatRouter = require('./routes/chat.router');
 
 const app = express();
 
@@ -57,7 +58,7 @@ app.use('/api/transaction',transactionRouter );
 app.use('/api/transactionUser',transactionUserRouter);
 app.use('/api/userActivity', userActivityRouter);
 app.use('/api/search', searchRouter);
-
+app.use('/api/chat',chatRouter);
 
 
 // catch 404 and forward to error handler

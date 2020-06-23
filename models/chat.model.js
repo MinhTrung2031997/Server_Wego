@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const chatSchema = new Schema({
-    user_id: {
+    trip_id: {
+        type: Schema.Types.ObjectId,
+        require: true,
+        ref: 'trip'
+    },
+    user_id_sender: {
         type: Schema.Types.ObjectId,
         require: true,
         ref: 'User'
@@ -10,6 +15,10 @@ const chatSchema = new Schema({
     message: {
         type: String,
         require: true
+    },
+    isDelete: {
+      type: Boolean,
+      default: false
     },
     create_date: {
         type: Date,
