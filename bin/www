@@ -29,7 +29,11 @@ io.on("connection", socket => {
             message: msg[2]
         });
         await chat.save();
-        io.emit("chat message", msg);
+        Chat.find({_id: chat._id})
+            .populate('user_id_sender')
+            .exec((err, messages) => {
+                io.emit("chat message", messages);
+            })
     });
 });
 
