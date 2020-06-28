@@ -21,17 +21,18 @@ const transactionUserRouter = require('./routes/transactionUser.router');
 const userActivityRouter = require('./routes/userActivity.router');
 const searchRouter = require('./routes/search.router');
 const chatRouter = require('./routes/chat.router');
+const placeLocationRouter = require('./routes/placeLocation.router');
 
 const app = express();
 
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost:27017/wego", { useNewUrlParser: true, useCreateIndex: true }).then(
+mongoose.connect('mongodb://localhost:27017/wego', { useNewUrlParser: true, useCreateIndex: true }).then(
   () => {
-    console.log("Connected Mongodb");
+    console.log('Connected Mongodb');
   },
-  err => {
+  (err) => {
     console.log(`err :${err}`);
-  }
+  },
 );
 
 // view engine setup
@@ -44,7 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api/index', indexRouter);
 app.use('/api/verify', verifyRouter);
@@ -53,13 +54,13 @@ app.use('/api/forgotPassword', forgotPasswordRouter);
 app.use('/api/sendMailGetCode', sendMailGetCode);
 app.use('/api/user', usersRouter);
 app.use('/api/trip', tripRouter);
-app.use('/api/tripUser',tripUserRouter);
-app.use('/api/transaction',transactionRouter );
-app.use('/api/transactionUser',transactionUserRouter);
+app.use('/api/tripUser', tripUserRouter);
+app.use('/api/transaction', transactionRouter);
+app.use('/api/transactionUser', transactionUserRouter);
 app.use('/api/userActivity', userActivityRouter);
 app.use('/api/search', searchRouter);
-app.use('/api/chat',chatRouter);
-
+app.use('/api/chat', chatRouter);
+app.use('/api/placeLocation', placeLocationRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

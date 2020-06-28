@@ -1,19 +1,18 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const moongose = require('mongoose');
+const Schema = moongose.Schema;
 
-const chatSchema = new Schema(
-  {
+const placeLocationSchema = new Schema
+  ({
     trip_id: {
       type: Schema.Types.ObjectId,
       require: true,
       ref: 'trip',
     },
-    user_id_sender: {
-      type: Schema.Types.ObjectId,
+    latitude: {
+      type: String,
       require: true,
-      ref: 'User',
     },
-    message: {
+    longitude: {
       type: String,
       require: true,
     },
@@ -34,7 +33,6 @@ const chatSchema = new Schema(
       default: '',
     },
   },
-  { collection: 'chat' },
-);
+  { collection: 'placeLocation' });
 
-module.exports = mongoose.model('chat', chatSchema);
+module.exports = moongose.model('placeLocation', placeLocationSchema);
