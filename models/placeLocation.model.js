@@ -1,19 +1,24 @@
 const moongose = require('mongoose');
+const { number } = require('joi');
 const Schema = moongose.Schema;
 
-const placeLocationSchema = new Schema
-  ({
+const placeLocationSchema = new Schema(
+  {
     trip_id: {
       type: Schema.Types.ObjectId,
       require: true,
       ref: 'trip',
     },
-    latitude: {
+    address: {
       type: String,
+      required: true,
+    },
+    latitude: {
+      type: Number,
       require: true,
     },
     longitude: {
-      type: String,
+      type: Number,
       require: true,
     },
     isDelete: {
@@ -33,6 +38,7 @@ const placeLocationSchema = new Schema
       default: '',
     },
   },
-  { collection: 'placeLocation' });
+  { collection: 'placeLocation' },
+);
 
 module.exports = moongose.model('placeLocation', placeLocationSchema);
