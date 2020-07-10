@@ -8,11 +8,11 @@ router.post('/addMemberToTrip/:tripId', tripController.addMemberToTrip);
 
 router.post('/deleteMemberToTrip/:tripId', tripController.deleteMemberToTrip);
 
-router.post('/insert_new_trip',tripController.createTrip );
+router.post('/insert_new_trip', tripController.createTrip);
 
 router.put('/update_a_trip/:tripId', tripController.updateTrip);
 
-router.delete('/delete_a_trip/:tripId', tripController.deleteTrip);
+router.delete('/delete_a_trip/:tripId/:userId', tripController.deleteTrip);
 
 router.post('/upload_video', tripController.uploadVideo);
 

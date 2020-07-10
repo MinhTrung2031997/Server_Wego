@@ -28,10 +28,6 @@ const UserModel = mongoose.model(
         type: String,
         default: '',
       },
-      isCustom: {
-        type: Boolean,
-        default: false,
-      },
       uploadAvatar: {
         type: Boolean,
         default: false,

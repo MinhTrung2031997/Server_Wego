@@ -12,6 +12,10 @@ const tripUserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isDelete: {
+      type: Boolean,
+      default: false,
+    },
     trip_id: {
       type: Schema.Types.ObjectId,
       require: true,
