@@ -51,6 +51,7 @@ module.exports = {
       let tripUser = new TripUser({
         user_id: user_create._id,
         trip_id: saveTrip._id,
+        isCustom: true,
       });
       await tripUser.save();
       let userCreateTrip = new UserActivity({
@@ -59,17 +60,10 @@ module.exports = {
         type: 'created',
         create_date: Date.now(),
       });
-      let saveUserCreateTrip = userCreateTrip.save();
-      console.log(saveUserCreateTrip);
+      await userCreateTrip.save();
     } else {
-      let user_create = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.author) });
-      let tripUser = new TripUser({
-        user_id: user_create._id,
-        trip_id: saveTrip._id,
-      });
-
-      await tripUser.save();
       // random avatar
+
       function getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
       }
@@ -87,18 +81,28 @@ module.exports = {
                     <br/><br/>
                     Have a pleasant day.`;
 
-        await mailer.sendEmail('tranvler344@gmail.com', email, 'Welcome to Wego', html);
+        await mailer.sendEmail(emailAuthor, email, 'Welcome to Wego', html);
       }
 
       for (let i = 0; i < list_user.length; i++) {
         let UserExist = await User.findOne({ email: list_user[i].email });
         if (UserExist) {
-          await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
-          let tripUser = new TripUser({
-            user_id: UserExist._id,
-            trip_id: saveTrip._id,
-          });
-          tripUser.save();
+          if (UserExist._id === userAuthor._id) {
+            let tripUser = new TripUser({
+              user_id: UserExist._id,
+              trip_id: saveTrip._id,
+              isCustom: list_user[i].isCustom,
+            });
+            tripUser.save();
+          } else {
+            await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
+            let tripUser = new TripUser({
+              user_id: UserExist._id,
+              trip_id: saveTrip._id,
+              isCustom: list_user[i].isCustom,
+            });
+            tripUser.save();
+          }
         } else {
           let user = new User({
             name: list_user[i].name,
@@ -107,10 +111,10 @@ module.exports = {
           });
           let saveUser = await user.save();
           await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
-
           let tripUser = new TripUser({
             user_id: saveUser._id,
             trip_id: saveTrip._id,
+            isCustom: list_user[i].isCustom,
           });
           tripUser.save();
         }
