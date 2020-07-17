@@ -45,7 +45,7 @@ module.exports = {
 
     let trip = new Trip({ name, author });
     let saveTrip = await trip.save();
-    await res.json({ saveTrip });
+    // await res.json({ saveTrip });
     if (!list_user) {
       let user_create = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.author) });
       let tripUser = new TripUser({
@@ -127,6 +127,7 @@ module.exports = {
       });
       let saveUserCreateTrip = await userCreateTrip.save();
       await console.log(saveUserCreateTrip);
+      await res.json({ saveTrip });
     }
   },
   updateTrip: async (req, res, next) => {
@@ -321,6 +322,7 @@ module.exports = {
           },
         );
       }
+      await res.json('delete success');
     } else {
       await res.json(`You don't have permission to delete`);
     }
