@@ -31,8 +31,28 @@ module.exports = {
   },
 
   createTrip: async (req, res, next) => {
-    //const {name, author, list_user, begin_date, end_date} = req.body;
+    // random avatar
     const { name, author, list_user } = req.body;
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    async function sendMailInvite(email, nameAuthor, emailAuthor, nameTrip) {
+      // Compose email
+      const html = `Hi there,
+                  <br/>
+                  Welcome to Wego!
+                  <br/>
+                  <p>${nameAuthor} - ${emailAuthor} just added you to the group "${nameTrip}" on Wego.</p>
+                  <br/>
+                  Visit now: ...
+                  <br/>
+                  <br/><br/>
+                  Have a pleasant day.`;
+
+      await mailer.sendEmail(emailAuthor, email, 'Welcome to Wego', html);
+    }
+
     const userAuthor = await User.findOne({ _id: req.body.author });
     let nameTrip = await Trip.findOne({ name: req.body.name });
     if (nameTrip) {
@@ -45,89 +65,50 @@ module.exports = {
 
     let trip = new Trip({ name, author });
     let saveTrip = await trip.save();
-    // await res.json({ saveTrip });
-    if (!list_user) {
-      let user_create = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.author) });
-      let tripUser = new TripUser({
-        user_id: user_create._id,
-        trip_id: saveTrip._id,
-        isCustom: true,
-      });
-      await tripUser.save();
-      let userCreateTrip = new UserActivity({
-        user_id: author,
-        trip_id: saveTrip._id,
-        type: 'created',
-        create_date: Date.now(),
-      });
-      await userCreateTrip.save();
-    } else {
-      // random avatar
+    await res.json({ saveTrip });
 
-      function getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
-      }
+    let userCreateTrip = new UserActivity({
+      user_id: author,
+      trip_id: saveTrip._id,
+      type: 'created_trip',
+      create_date: Date.now(),
+    });
+    await userCreateTrip.save();
 
-      async function sendMailInvite(email, nameAuthor, emailAuthor, nameTrip) {
-        // Compose email
-        const html = `Hi there,
-                    <br/>
-                    Welcome to Wego!
-                    <br/>
-                    <p>${nameAuthor} - ${emailAuthor} just added you to the group "${nameTrip}" on Wego.</p>
-                    <br/>
-                    Visit now: ...
-                    <br/>
-                    <br/><br/>
-                    Have a pleasant day.`;
-
-        await mailer.sendEmail(emailAuthor, email, 'Welcome to Wego', html);
-      }
-
-      for (let i = 0; i < list_user.length; i++) {
-        let UserExist = await User.findOne({ email: list_user[i].email });
-        if (UserExist) {
-          if (UserExist._id === userAuthor._id) {
-            let tripUser = new TripUser({
-              user_id: UserExist._id,
-              trip_id: saveTrip._id,
-              isCustom: list_user[i].isCustom,
-            });
-            tripUser.save();
-          } else {
-            await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
-            let tripUser = new TripUser({
-              user_id: UserExist._id,
-              trip_id: saveTrip._id,
-              isCustom: list_user[i].isCustom,
-            });
-            tripUser.save();
-          }
-        } else {
-          let user = new User({
-            name: list_user[i].name,
-            email: list_user[i].email,
-            avatar: getRandomInt(6),
+    for (let i = 0; i < list_user.length; i++) {
+      let UserExist = await User.findOne({ email: list_user[i].email });
+      if (!UserExist) {
+        let user = new User({
+          name: list_user[i].name,
+          email: list_user[i].email,
+          avatar: getRandomInt(6),
+        });
+        let saveUser = await user.save();
+        await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
+        let tripUser = new TripUser({
+          user_id: saveUser._id,
+          trip_id: saveTrip._id,
+          isCustom: list_user[i].isCustom,
+        });
+        tripUser.save();
+      } else {
+        if (UserExist._id.toString().trim() === userAuthor._id.toString().trim()) {
+          let tripUser = new TripUser({
+            user_id: UserExist._id,
+            trip_id: saveTrip._id,
+            isCustom: list_user[i].isCustom,
           });
-          let saveUser = await user.save();
+          tripUser.save();
+        } else {
           await sendMailInvite(list_user[i].email, userAuthor.name, userAuthor.email, req.body.name);
           let tripUser = new TripUser({
-            user_id: saveUser._id,
+            user_id: UserExist._id,
             trip_id: saveTrip._id,
             isCustom: list_user[i].isCustom,
           });
           tripUser.save();
         }
       }
-      let userCreateTrip = new UserActivity({
-        user_id: author,
-        trip_id: saveTrip._id,
-        type: 'created_trip',
-        create_date: Date.now(),
-      });
-      let saveUserCreateTrip = await userCreateTrip.save();
-      await console.log(saveUserCreateTrip);
-      await res.json({ saveTrip });
     }
   },
   updateTrip: async (req, res, next) => {
