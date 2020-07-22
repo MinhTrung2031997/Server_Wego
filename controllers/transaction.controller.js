@@ -66,28 +66,10 @@ module.exports = {
   },
   createTransaction: async (req, res, next) => {
     const { name, author, amount, trip_id, list_user, location, address } = req.body;
-    if (address.length > 0) {
-      let placeLocation = new PlaceLocation({
-        trip_id,
-        address,
-        latitude: location[0].latitude,
-        longitude: location[0].longitude,
-      });
-      placeLocation.save().then((location) => {
-        res.json({
-          result: 'ok',
-          data: location,
-          message: 'save location successfully',
-        });
-      });
-    }
-    let tripId = await Transaction.findOne({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
-    if (tripId) {
-      let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
-      let name = await arrUser.findOne({ name: req.body.name });
-      if (name) {
-        return res.status(400).json({ error: 'transaction is exits' });
-      }
+    let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
+    let name1 = await arrUser.findOne({ name: req.body.name });
+    if (name1) {
+      return res.status(400).json({ error: 'transaction is exits' });
     }
     let transaction = new Transaction({ name, author, amount, trip_id, list_user });
     transaction
@@ -145,6 +127,21 @@ module.exports = {
           message: `error is : ${err}`,
         });
       });
+    if (address.length > 0) {
+      let placeLocation = new PlaceLocation({
+        trip_id,
+        address,
+        latitude: location[0].latitude,
+        longitude: location[0].longitude,
+      });
+      placeLocation.save().then((location) => {
+        res.json({
+          result: 'ok',
+          data: location,
+          message: 'save location successfully',
+        });
+      });
+    }
   },
   updateTransaction: async (req, res, next) => {
     const { list_user } = req.body;

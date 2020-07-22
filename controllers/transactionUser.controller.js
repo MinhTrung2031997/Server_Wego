@@ -14,6 +14,9 @@ module.exports = {
         {
           transaction_id: mongoose.Types.ObjectId(req.body.transaction_id),
         },
+        {
+          isDelete: false,
+        },
       ],
     })
       .populate('user_id')
@@ -34,9 +37,19 @@ module.exports = {
       });
   },
   getTotalMoneyAllUserInOneTrip: async (req, res, next) => {
+    console.log(req.params.tripId);
     let moneyUser = await TransactionUser.aggregate([
       {
-        $match: { trip_id: mongoose.Types.ObjectId(req.params.tripId) },
+        $match: {
+          $and: [
+            {
+              trip_id: mongoose.Types.ObjectId(req.params.tripId),
+            },
+            {
+              isDelete: false,
+            },
+          ],
+        },
       },
       {
         $group: {
