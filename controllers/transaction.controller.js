@@ -4,6 +4,7 @@ const TransactionUser = require('../models/transactionUser.model');
 const { User } = require('../models/user.model');
 const TripUser = require('../models/tripUser.model');
 const PlaceLocation = require('../models/placeLocation.model');
+const formidable = require('formidable');
 
 const UserActivity = require('../models/userActivity.model');
 
@@ -65,83 +66,124 @@ module.exports = {
     });
   },
   createTransaction: async (req, res, next) => {
-    const { name, author, amount, trip_id, list_user, location, address } = req.body;
-    let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
-    let name1 = await arrUser.findOne({ name: req.body.name });
-    if (name1) {
-      return res.status(400).json({ error: 'transaction is exits' });
-    }
-    let transaction = new Transaction({ name, author, amount, trip_id, list_user });
-    transaction
-      .save()
-      .then((transaction) => {
-        res.json({
-          result: 'ok',
-          data: transaction,
-          message: 'save transaction successfully',
-        });
-
-        for (let i = 0; i < list_user.length; i++) {
-          if (list_user[i].type === -1) {
-            let transactionUser = new TransactionUser({
-              user_id: list_user[i].user_id,
-              transaction_id: transaction._id,
-              trip_id: trip_id,
-              amount_user: list_user[i].amount_user,
-              type: list_user[i].type,
-              total: list_user[i].amount_user * list_user[i].type,
-            });
-            transactionUser.save();
-          } else {
-            console.log('Type 1');
-          }
-        }
-        for (let i = 0; i < list_user.length; i++) {
-          if (list_user[i].type !== -1) {
-            let transactionUser = new TransactionUser({
-              user_id: list_user[i].user_id,
-              transaction_id: transaction._id,
-              trip_id: trip_id,
-              amount_user: list_user[i].amount_user,
-              type: list_user[i].type,
-              total: list_user[i].type - list_user[i].amount_user,
-            });
-            transactionUser.save();
-          } else {
-            console.log(`type -1`);
-          }
-        }
-        let userCreateTransaction = new UserActivity({
-          user_id: author,
-          transaction_id: transaction._id,
-          trip_id: trip_id,
-          type: 'created_transaction',
-          create_date: Date.now(),
-        });
-        userCreateTransaction.save();
-      })
-      .catch((err) => {
+    const form = new formidable.IncomingForm();
+    form.uploadDir = './uploads';
+    form.keepExtensions = true;
+    form.maxFieldsSize = 10 * 1024 * 1024;
+    form.multiples = true;
+    form.parse(req, (err, fields, files) => {
+      if (err) {
         res.json({
           result: 'failed',
-          data: [],
-          message: `error is : ${err}`,
+          data: {},
+          message: `cannot read file. Error is: ${err}`,
         });
-      });
-    if (address.length > 0) {
-      let placeLocation = new PlaceLocation({
-        trip_id,
-        address,
-        latitude: location[0].latitude,
-        longitude: location[0].longitude,
-      });
-      placeLocation.save().then((location) => {
-        res.json({
-          result: 'ok',
-          data: location,
-          message: 'save location successfully',
-        });
-      });
-    }
+      }
+      let dataExpense = JSON.parse(fields.dataExpense);
+      let dataLocation = JSON.parse(fields.dataLocation);
+      let lengthDataExpense = Object.keys(dataExpense).length;
+      let lengthDataLocation = Object.keys(dataLocation).length;
+      let lengthDataImage = Object.keys(files).length;
+      if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
+      } else if (lengthDataExpense === 0) {
+        if (lengthDataLocation > 0) {
+          if (lengthDataImage > 0) {
+          } else {
+          }
+        } else {
+        }
+      } else if (lengthDataLocation === 0) {
+        if (lengthDataExpense > 0) {
+          if (lengthDataImage > 0) {
+          } else {
+          }
+        } else {
+        }
+      } else if (lengthDataImage === 0) {
+        if (lengthDataExpense > 0) {
+          if (lengthDataLocation > 0) {
+          } else {
+          }
+        } else {
+        }
+      }
+    });
+    // const { name, author, amount, trip_id, list_user, location, address } = req.body;
+    // let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
+    // let name1 = await arrUser.findOne({ name: req.body.name });
+    // if (name1) {
+    //   return res.status(400).json({ error: 'transaction is exits' });
+    // }
+    // let transaction = new Transaction({ name, author, amount, trip_id, list_user });
+    // transaction
+    //   .save()
+    //   .then((transaction) => {
+    //     res.json({
+    //       result: 'ok',
+    //       data: transaction,
+    //       message: 'save transaction successfully',
+    //     });
+    //     for (let i = 0; i < list_user.length; i++) {
+    //       if (list_user[i].type === -1) {
+    //         let transactionUser = new TransactionUser({
+    //           user_id: list_user[i].user_id,
+    //           transaction_id: transaction._id,
+    //           trip_id: trip_id,
+    //           amount_user: list_user[i].amount_user,
+    //           type: list_user[i].type,
+    //           total: list_user[i].amount_user * list_user[i].type,
+    //         });
+    //         transactionUser.save();
+    //       } else {
+    //         console.log('Type 1');
+    //       }
+    //     }
+    //     for (let i = 0; i < list_user.length; i++) {
+    //       if (list_user[i].type !== -1) {
+    //         let transactionUser = new TransactionUser({
+    //           user_id: list_user[i].user_id,
+    //           transaction_id: transaction._id,
+    //           trip_id: trip_id,
+    //           amount_user: list_user[i].amount_user,
+    //           type: list_user[i].type,
+    //           total: list_user[i].type - list_user[i].amount_user,
+    //         });
+    //         transactionUser.save();
+    //       } else {
+    //         console.log(`type -1`);
+    //       }
+    //     }
+    //     let userCreateTransaction = new UserActivity({
+    //       user_id: author,
+    //       transaction_id: transaction._id,
+    //       trip_id: trip_id,
+    //       type: 'created_transaction',
+    //       create_date: Date.now(),
+    //     });
+    //     userCreateTransaction.save();
+    //   })
+    //   .catch((err) => {
+    //     res.json({
+    //       result: 'failed',
+    //       data: [],
+    //       message: `error is : ${err}`,
+    //     });
+    //   });
+    // if (address.length > 0) {
+    //   let placeLocation = new PlaceLocation({
+    //     trip_id,
+    //     address,
+    //     latitude: location[0].latitude,
+    //     longitude: location[0].longitude,
+    //   });
+    //   placeLocation.save().then((location) => {
+    //     res.json({
+    //       result: 'ok',
+    //       data: location,
+    //       message: 'save location successfully',
+    //     });
+    //   });
+    // }
   },
   updateTransaction: async (req, res, next) => {
     const { list_user } = req.body;

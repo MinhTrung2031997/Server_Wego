@@ -247,6 +247,7 @@ module.exports = {
   },
   getImage: (req, res, next) => {
     const fileName = req.params.name;
+    console.log(fileName);
     if (!fileName) {
       return res.send({
         status: false,

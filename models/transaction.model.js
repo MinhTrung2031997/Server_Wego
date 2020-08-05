@@ -46,6 +46,9 @@ const transactionSchema = new Schema(
         },
       },
     ],
+    imageURL: {
+      type: String,
+    },
     isDelete: {
       type: Boolean,
       default: false,
