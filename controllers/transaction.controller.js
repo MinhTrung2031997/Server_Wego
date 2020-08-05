@@ -72,7 +72,7 @@ module.exports = {
     const serverPort = require('../app').settings.port;
     console.log(serverName, serverPort);
     const form = new formidable.IncomingForm();
-    form.uploadDir = './public/images/main';
+    form.uploadDir = './public/images/uploads';
     form.keepExtensions = true;
     form.maxFieldsSize = 10 * 1024 * 1024;
     form.multiples = true;
@@ -92,7 +92,7 @@ module.exports = {
       let trip_id = fields.trip_id;
       console.log(trip_id);
       if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
-        let imageURL = files.image.path.split('/').pop();
+        let imageURL = files.image.path.split("\\").pop();
         let placeLocation = new PlaceLocation({
           trip_id: trip_id,
           address: dataLocation.address,
@@ -103,7 +103,7 @@ module.exports = {
 
         let imageTrip = new ImageTrip({
           trip_id: dataExpense.trip_id,
-          imageURL: `images/main/${imageURL}`,
+          imageURL: imageURL,
         });
         imageTrip.save();
 
@@ -113,7 +113,7 @@ module.exports = {
           amount: dataExpense.amount,
           trip_id: trip_id,
           list_user: dataExpense.list_user,
-          imageURL: `images/main/${imageURL}`,
+          imageURL: imageURL,
           address: dataLocation.address,
         });
         transaction
@@ -184,10 +184,10 @@ module.exports = {
               longitude: dataLocation.longitude,
             });
             placeLocation.save();
-            let imageURL = files.image.path.split('/').pop();
+            let imageURL = files.image.path.split("\\").pop();
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
-              imageURL: `images/main/${imageURL}`,
+              imageURL: imageURL,
             });
             imageTrip.save();
           } else {
@@ -200,20 +200,20 @@ module.exports = {
             placeLocation.save();
           }
         } else {
-          let imageURL = files.image.path.split('/').pop();
+          let imageURL = files.image.path.split("\\").pop();
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
-            imageURL: `images/main/${imageURL}`,
+            imageURL: imageURL,
           });
           imageTrip.save();
         }
       } else if (lengthDataLocation === 0) {
         if (lengthDataExpense > 0) {
           if (lengthDataImage > 0) {
-            let imageURL = files.image.path.split('/').pop();
+            let imageURL = files.image.path.split("\\").pop();
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
-              imageURL: `images/main/${imageURL}`,
+              imageURL: imageURL,
             });
             imageTrip.save();
             let transaction = new Transaction({
@@ -222,7 +222,7 @@ module.exports = {
               amount: dataExpense.amount,
               trip_id: trip_id,
               list_user: dataExpense.list_user,
-              imageURL: `images/main/${imageURL}`,
+              imageURL: imageURL,
             });
             transaction
               .save()
@@ -346,10 +346,10 @@ module.exports = {
               });
           }
         } else {
-          let imageURL = files.image.path.split('/').pop();
+          let imageURL = files.image.path.split("\\").pop();
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
-            imageURL: `images/main/${imageURL}`,
+            imageURL: imageURL,
           });
           imageTrip.save();
         }
