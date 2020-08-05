@@ -5,6 +5,7 @@ const { User } = require('../models/user.model');
 const TripUser = require('../models/tripUser.model');
 const PlaceLocation = require('../models/placeLocation.model');
 const formidable = require('formidable');
+const fs = require('fs');
 
 const UserActivity = require('../models/userActivity.model');
 
@@ -84,7 +85,90 @@ module.exports = {
       let lengthDataExpense = Object.keys(dataExpense).length;
       let lengthDataLocation = Object.keys(dataLocation).length;
       let lengthDataImage = Object.keys(files).length;
+      // let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(dataExpense.trip_id) });
+      // console.log(arrUser);
+
       if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
+        let placeLocation = new PlaceLocation({
+          trip_id: dataExpense.trip_id,
+          address: dataLocation.address,
+          latitude: dataLocation.latitude,
+          longitude: dataLocation.longitude,
+        });
+        placeLocation.save();
+        //   .catch((err) => {
+        //     return res.json({
+        //       result: 'failed',
+        //       data: [],
+        //       message: `error is : ${err}`,
+        //     });
+        //   });
+
+        let transaction = new Transaction({
+          name: dataExpense.name,
+          author: dataExpense.author,
+          amount: dataExpense.amount,
+          trip_id: dataExpense.trip_id,
+          list_user: dataExpense.list_user,
+        });
+        transaction
+          .save()
+          .then((transaction) => {
+            res.json({
+              result: 'ok',
+              data: transaction,
+              message: 'save transaction successfully',
+            });
+            let list_user = dataExpense.list_user;
+            console.log(list_user);
+            for (let i = 0; i < list_user.length; i++) {
+              if (list_user[i].type === -1) {
+                let transactionUser = new TransactionUser({
+                  user_id: list_user[i].user_id,
+                  transaction_id: transaction._id,
+                  trip_id: dataExpense.trip_id,
+                  amount_user: list_user[i].amount_user,
+                  type: list_user[i].type,
+                  total: list_user[i].amount_user * list_user[i].type,
+                });
+                transactionUser.save();
+              } else {
+                console.log('Type 1');
+              }
+            }
+            for (let i = 0; i < list_user.length; i++) {
+              if (list_user[i].type !== -1) {
+                let transactionUser = new TransactionUser({
+                  user_id: list_user[i].user_id,
+                  transaction_id: transaction._id,
+                  trip_id: dataExpense.trip_id,
+                  amount_user: list_user[i].amount_user,
+                  type: list_user[i].type,
+                  total: list_user[i].type - list_user[i].amount_user,
+                });
+                transactionUser.save();
+              } else {
+                console.log(`type -1`);
+              }
+            }
+            let userCreateTransaction = new UserActivity({
+              user_id: dataExpense.author,
+              transaction_id: transaction._id,
+              trip_id: dataExpense.trip_id,
+              type: 'created_transaction',
+              create_date: Date.now(),
+            });
+            userCreateTransaction.save();
+          })
+          .catch((err) => {
+            res.json({
+              result: 'failed',
+              data: [],
+              message: `error is : ${err}`,
+            });
+          });
+
+        // console.log(placeLocation);
       } else if (lengthDataExpense === 0) {
         if (lengthDataLocation > 0) {
           if (lengthDataImage > 0) {
