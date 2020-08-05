@@ -4,6 +4,7 @@ const TransactionUser = require('../models/transactionUser.model');
 const { User } = require('../models/user.model');
 const TripUser = require('../models/tripUser.model');
 const PlaceLocation = require('../models/placeLocation.model');
+const ImageTrip = require('../models/imageTrip.model');
 const formidable = require('formidable');
 const fs = require('fs');
 
@@ -67,6 +68,9 @@ module.exports = {
     });
   },
   createTransaction: async (req, res, next) => {
+    const serverName = require('os').hostname();
+    const serverPort = require('../app').settings.port;
+    console.log(serverName, serverPort);
     const form = new formidable.IncomingForm();
     form.uploadDir = './uploads';
     form.keepExtensions = true;
@@ -85,31 +89,31 @@ module.exports = {
       let lengthDataExpense = Object.keys(dataExpense).length;
       let lengthDataLocation = Object.keys(dataLocation).length;
       let lengthDataImage = Object.keys(files).length;
-      // let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(dataExpense.trip_id) });
-      // console.log(arrUser);
-
+      let trip_id = fields.trip_id;
+      console.log(trip_id);
       if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
+        let imageURL = files.image.path.split('/').pop();
         let placeLocation = new PlaceLocation({
-          trip_id: dataExpense.trip_id,
+          trip_id: trip_id,
           address: dataLocation.address,
           latitude: dataLocation.latitude,
           longitude: dataLocation.longitude,
         });
         placeLocation.save();
-        //   .catch((err) => {
-        //     return res.json({
-        //       result: 'failed',
-        //       data: [],
-        //       message: `error is : ${err}`,
-        //     });
-        //   });
+
+        let imageTrip = new ImageTrip({
+          trip_id: dataExpense.trip_id,
+          imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+        });
+        imageTrip.save();
 
         let transaction = new Transaction({
           name: dataExpense.name,
           author: dataExpense.author,
           amount: dataExpense.amount,
-          trip_id: dataExpense.trip_id,
+          trip_id: trip_id,
           list_user: dataExpense.list_user,
+          imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
         });
         transaction
           .save()
@@ -126,7 +130,7 @@ module.exports = {
                 let transactionUser = new TransactionUser({
                   user_id: list_user[i].user_id,
                   transaction_id: transaction._id,
-                  trip_id: dataExpense.trip_id,
+                  trip_id: trip_id,
                   amount_user: list_user[i].amount_user,
                   type: list_user[i].type,
                   total: list_user[i].amount_user * list_user[i].type,
@@ -141,7 +145,7 @@ module.exports = {
                 let transactionUser = new TransactionUser({
                   user_id: list_user[i].user_id,
                   transaction_id: transaction._id,
-                  trip_id: dataExpense.trip_id,
+                  trip_id: trip_id,
                   amount_user: list_user[i].amount_user,
                   type: list_user[i].type,
                   total: list_user[i].type - list_user[i].amount_user,
@@ -154,7 +158,7 @@ module.exports = {
             let userCreateTransaction = new UserActivity({
               user_id: dataExpense.author,
               transaction_id: transaction._id,
-              trip_id: dataExpense.trip_id,
+              trip_id: trip_id,
               type: 'created_transaction',
               create_date: Date.now(),
             });
@@ -172,102 +176,344 @@ module.exports = {
       } else if (lengthDataExpense === 0) {
         if (lengthDataLocation > 0) {
           if (lengthDataImage > 0) {
+            let placeLocation = new PlaceLocation({
+              trip_id: trip_id,
+              address: dataLocation.address,
+              latitude: dataLocation.latitude,
+              longitude: dataLocation.longitude,
+            });
+            placeLocation.save();
+            let imageURL = files.image.path.split('/').pop();
+            let imageTrip = new ImageTrip({
+              trip_id: dataExpense.trip_id,
+              imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+            });
+            imageTrip.save();
           } else {
+            let placeLocation = new PlaceLocation({
+              trip_id: trip_id,
+              address: dataLocation.address,
+              latitude: dataLocation.latitude,
+              longitude: dataLocation.longitude,
+            });
+            placeLocation.save();
           }
         } else {
+          let imageURL = files.image.path.split('/').pop();
+          let imageTrip = new ImageTrip({
+            trip_id: trip_id,
+            imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+          });
+          imageTrip.save();
         }
       } else if (lengthDataLocation === 0) {
         if (lengthDataExpense > 0) {
           if (lengthDataImage > 0) {
+            let imageURL = files.image.path.split('/').pop();
+            let imageTrip = new ImageTrip({
+              trip_id: dataExpense.trip_id,
+              imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+            });
+            imageTrip.save();
+            let transaction = new Transaction({
+              name: dataExpense.name,
+              author: dataExpense.author,
+              amount: dataExpense.amount,
+              trip_id: trip_id,
+              list_user: dataExpense.list_user,
+              imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+            });
+            transaction
+              .save()
+              .then((transaction) => {
+                res.json({
+                  result: 'ok',
+                  data: transaction,
+                  message: 'save transaction successfully',
+                });
+                let list_user = dataExpense.list_user;
+                console.log(list_user);
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type === -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].amount_user * list_user[i].type,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log('Type 1');
+                  }
+                }
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type !== -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].type - list_user[i].amount_user,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log(`type -1`);
+                  }
+                }
+                let userCreateTransaction = new UserActivity({
+                  user_id: dataExpense.author,
+                  transaction_id: transaction._id,
+                  trip_id: trip_id,
+                  type: 'created_transaction',
+                  create_date: Date.now(),
+                });
+                userCreateTransaction.save();
+              })
+              .catch((err) => {
+                res.json({
+                  result: 'failed',
+                  data: [],
+                  message: `error is : ${err}`,
+                });
+              });
           } else {
+            let transaction = new Transaction({
+              name: dataExpense.name,
+              author: dataExpense.author,
+              amount: dataExpense.amount,
+              trip_id: trip_id,
+              list_user: dataExpense.list_user,
+            });
+            transaction
+              .save()
+              .then((transaction) => {
+                res.json({
+                  result: 'ok',
+                  data: transaction,
+                  message: 'save transaction successfully',
+                });
+                let list_user = dataExpense.list_user;
+                console.log(list_user);
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type === -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].amount_user * list_user[i].type,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log('Type 1');
+                  }
+                }
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type !== -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].type - list_user[i].amount_user,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log(`type -1`);
+                  }
+                }
+                let userCreateTransaction = new UserActivity({
+                  user_id: dataExpense.author,
+                  transaction_id: transaction._id,
+                  trip_id: trip_id,
+                  type: 'created_transaction',
+                  create_date: Date.now(),
+                });
+                userCreateTransaction.save();
+              })
+              .catch((err) => {
+                res.json({
+                  result: 'failed',
+                  data: [],
+                  message: `error is : ${err}`,
+                });
+              });
           }
         } else {
+          let imageURL = files.image.path.split('/').pop();
+          let imageTrip = new ImageTrip({
+            trip_id: trip_id,
+            imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+          });
+          imageTrip.save();
         }
       } else if (lengthDataImage === 0) {
         if (lengthDataExpense > 0) {
           if (lengthDataLocation > 0) {
+            let placeLocation = new PlaceLocation({
+              trip_id: trip_id,
+              address: dataLocation.address,
+              latitude: dataLocation.latitude,
+              longitude: dataLocation.longitude,
+            });
+            placeLocation.save();
+            let transaction = new Transaction({
+              name: dataExpense.name,
+              author: dataExpense.author,
+              amount: dataExpense.amount,
+              trip_id: trip_id,
+              list_user: dataExpense.list_user,
+            });
+            transaction
+              .save()
+              .then((transaction) => {
+                res.json({
+                  result: 'ok',
+                  data: transaction,
+                  message: 'save transaction successfully',
+                });
+                let list_user = dataExpense.list_user;
+                console.log(list_user);
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type === -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].amount_user * list_user[i].type,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log('Type 1');
+                  }
+                }
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type !== -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].type - list_user[i].amount_user,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log(`type -1`);
+                  }
+                }
+                let userCreateTransaction = new UserActivity({
+                  user_id: dataExpense.author,
+                  transaction_id: transaction._id,
+                  trip_id: trip_id,
+                  type: 'created_transaction',
+                  create_date: Date.now(),
+                });
+                userCreateTransaction.save();
+              })
+              .catch((err) => {
+                res.json({
+                  result: 'failed',
+                  data: [],
+                  message: `error is : ${err}`,
+                });
+              });
           } else {
+            let transaction = new Transaction({
+              name: dataExpense.name,
+              author: dataExpense.author,
+              amount: dataExpense.amount,
+              trip_id: trip_id,
+              list_user: dataExpense.list_user,
+            });
+            transaction
+              .save()
+              .then((transaction) => {
+                res.json({
+                  result: 'ok',
+                  data: transaction,
+                  message: 'save transaction successfully',
+                });
+                let list_user = dataExpense.list_user;
+                console.log(list_user);
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type === -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].amount_user * list_user[i].type,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log('Type 1');
+                  }
+                }
+                for (let i = 0; i < list_user.length; i++) {
+                  if (list_user[i].type !== -1) {
+                    let transactionUser = new TransactionUser({
+                      user_id: list_user[i].user_id,
+                      transaction_id: transaction._id,
+                      trip_id: trip_id,
+                      amount_user: list_user[i].amount_user,
+                      type: list_user[i].type,
+                      total: list_user[i].type - list_user[i].amount_user,
+                    });
+                    transactionUser.save();
+                  } else {
+                    console.log(`type -1`);
+                  }
+                }
+                let userCreateTransaction = new UserActivity({
+                  user_id: dataExpense.author,
+                  transaction_id: transaction._id,
+                  trip_id: trip_id,
+                  type: 'created_transaction',
+                  create_date: Date.now(),
+                });
+                userCreateTransaction.save();
+              })
+              .catch((err) => {
+                res.json({
+                  result: 'failed',
+                  data: [],
+                  message: `error is : ${err}`,
+                });
+              });
           }
         } else {
+          let placeLocation = new PlaceLocation({
+            trip_id: trip_id,
+            address: dataLocation.address,
+            latitude: dataLocation.latitude,
+            longitude: dataLocation.longitude,
+          });
+          placeLocation.save();
         }
       }
     });
-    // const { name, author, amount, trip_id, list_user, location, address } = req.body;
-    // let arrUser = Transaction.find({ trip_id: mongoose.Types.ObjectId(req.body.trip_id) });
-    // let name1 = await arrUser.findOne({ name: req.body.name });
-    // if (name1) {
-    //   return res.status(400).json({ error: 'transaction is exits' });
-    // }
-    // let transaction = new Transaction({ name, author, amount, trip_id, list_user });
-    // transaction
-    //   .save()
-    //   .then((transaction) => {
-    //     res.json({
-    //       result: 'ok',
-    //       data: transaction,
-    //       message: 'save transaction successfully',
-    //     });
-    //     for (let i = 0; i < list_user.length; i++) {
-    //       if (list_user[i].type === -1) {
-    //         let transactionUser = new TransactionUser({
-    //           user_id: list_user[i].user_id,
-    //           transaction_id: transaction._id,
-    //           trip_id: trip_id,
-    //           amount_user: list_user[i].amount_user,
-    //           type: list_user[i].type,
-    //           total: list_user[i].amount_user * list_user[i].type,
-    //         });
-    //         transactionUser.save();
-    //       } else {
-    //         console.log('Type 1');
-    //       }
-    //     }
-    //     for (let i = 0; i < list_user.length; i++) {
-    //       if (list_user[i].type !== -1) {
-    //         let transactionUser = new TransactionUser({
-    //           user_id: list_user[i].user_id,
-    //           transaction_id: transaction._id,
-    //           trip_id: trip_id,
-    //           amount_user: list_user[i].amount_user,
-    //           type: list_user[i].type,
-    //           total: list_user[i].type - list_user[i].amount_user,
-    //         });
-    //         transactionUser.save();
-    //       } else {
-    //         console.log(`type -1`);
-    //       }
-    //     }
-    //     let userCreateTransaction = new UserActivity({
-    //       user_id: author,
-    //       transaction_id: transaction._id,
-    //       trip_id: trip_id,
-    //       type: 'created_transaction',
-    //       create_date: Date.now(),
-    //     });
-    //     userCreateTransaction.save();
-    //   })
-    //   .catch((err) => {
-    //     res.json({
-    //       result: 'failed',
-    //       data: [],
-    //       message: `error is : ${err}`,
-    //     });
-    //   });
-    // if (address.length > 0) {
-    //   let placeLocation = new PlaceLocation({
-    //     trip_id,
-    //     address,
-    //     latitude: location[0].latitude,
-    //     longitude: location[0].longitude,
-    //   });
-    //   placeLocation.save().then((location) => {
-    //     res.json({
-    //       result: 'ok',
-    //       data: location,
-    //       message: 'save location successfully',
-    //     });
-    //   });
-    // }
+  },
+  getImage: async (req, res, next) => {
+    let imageName = 'uploads/' + req.query.image_name;
+    fs.readFile(imageName, (err, imageData) => {
+      if (err) {
+        res.json({
+          result: 'failed',
+          message: `Cannot read image.Error is : ${err}`,
+        });
+      }
+      res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+      res.end(imageData);
+    });
   },
   updateTransaction: async (req, res, next) => {
     const { list_user } = req.body;

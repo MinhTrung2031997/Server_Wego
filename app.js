@@ -22,6 +22,7 @@ const userActivityRouter = require('./routes/userActivity.router');
 const searchRouter = require('./routes/search.router');
 const chatRouter = require('./routes/chat.router');
 const placeLocationRouter = require('./routes/placeLocation.router');
+const imageRouter = require('./routes/image.router');
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.use('/api/userActivity', userActivityRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/placeLocation', placeLocationRouter);
+app.use('/api/image', imageRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

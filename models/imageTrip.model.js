@@ -12,6 +12,10 @@ const imageTripSchema = new Schema(
       type: String,
       require: true,
     },
+    isDelete: {
+      type: Boolean,
+      default: false,
+    },
     create_date: {
       type: Date,
       default: Date.now,
