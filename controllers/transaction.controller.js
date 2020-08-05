@@ -72,7 +72,7 @@ module.exports = {
     const serverPort = require('../app').settings.port;
     console.log(serverName, serverPort);
     const form = new formidable.IncomingForm();
-    form.uploadDir = './uploads';
+    form.uploadDir = './public/images/main';
     form.keepExtensions = true;
     form.maxFieldsSize = 10 * 1024 * 1024;
     form.multiples = true;
@@ -103,7 +103,7 @@ module.exports = {
 
         let imageTrip = new ImageTrip({
           trip_id: dataExpense.trip_id,
-          imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+          imageURL: `images/main/${imageURL}`,
         });
         imageTrip.save();
 
@@ -113,7 +113,8 @@ module.exports = {
           amount: dataExpense.amount,
           trip_id: trip_id,
           list_user: dataExpense.list_user,
-          imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+          imageURL: `images/main/${imageURL}`,
+          address: dataLocation.address,
         });
         transaction
           .save()
@@ -186,7 +187,7 @@ module.exports = {
             let imageURL = files.image.path.split('/').pop();
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
-              imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+              imageURL: `images/main/${imageURL}`,
             });
             imageTrip.save();
           } else {
@@ -202,7 +203,7 @@ module.exports = {
           let imageURL = files.image.path.split('/').pop();
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
-            imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+            imageURL: `images/main/${imageURL}`,
           });
           imageTrip.save();
         }
@@ -212,7 +213,7 @@ module.exports = {
             let imageURL = files.image.path.split('/').pop();
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
-              imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+              imageURL: `images/main/${imageURL}`,
             });
             imageTrip.save();
             let transaction = new Transaction({
@@ -221,7 +222,7 @@ module.exports = {
               amount: dataExpense.amount,
               trip_id: trip_id,
               list_user: dataExpense.list_user,
-              imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+              imageURL: `images/main/${imageURL}`,
             });
             transaction
               .save()
@@ -348,7 +349,7 @@ module.exports = {
           let imageURL = files.image.path.split('/').pop();
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
-            imageURL: `${serverName}:${serverPort}/api/transaction/get_image?image_name=${imageURL}`,
+            imageURL: `images/main/${imageURL}`,
           });
           imageTrip.save();
         }
@@ -368,6 +369,7 @@ module.exports = {
               amount: dataExpense.amount,
               trip_id: trip_id,
               list_user: dataExpense.list_user,
+              address: dataLocation.address,
             });
             transaction
               .save()

@@ -49,6 +49,9 @@ const transactionSchema = new Schema(
     imageURL: {
       type: String,
     },
+    address: {
+      type: String,
+    },
     isDelete: {
       type: Boolean,
       default: false,
