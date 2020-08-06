@@ -9,7 +9,7 @@ const imageTripSchema = new Schema(
       ref: 'trip',
     },
     imageURL: {
-      type: String,
+      type: Array,
       require: true,
     },
     isDelete: {

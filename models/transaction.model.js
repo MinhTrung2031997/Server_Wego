@@ -47,7 +47,7 @@ const transactionSchema = new Schema(
       },
     ],
     imageURL: {
-      type: String,
+      type: Array,
     },
     address: {
       type: String,

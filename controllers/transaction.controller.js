@@ -92,7 +92,7 @@ module.exports = {
       let trip_id = fields.trip_id;
       console.log(trip_id);
       if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
-        let imageURL = files.image.path.split("\\").pop();
+        let imageURL = files.image.map(item => item.path.split("\\").pop())
         let placeLocation = new PlaceLocation({
           trip_id: trip_id,
           address: dataLocation.address,
@@ -184,7 +184,7 @@ module.exports = {
               longitude: dataLocation.longitude,
             });
             placeLocation.save();
-            let imageURL = files.image.path.split("\\").pop();
+            let imageURL = files.image.map(item => item.path.split("\\").pop())
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
@@ -200,7 +200,7 @@ module.exports = {
             placeLocation.save();
           }
         } else {
-          let imageURL = files.image.path.split("\\").pop();
+          let imageURL = files.image.map(item => item.path.split("\\").pop())
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
             imageURL: imageURL,
@@ -210,7 +210,7 @@ module.exports = {
       } else if (lengthDataLocation === 0) {
         if (lengthDataExpense > 0) {
           if (lengthDataImage > 0) {
-            let imageURL = files.image.path.split("\\").pop();
+            let imageURL = files.image.map(item => item.path.split("\\").pop())
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
@@ -346,7 +346,7 @@ module.exports = {
               });
           }
         } else {
-          let imageURL = files.image.path.split("\\").pop();
+          let imageURL = files.image.map(item => item.path.split("\\").pop())
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
             imageURL: imageURL,
