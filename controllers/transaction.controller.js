@@ -7,6 +7,7 @@ const PlaceLocation = require('../models/placeLocation.model');
 const ImageTrip = require('../models/imageTrip.model');
 const formidable = require('formidable');
 const fs = require('fs');
+const os = require('os');
 
 const UserActivity = require('../models/userActivity.model');
 
@@ -90,9 +91,14 @@ module.exports = {
       let lengthDataLocation = Object.keys(dataLocation).length;
       let lengthDataImage = Object.keys(files).length;
       let trip_id = fields.trip_id;
+      console.log(files);
       console.log(trip_id);
+      const type = os.type() === 'Darwin' ? '/' : '\\';
       if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
-        let imageURL = files.image.map(item => item.path.split("\\").pop())
+        let imageURL =
+          files.image.length > 1
+            ? files.image.map((item) => item.path.split(type).pop())
+            : [files.image.path.split(type).pop()];
         let placeLocation = new PlaceLocation({
           trip_id: trip_id,
           address: dataLocation.address,
@@ -184,12 +190,18 @@ module.exports = {
               longitude: dataLocation.longitude,
             });
             placeLocation.save();
-            let imageURL = files.image.map(item => item.path.split("\\").pop())
+            let imageURL =
+              files.image.length > 1
+                ? files.image.map((item) => item.path.split(type).pop())
+                : [files.image.path.split(type).pop()];
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
             });
             imageTrip.save();
+            res.json({
+              result: 'ok',
+            });
           } else {
             let placeLocation = new PlaceLocation({
               trip_id: trip_id,
@@ -198,19 +210,32 @@ module.exports = {
               longitude: dataLocation.longitude,
             });
             placeLocation.save();
+            res.json({
+              result: 'ok',
+            });
           }
         } else {
-          let imageURL = files.image.map(item => item.path.split("\\").pop())
+          let imageURL =
+            files.image.length > 1
+              ? files.image.map((item) => item.path.split(type).pop())
+              : [files.image.path.split(type).pop()];
+          console.log(imageURL);
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
             imageURL: imageURL,
           });
           imageTrip.save();
+          res.json({
+            result: 'ok',
+          });
         }
       } else if (lengthDataLocation === 0) {
         if (lengthDataExpense > 0) {
           if (lengthDataImage > 0) {
-            let imageURL = files.image.map(item => item.path.split("\\").pop())
+            let imageURL =
+              files.image.length > 1
+                ? files.image.map((item) => item.path.split(type).pop())
+                : [files.image.path.split(type).pop()];
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
@@ -346,12 +371,18 @@ module.exports = {
               });
           }
         } else {
-          let imageURL = files.image.map(item => item.path.split("\\").pop())
+          let imageURL =
+            files.image.length > 1
+              ? files.image.map((item) => item.path.split(type).pop())
+              : [files.image.path.split(type).pop()];
           let imageTrip = new ImageTrip({
             trip_id: trip_id,
             imageURL: imageURL,
           });
           imageTrip.save();
+          res.json({
+            result: 'ok',
+          });
         }
       } else if (lengthDataImage === 0) {
         if (lengthDataExpense > 0) {
@@ -500,6 +531,9 @@ module.exports = {
             longitude: dataLocation.longitude,
           });
           placeLocation.save();
+          res.json({
+            result: 'ok',
+          });
         }
       }
     });
