@@ -8,6 +8,8 @@ const TripUser = require('../models/tripUser.model');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
+const formidable = require('formidable');
+const os = require('os');
 
 module.exports = {
   checkUserExists: async (req, res) => {
@@ -163,44 +165,124 @@ module.exports = {
         message: 'you must enter user_id to update',
       });
     }
-
-    const email = req.body.email;
-    let user = await User.findOne({ email: email });
-    if (user && user._id != req.params.userId) {
-      res.json({
-        result: 'failed',
-        data: [],
-        message: 'Email exists, Please enter another email.',
-      });
-      return;
-    }
-
-    let newValues = {};
-    if (req.body.name && req.body.name.length > 2) {
-      newValues = {
-        name: req.body.name,
-        email: req.body.email,
-        update_date: Date.now(),
-      };
-    }
-    const options = {
-      new: true,
-    };
-    User.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateUser) => {
+    const form = new formidable.IncomingForm();
+    form.uploadDir = './public/images/avatars';
+    form.keepExtensions = true;
+    form.maxFieldsSize = 10 * 1024 * 1024;
+    form.multiples = true;
+    form.parse(req, (err, fields, files) => {
+      console.log(req.params.userId);
       if (err) {
         res.json({
           result: 'failed',
-          data: [],
-          message: `Cannot update User with ${req.params.userId}. Error is: ${err}`,
+          data: {},
+          message: `cannot read file. Error is: ${err}`,
         });
       } else {
-        res.json({
-          result: 'ok',
-          data: updateUser,
-          message: 'update a user successfully',
-        });
+        if (fields.isCheck === '0') {
+          let newValues = {
+            name: fields.name,
+            email: fields.email,
+            update_date: Date.now(),
+          };
+          const options = {
+            new: true,
+            multi: true,
+          };
+          User.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateUser) => {
+            if (err) {
+              res.json({
+                result: 'failed',
+                data: [],
+                message: `Cannot update User with ${req.params.userId}. Error is: ${err}`,
+              });
+            } else {
+              res.json({
+                result: 'ok',
+                data: updateUser,
+                message: 'update a user successfully',
+              });
+            }
+          });
+        } else {
+          const type = os.type() === 'Darwin' ? '/' : '\\';
+          let imageURL = files.image.path.split(type).pop();
+          let newValues = {
+            name: fields.name,
+            email: fields.email,
+            avatar: imageURL,
+            uploadAvatar: true,
+            update_date: Date.now(),
+          };
+          const options = {
+            new: true,
+            multi: true,
+          };
+          User.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateUser) => {
+            if (err) {
+              res.json({
+                result: 'failed',
+                data: [],
+                message: `Cannot update User with ${req.params.userId}. Error is: ${err}`,
+              });
+            } else {
+              res.json({
+                result: 'ok',
+                data: updateUser,
+                message: 'update a user successfully',
+              });
+            }
+          });
+        }
       }
     });
+
+    // let conditions = {};
+    // if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
+    //   conditions._id = mongoose.Types.ObjectId(req.params.userId);
+    // } else {
+    //   res.json({
+    //     result: 'failed',
+    //     data: [],
+    //     message: 'you must enter user_id to update',
+    //   });
+    // }
+    // const email = req.body.email;
+    // let user = await User.findOne({ email: email });
+    // if (user && user._id != req.params.userId) {
+    //   res.json({
+    //     result: 'failed',
+    //     data: [],
+    //     message: 'Email exists, Please enter another email.',
+    //   });
+    //   return;
+    // }
+    // let newValues = {};
+    // if (req.body.name && req.body.name.length > 2) {
+    //   newValues = {
+    //     name: req.body.name,
+    //     email: req.body.email,
+    //     update_date: Date.now(),
+    //   };
+    // }
+    // const options = {
+    //   new: true,
+    // };
+    // User.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateUser) => {
+    //   if (err) {
+    //     res.json({
+    //       result: 'failed',
+    //       data: [],
+    //       message: `Cannot update User with ${req.params.userId}. Error is: ${err}`,
+    //     });
+    //   } else {
+    //     res.json({
+    //       result: 'ok',
+    //       data: updateUser,
+    //       message: 'update a user successfully',
+    //     });
+    //   }
+    // });
   },
   uploadAvatar: async (req, res, next) => {
     let formidable = require('formidable');
