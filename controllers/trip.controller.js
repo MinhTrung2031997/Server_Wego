@@ -153,7 +153,7 @@ module.exports = {
       }
     });
     let userUpdateTrip = new UserActivity({
-      user_id: req.body.user_id,
+      user_id: req.params.userId,
       trip_id: req.params.tripId,
       type: 'updated',
       update_date: Date.now(),
