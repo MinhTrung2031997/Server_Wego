@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
 const UserActivity = require('../models/userActivity.model');
+const TripUser = require('../models/tripUser.model');
 
 module.exports = {
-    getAllUserActivity: (req, res, next) => {
-        UserActivity.find()
-            .populate('user_id')
-            .populate('list_user.user_id')
-            .populate('transaction_id')
-            .populate('trip_id')
-            .exec((err, data) => {
-                if (err) {
-                    res.json({err})
-                } else {
-                    res.json({data})
-                }
-            })
+  getAllUserActivity: async (req, res, next) => {
+    let userTrip = await TripUser.find({ user_id: req.params.userId });
+    if (userTrip) {
+      let data = [];
+      for (let i = 0; i < userTrip.length; i++) {
+        let userActivity1 = await UserActivity.find({ trip_id: userTrip[i].trip_id })
+          .populate('user_id')
+          .populate('transaction_id')
+          .populate('trip_id');
+        data = data.concat(userActivity1);
+      }
+      await res.json({ data });
     }
+  },
 };
