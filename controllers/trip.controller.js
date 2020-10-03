@@ -123,42 +123,62 @@ module.exports = {
         message: 'You must enter trip_id to update',
       });
     }
-    let newValues = {};
-    let update_date = Date.now();
-    if (req.body.name && req.body.name.length >= 2) {
-      newValues = {
-        name: req.body.name,
-        update_date: update_date,
-      };
-    } else {
-      return res.status(400).json({ error: 'not be empty' });
-    }
-    const options = {
-      new: true,
-      multi: true,
-    };
-    Trip.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateTrip) => {
-      if (err) {
+    let tripUser = await TripUser.findOne({
+      trip_id: req.params.tripId,
+      user_id: req.params.userId,
+    });
+    if (tripUser) {
+      if (tripUser.isCustom === true) {
+        let newValues = {};
+        let update_date = Date.now();
+        if (req.body.name && req.body.name.length >= 2) {
+          newValues = {
+            name: req.body.name,
+            update_date: update_date,
+          };
+        } else {
+          return res.status(400).json({ error: 'not be empty' });
+        }
+        const options = {
+          new: true,
+          multi: true,
+        };
+        Trip.findOneAndUpdate(conditions, { $set: newValues }, options, (err, updateTrip) => {
+          if (err) {
+            res.json({
+              result: 'Failed',
+              data: [],
+              message: `Cannot update existing trip.Error ias: ${err}`,
+            });
+          } else {
+            res.json({
+              result: 'ok',
+              data: updateTrip,
+              message: 'Update trip successfully',
+            });
+          }
+        });
+        let userUpdateTrip = new UserActivity({
+          user_id: req.params.userId,
+          trip_id: req.params.tripId,
+          type: 'updated',
+          update_date: Date.now(),
+        });
+        await userUpdateTrip.save();
+      } else {
         res.json({
           result: 'Failed',
           data: [],
-          message: `Cannot update existing trip.Error ias: ${err}`,
-        });
-      } else {
-        res.json({
-          result: 'ok',
-          data: updateTrip,
-          message: 'Update trip successfully',
+          message: `You don't have permission to update`,
         });
       }
-    });
-    let userUpdateTrip = new UserActivity({
-      user_id: req.params.userId,
-      trip_id: req.params.tripId,
-      type: 'updated',
-      update_date: Date.now(),
-    });
-    await userUpdateTrip.save();
+    } else {
+      await res.json({
+        result: 'Failed',
+        data: [],
+        message: 'Trip user not exits',
+      });
+    }
   },
   addMemberToTrip: async (req, res, next) => {
     const { list_user } = req.body;
@@ -304,16 +324,20 @@ module.exports = {
         );
       }
       await res.json('delete success');
+      let userDeleteTrip = new UserActivity({
+        user_id: req.body.user_id,
+        trip_id: req.params.tripId,
+        type: 'deleted_trip',
+        delete_date: Date.now(),
+      });
+      userDeleteTrip.save();
     } else {
-      await res.json(`You don't have permission to delete`);
+      await res.json({
+        result: 'Failed',
+        data: [],
+        message: `You don't have permission to delete`,
+      });
     }
-    let userDeleteTrip = new UserActivity({
-      user_id: req.body.user_id,
-      trip_id: req.params.tripId,
-      type: 'deleted_trip',
-      delete_date: Date.now(),
-    });
-    userDeleteTrip.save();
   },
   uploadVideo: async (req, res, next) => {
     let formidable = require('formidable');

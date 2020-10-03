@@ -17,3 +17,4 @@ router.delete('/delete_a_trip/:tripId/:userId', tripController.deleteTrip);
 router.post('/upload_video', tripController.uploadVideo);
 
 module.exports = router;
+ 
