@@ -58,7 +58,7 @@ const transactionSchema = new Schema(
     },
     create_date: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
     update_date: {
       type: Date,

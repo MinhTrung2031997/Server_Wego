@@ -37,7 +37,7 @@ const UserModel = mongoose.model(
       pinCode: String,
       create_date: {
         type: Date,
-        default: Date.now(),
+        default: Date.now,
       },
       totalBalanceTrip: {
         type: Number,

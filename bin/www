@@ -18,23 +18,78 @@ app.set('port', port);
  * Create HTTP server.
  */
 const server = http.createServer(app);
-const io = require("socket.io").listen(server);
+const io = require('socket.io').listen(server);
 
-io.on("connection", socket => {
-    console.log("a user connected :D");
-    socket.on("chat message",async msg => {
-        let chat = new Chat({
-            trip_id: msg[0],
-            user_id_sender: msg[1],
-            message: msg[2]
-        });
-        await chat.save();
-        Chat.find({_id: chat._id})
-            .populate('user_id_sender')
-            .exec((err, messages) => {
-                io.emit("chat message", messages);
-            })
+io.on('connection', (socket) => {
+  socket.on('chat message', async (msg) => {
+    let chat = new Chat({
+      type: 1,
+      trip_id: msg[0],
+      user_id_sender: msg[1],
+      message: msg[2],
     });
+    await chat.save();
+    await Chat.findOne({ _id: chat._id })
+      .populate('user_id_sender')
+      .exec((err, messages) => {
+        io.emit('chat message', messages);
+      });
+  });
+
+  socket.on('image message', async (msq) => {
+    io.emit('chat message', msq);
+  });
+
+  socket.on('startLocation', async (data) => {
+    // let listSocket = [];
+    // listSocket = listSocket.concat(data);
+    // console.log(listSocket);
+    let chat = new Chat({
+      type: 3,
+      trip_id: data[0],
+      user_id_sender: data[1],
+      location: {
+        longtitude: data[2].longitude,
+        latitude: data[2].latitude,
+        isShareLocation: true,
+      },
+    });
+    await chat.save();
+    await Chat.findOne({ _id: chat._id })
+      .populate('user_id_sender')
+      .exec((err, messages) => {
+        io.emit('chat message', messages);
+      });
+  });
+
+  socket.on('stopLocation', async (data) => {
+    let stopLocation = await Chat.findOneAndUpdate(
+      {
+        _id: data._id,
+      },
+      {
+        $set: {
+          location: {
+            longtitude: data.location.longtitude,
+            latitude: data.location.latitude,
+            isShareLocation: false,
+          },
+          update_date: Date.now(),
+        },
+      },
+      {
+        options: {
+          new: true,
+          multi: true,
+        },
+      },
+    );
+    await Chat.findOne({ _id: stopLocation._id })
+      .populate('user_id_sender')
+      .exec((err, messages) => {
+        io.emit('chat message', messages);
+      });
+  });
 });
 
 /**
@@ -50,19 +105,19 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-    const port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
 
-    if (port >= 0) {
-        // port number
-        return port;
-    }
+  if (port >= 0) {
+    // port number
+    return port;
+  }
 
-    return false;
+  return false;
 }
 
 /**
@@ -70,27 +125,25 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-    if (error.syscall !== 'listen') {
-        throw error;
-    }
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
 
-    const bind = typeof port === 'string'
-        ? 'Pipe ' + port
-        : 'Port ' + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
-            break;
-        default:
-            throw error;
-    }
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
 }
 
 /**
@@ -98,10 +151,7 @@ function onError(error) {
  */
 
 function onListening() {
-    const addr = server.address();
-    const bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug('Listening on ' + bind);
 }
-
