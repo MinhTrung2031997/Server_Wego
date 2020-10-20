@@ -27,14 +27,21 @@ const imageRouter = require('./routes/image.router');
 const app = express();
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/wego', { useNewUrlParser: true, useCreateIndex: true }).then(
-  () => {
-    console.log('Connected Mongodb');
-  },
-  (err) => {
-    console.log(`err :${err}`);
-  },
-);
+mongoose
+  .connect('mongodb://localhost:27017/wego', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .then(
+    () => {
+      console.log('Connected Mongodb');
+    },
+    (err) => {
+      console.log(`err :${err}`);
+    },
+  );
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

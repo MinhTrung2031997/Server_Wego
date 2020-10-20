@@ -13,9 +13,34 @@ const chatSchema = new Schema(
       require: true,
       ref: 'User',
     },
+    type: {
+      type: Number,
+      require: true,
+    },
     message: {
       type: String,
-      require: true,
+      default: '',
+    },
+    imageURL: {
+      type: String,
+      default: '',
+    },
+    audio: {
+      type: String,
+      default: '',
+    },
+    location: {
+      longtitude: {
+        type: Number,
+        default: null,
+      },
+      latitude: {
+        type: Number,
+        default: null,
+      },
+      isShareLocation: {
+        type: Boolean,
+      },
     },
     isDelete: {
       type: Boolean,
@@ -23,7 +48,7 @@ const chatSchema = new Schema(
     },
     create_date: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
     update_date: {
       type: Date,
