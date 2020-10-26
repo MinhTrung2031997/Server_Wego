@@ -60,14 +60,18 @@ module.exports = {
         let {textSearch} = req.params;
         textSearch = textSearch.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // remove accent
         let locationMain = await mainLocation.find({noAccent: { $regex: textSearch, $options: "i" }})
-                            .select({ "code": 1, "_id": 0}); // search in main location
-        let valueMain = locationMain.map(({ code }) => code);
+                            .select({ "code": 1, "title": 1, "_id": 0}); // search in main location
         let locationDetail = await detailLocation.find({noAccent: { $regex: textSearch, $options: "i" }})
-                             .select({ "code": 1, "_id": 0}); // search in detail location
-        let valueDetail = locationDetail.map(({ code }) => code);
-        let valueCode = valueMain.concat(valueDetail); // concatenate code main and code detail location
-        let code = [...new Set(valueCode)];
-        let result = await mainLocation.find({'code': {$in : code}}) // convert code to main location and return
+                             .select({ "code": 1, "title": 1, "_id": 0}); // search in detail location
+        let allLocation = locationDetail.concat(locationMain); // concatenate array
+        let reduceAllLocation = allLocation.reduce((acc, cur) => {
+            let check = (acc[cur.code] || "").includes(cur.title) // check if title exist or not
+            acc[cur.code] = check ? (acc[cur.code] || "") : (acc[cur.code] || "") + cur.title + ", ";
+            return acc;
+        },{});
+        let code = Object.keys(reduceAllLocation); // get key array object
+        let infoLocation = await mainLocation.find({'code': {$in : code}}).lean(); // convert code to main location and return
+        let result = infoLocation.map(el => ({...el, resultSearch: reduceAllLocation[el.code]})); // add key value to object
         res.send({data:result});
     },
     getDetailLocation: async (req, res, next) => {
@@ -104,12 +108,12 @@ module.exports = {
     },
     optimizeRoute: async (req, res) => {
         let {location} = req.body;
-        let removeDuplicateLocation = [
-            ...new Map(location.map(obj => [`${obj.title}:${obj.code}`, obj]))
-            .values()
-        ];
+        // let removeDuplicateLocation = [
+        //     ...new Map(location.map(obj => [`${obj.title}:${obj.code}`, obj]))
+        //     .values()
+        // ];
 
-        let headTailPoint = determineHeadTailPoint(removeDuplicateLocation); // determine start point and end point for direction
+        let headTailPoint = location; // determine start point and end point for direction
         let stops = getLatLngInArray(headTailPoint); // get latitude longitude to call api route
         let dataOptimizeDirection = await optimizeDirection(stops); // call api optimize route direction
         if(dataOptimizeDirection){
@@ -124,7 +128,7 @@ module.exports = {
         }else{
             res.send({
                 data: [],
-                location: removeDuplicateLocation
+                location: location
             });
         }
         

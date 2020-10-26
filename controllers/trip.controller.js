@@ -246,7 +246,11 @@ module.exports = {
     });
     userReduceMembers.save();
   },
-
+  getAllTripByUserId: async (req, res) => {
+    let {userId} = req.params;
+    let listTrip = await Trip.find({author: mongoose.Types.ObjectId(userId)});
+    res.send({data: listTrip});
+  },
   deleteTrip: async (req, res, next) => {
     let tripUser = await TripUser.findOne({
       trip_id: req.params.tripId,
