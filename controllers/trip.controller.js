@@ -3,6 +3,7 @@ const TripUser = require('../models/tripUser.model');
 const Transaction = require('../models/transaction.model');
 const TransactionUser = require('../models/transactionUser.model');
 const UserActivity = require('../models/userActivity.model');
+const planUser = require('../models/planUser.model');
 const { User } = require('../models/user.model');
 const mongoose = require('mongoose');
 const mailer = require('../nodemailer/mailer');
@@ -32,7 +33,7 @@ module.exports = {
 
   createTrip: async (req, res, next) => {
     // random avatar
-    const { name, author, list_user } = req.body;
+    const { name, author, list_user, listPlan } = req.body;
     function getRandomInt(max) {
       return Math.floor(Math.random() * Math.floor(max));
     }
@@ -109,6 +110,11 @@ module.exports = {
           tripUser.save();
         }
       }
+    }
+    // add tripId with plan is selected
+    if(listPlan.length > 0){
+      let convertToObjectId = [...listPlan.map(item => mongoose.Types.ObjectId(item))];
+      await planUser.updateMany({'_id': {$in : convertToObjectId}}, {"$push":{"trip_id": saveTrip._id.toString()}});
     }
   },
   updateTrip: async (req, res, next) => {
