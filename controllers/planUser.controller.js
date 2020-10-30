@@ -22,17 +22,17 @@ module.exports = {
   getPlanByCode: async (req, res) => {
     let {userId, code} = req.params;
     let plan = await PlanUser.find({user_id: mongoose.Types.ObjectId(userId), code: code});
-    res.send({data: plan});
+    res.send({data: plan.reverse()});
   },
   getPlanByTripId: async (req, res) => {
     let {tripId} = req.params;
     let plan = await PlanUser.find({trip_id: tripId});
-    res.send({data: plan});
+    res.send({data: plan.reverse()});
   },
   getAllPlan: async (req, res) => {
     let {userId} = req.params;
     let plan = await PlanUser.find({user_id: mongoose.Types.ObjectId(userId)});
-    res.send({data: plan});
+    res.send({data: plan.reverse()});
   },
   deletePlan: async (req, res) => {
     let {planId} = req.params;
@@ -43,7 +43,7 @@ module.exports = {
     let {planId, tripId} = req.params;
     await PlanUser.updateOne({_id: mongoose.Types.ObjectId(planId)}, {$pullAll: { trip_id: [tripId]}})
     let plan = await PlanUser.find({trip_id: tripId});
-    res.send({data: plan});
+    res.send({data: plan.reverse()});
   },
   updatePlanInTrip: async (req, res) => {
     let {planId, name, location} = req.body
@@ -59,6 +59,6 @@ module.exports = {
   getPlanNoInTripByUserId: async (req, res) => {
     let {tripId, userId} = req.params;
     let plan = await PlanUser.find({user_id: mongoose.Types.ObjectId(userId), trip_id: {$nin: tripId}});
-    res.send({data: plan});
+    res.send({data: plan.reverse()});
   },
 };
