@@ -18,8 +18,8 @@ const optimizeDirection = async (stops) => {
     },
   })
     .then((response) => {
-      if (response.data.route.geometry) response.data.route.geometry = ''; // remove detail coordinate because not use and slow api
-      return response.data;
+     // if (response.data.route.geometry) response.data.route.geometry = ''; // remove detail coordinate because not use and slow api
+      return response.data.route.geometry;
     })
     .catch((error) => {
       console.log(error);
@@ -65,6 +65,14 @@ module.exports = {
   direction: async (req, res, next) => {
     let stops = await getLatLngInArray(req.body);
     let direction = await optimizeDirection(stops);
-    console.log(direction);
+    let coordinate = [];
+    direction.coordinates.map(item => {
+      obj = {
+        'latitude': item[0],
+        'longitude': item[1]
+      }
+      coordinate.push(obj);
+    })
+     res.send({data: coordinate})
   },
 };
