@@ -40,10 +40,11 @@ io.on('connection', (socket) => {
     io.emit('chat message', msq);
   });
 
+  socket.on('audio recording', async (msq) => {
+    io.emit('chat message', msq);
+  });
+
   socket.on('startLocation', async (data) => {
-    // let listSocket = [];
-    // listSocket = listSocket.concat(data);
-    // console.log(listSocket);
     let chat = new Chat({
       type: 3,
       trip_id: data[0],

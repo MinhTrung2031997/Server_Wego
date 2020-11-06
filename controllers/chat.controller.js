@@ -58,6 +58,42 @@ module.exports = {
     });
   },
   audioRecording: async (req, res, next) => {
-    
+    const form = new formidable.IncomingForm();
+    form.uploadDir = './public/images/audioRecordings';
+    form.keepExtensions = true;
+    form.maxFieldsSize = 10 * 1024 * 1024;
+    form.multiples = true;
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        res.json({
+          result: 'failed',
+          data: {},
+          message: `cannot read file. Error is: ${err}`,
+        });
+      } else {
+        const type = os.type() === 'Darwin' ? '/' : '\\';
+        let audioURL = files.audio.path.split(type).pop();
+        let chat = new Chat({
+          type: 4,
+          trip_id: fields.tripId,
+          user_id_sender: fields.userId,
+          audio: {
+            audioURL,
+            soundDuration: parseInt(fields.soundDuration),
+            soundPosition: parseInt(fields.soundPosition),
+          },
+        });
+        await chat.save();
+        Chat.findOne({ _id: chat._id })
+          .populate('user_id_sender')
+          .exec((err, data) => {
+            res.json({
+              result: 'ok',
+              data: data,
+              message: 'Save image chat successful',
+            });
+          });
+      }
+    });
   },
 };
