@@ -26,8 +26,22 @@ const chatSchema = new Schema(
       default: '',
     },
     audio: {
-      type: String,
-      default: '',
+      audioURL: {
+        type: String,
+        default: '',
+      },
+      soundDuration: {
+        type: Number,
+        default: null,
+      },
+      soundPosition: {
+        type: Number,
+        default: null,
+      },
+      isPlaying: {
+        type: Boolean,
+        default: false,
+      },
     },
     location: {
       longtitude: {
