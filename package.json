@@ -12,6 +12,7 @@
     "config": "^3.2.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "expo-server-sdk": "^3.6.0",
     "express": "^4.16.4",
     "formidable": "^1.2.1",
     "http": "0.0.1-security",

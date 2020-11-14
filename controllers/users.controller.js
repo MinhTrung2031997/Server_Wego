@@ -111,6 +111,7 @@ module.exports = {
         active: false,
         avatar: getRandomInt(6),
         isCustom: req.body.isCustom,
+        token_notification: req.body.token_notification
       });
       const salt = await bcrypt.genSalt(10);
       newUser.password = await bcrypt.hash(newUser.password, salt);
@@ -133,6 +134,15 @@ module.exports = {
       // Send email
       await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Please verify your email!', html);
     }
+  },
+  updateTokenNotification: async (req, res) => {
+    let {userId, token_notification} = req.body;
+    let user = await User.findOne({_id: mongoose.Types.ObjectId(userId)});
+    if(user){
+      user.token_notification = token_notification;
+      await user.save();
+    }
+    res.send({data: 'done'})
   },
   verifyUser: async (req, res) => {
     try {

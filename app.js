@@ -24,6 +24,7 @@ const chatRouter = require('./routes/chat.router');
 const planUserRouter = require('./routes/planUser.router');
 const placeLocationRouter = require('./routes/placeLocation.router');
 const imageRouter = require('./routes/image.router');
+const locationUser = require('./routes/locationUser.router');
 
 const app = express();
 
@@ -72,6 +73,7 @@ app.use('/api/chat', chatRouter);
 app.use('/api/plan', planUserRouter);
 app.use('/api/placeLocation', placeLocationRouter);
 app.use('/api/image', imageRouter);
+app.use('/api/locationUser', locationUser);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

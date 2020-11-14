@@ -19,6 +19,6 @@ router.post('/remind_payment_user', userController.remindPaymentUser);
 
 router.put('/update_a_user/:userId', userController.updateUser);
 
-
+router.post('/update_token_notification', userController.updateTokenNotification);
 
 module.exports = router;

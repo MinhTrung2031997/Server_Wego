@@ -60,11 +60,14 @@ module.exports = {
         let locationMain = await mainLocation.find({noAccent: { $regex: textSearch, $options: "i" }})
                             .select({ "code": 1, "title": 1, "_id": 0}); // search in main location
         let locationDetail = await detailLocation.find({noAccent: { $regex: textSearch, $options: "i" }})
-                             .select({ "code": 1, "title": 1, "_id": 0}); // search in detail location
+                            //  .select({ "code": 1, "title": 1, "description", "_id": 0}); // search in detail location
         let allLocation = locationDetail.concat(locationMain); // concatenate array
         let reduceAllLocation = allLocation.reduce((acc, cur) => {
-            let check = (acc[cur.code] || "").includes(cur.title) // check if title exist or not
-            acc[cur.code] = check ? (acc[cur.code] || "") : (acc[cur.code] || "") + cur.title + ", ";
+            if(cur.url){ // check if location != mainLocation => push to array.
+              (acc[cur.code] = acc[cur.code] || []).push(cur);
+            }else{
+              acc[cur.code] = acc[cur.code] || [];
+            }
             return acc;
         },{});
         let code = Object.keys(reduceAllLocation); // get key array object

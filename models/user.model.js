@@ -43,6 +43,10 @@ const UserModel = mongoose.model(
         type: Number,
         default: 0,
       },
+      token_notification: {
+        type: String,
+        default: '',
+      },
       update_date: {
         type: Date,
         default: '',
