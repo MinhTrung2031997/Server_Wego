@@ -17,6 +17,7 @@ module.exports = {
     res.send({ data: user });
   },
   checkAuth: async (req, res) => {
+    console.log(req.body);
     // First Validate The HTTP Request
     const { error } = validate(req.body);
     if (error) {
@@ -25,20 +26,21 @@ module.exports = {
 
     //  Now find the user by their email address
     let user = await User.findOne({ email: req.body.email });
+
     if (!user) {
-      return res.status(400).json({ error: 'Incorrect email or password' });
+      return res.status(400).json({ error: 'Tài khoản không tồn tại' });
     }
 
     // Check if email has been verified
     if (!user.active) {
-      return res.status(400).json({ error: 'Sorry, you must validate email first' });
+      return res.status(400).json({ error: 'Bạn chưa đăng ký tài khoản. Vui lòng đăng ký trước khi đăng nhập' });
     }
 
     // Then validate the Credentials in MongoDB match
     // those provided in the request
     const validPassword = await bcrypt.compare(req.body.password, user.password);
     if (!validPassword) {
-      return res.status(400).json({ error: 'incorrect email or password' });
+      return res.status(400).json({ error: 'Mật khẩu không đúng. Vui lòng nhập lại' });
     }
 
     const token = jwt.sign({ _id: user._id }, 'PrivateKey');
@@ -58,69 +60,14 @@ module.exports = {
     }
   },
   createUser: async (req, res) => {
-    // First Validate The Request
-    // const { error } = validate(req.body);
-    // if (error) {
-    //     return res.status(400).json({ error: error.details[0].message });
-    // }
     var gen = rn.generator({
       min: 10000,
       max: 99999,
       integer: true,
     });
     const secretToken = gen();
-    // Check if this user already exists
-    let nameUser = await User.findOne({ name: req.body.name });
-    let user = await User.findOne({ email: req.body.email });
-    if (nameUser) {
-      return res.status(400).json({ error: 'That user already exists!' });
-    } else if (user) {
-      if (!user.password) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(req.body.password, salt);
-        user.secretToken = secretToken;
-        user.active = false;
-        user.save();
-        return;
-      } else {
-        return res.status(400).json({ error: 'That email already exists' });
-      }
-    } else {
-      // Generate secret token
-
-      let gen = rn.generator({
-        min: 10000,
-        max: 99999,
-        integer: true,
-      });
-      const secretToken = gen();
-
-      // random avatar
-      function getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
-      }
-
-      // Insert the new user if they do not exist yet
-
-      //user = new User (lodash.pick(req.body,['name','email','password']));
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        secretToken: secretToken,
-        active: false,
-        avatar: getRandomInt(6),
-        isCustom: req.body.isCustom,
-        token_notification: req.body.token_notification
-      });
-      const salt = await bcrypt.genSalt(10);
-      newUser.password = await bcrypt.hash(newUser.password, salt);
-      await newUser.save();
-      res.send(newUser);
-      //res.send(lodash.pick(user, ['_id', 'name', 'email', 'password']));
-
-      // Compose email
-      const html = `Hi there,
+    const salt = await bcrypt.genSalt(10);
+    const html = `Hi there,
             <br/>
             Thank you for registering!
             <br/><br/>
@@ -131,18 +78,57 @@ module.exports = {
             <br/><br/>
             Have a pleasant day.`;
 
+    // Check if this user already exists
+    let user = await User.findOne({ email: req.body.email });
+    if (user) {
+      if (!user.password) {
+        user.password = await bcrypt.hash(req.body.password, salt);
+        user.secretToken = secretToken;
+        user.name = req.body.name;
+        user.active = false;
+        user.save();
+        res.json({
+          result: 'ok',
+          message: 'đăng ký thành công',
+        });
+        // Send email
+        await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Please verify your email!', html);
+        return;
+      } else {
+        return res.status(400).json({ error: 'That email already exists' });
+      }
+    } else {
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+      }
+
+      const newUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: await bcrypt.hash(req.body.password, salt),
+        secretToken: secretToken,
+        active: false,
+        avatar: getRandomInt(6),
+        isCustom: req.body.isCustom,
+        token_notification: req.body.token_notification,
+      });
+      await newUser.save();
+      res.json({
+        result: 'ok',
+        message: 'đăng ký thành công',
+      });
       // Send email
       await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Please verify your email!', html);
     }
   },
   updateTokenNotification: async (req, res) => {
-    let {userId, token_notification} = req.body;
-    let user = await User.findOne({_id: mongoose.Types.ObjectId(userId)});
-    if(user){
+    let { userId, token_notification } = req.body;
+    let user = await User.findOne({ _id: mongoose.Types.ObjectId(userId) });
+    if (user) {
       user.token_notification = token_notification;
       await user.save();
     }
-    res.send({data: 'done'})
+    res.send({ data: 'done' });
   },
   verifyUser: async (req, res) => {
     try {

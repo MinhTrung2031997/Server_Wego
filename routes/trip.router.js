@@ -18,5 +18,6 @@ router.get('/get_all_trip_by_user_id/:userId', tripController.getAllTripByUserId
 
 router.post('/upload_video', tripController.uploadVideo);
 
+router.post('/change_avatar_group', tripController.changeAvatar);
+
 module.exports = router;
- 

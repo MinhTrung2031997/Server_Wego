@@ -47,6 +47,10 @@ const UserModel = mongoose.model(
         type: String,
         default: '',
       },
+      active: {
+        type: Boolean,
+        default: false,
+      },
       update_date: {
         type: Date,
         default: '',

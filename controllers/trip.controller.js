@@ -8,6 +8,8 @@ const { User } = require('../models/user.model');
 const mongoose = require('mongoose');
 const mailer = require('../nodemailer/mailer');
 let fs = require('fs');
+const formidable = require('formidable');
+const os = require('os');
 
 module.exports = {
   getAllTrip: async (req, res, next) => {
@@ -112,9 +114,9 @@ module.exports = {
       }
     }
     // add tripId with plan is selected
-    if(listPlan.length > 0){
-      let convertToObjectId = [...listPlan.map(item => mongoose.Types.ObjectId(item))];
-      await planUser.updateMany({'_id': {$in : convertToObjectId}}, {"$push":{"trip_id": saveTrip._id.toString()}});
+    if (listPlan.length > 0) {
+      let convertToObjectId = [...listPlan.map((item) => mongoose.Types.ObjectId(item))];
+      await planUser.updateMany({ _id: { $in: convertToObjectId } }, { $push: { trip_id: saveTrip._id.toString() } });
     }
   },
   updateTrip: async (req, res, next) => {
@@ -253,9 +255,9 @@ module.exports = {
     userReduceMembers.save();
   },
   getAllTripByUserId: async (req, res) => {
-    let {userId} = req.params;
-    let listTrip = await Trip.find({author: mongoose.Types.ObjectId(userId)});
-    res.send({data: listTrip});
+    let { userId } = req.params;
+    let listTrip = await Trip.find({ author: mongoose.Types.ObjectId(userId) });
+    res.send({ data: listTrip });
   },
   deleteTrip: async (req, res, next) => {
     let tripUser = await TripUser.findOne({
@@ -366,6 +368,48 @@ module.exports = {
         let newPath = files.video.path.split('\\')[2] + '.mp4';
         res.json({ newPath });
       });
+    });
+  },
+  changeAvatar: async (req, res, next) => {
+    const form = new formidable.IncomingForm();
+    form.uploadDir = './public/images/avatarsGroup';
+    form.keepExtensions = true;
+    form.maxFieldsSize = 10 * 1024 * 1024;
+    form.multiples = true;
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        await res.json({
+          result: 'failed',
+          data: [],
+          message: `cannot up load images. Error is ${err}`,
+        });
+      } else {
+        const type = os.type() === 'Darwin' ? '/' : '\\';
+        let imageURL = files.image.path.split(type).pop();
+        await Trip.findOneAndUpdate(
+          {
+            _id: mongoose.Types.ObjectId(fields.tripId),
+          },
+          {
+            $set: {
+              avatarGroup: imageURL,
+              update_date: Date.now(),
+            },
+          },
+          {
+            options: {
+              new: true,
+              multi: true,
+            },
+          },
+        )
+          .then(async (res) => {
+            await console.log(res);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     });
   },
 };
