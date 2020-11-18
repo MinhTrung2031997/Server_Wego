@@ -27,6 +27,9 @@ module.exports = {
     //  Now find the user by their email address
     let user = await User.findOne({ email: req.body.email });
 
+    if (user.secretToken) {
+      return res.status(400).json({ error: 'verify' });
+    }
     if (!user) {
       return res.status(400).json({ error: 'Tài khoản không tồn tại' });
     }
@@ -56,7 +59,7 @@ module.exports = {
       let user = await User.findOne({ _id: userId });
       res.status(200).send(user);
     } catch (error) {
-      return res.status(400).json({ error: 'Cannot get info user' });
+      return res.status(400).json({ error: 'Không thể lấy thông tin của người dùng.' });
     }
   },
   createUser: async (req, res) => {
@@ -67,16 +70,16 @@ module.exports = {
     });
     const secretToken = gen();
     const salt = await bcrypt.genSalt(10);
-    const html = `Hi there,
+    const html = `Chào bạn,
             <br/>
-            Thank you for registering!
+            Cảm ơn bạn đã đăng ký tài khoản!
             <br/><br/>
-            Please verify your email by PIN code:
+            Vui lòng nhập mã pin trên để xác thực tài khoản:
             <br/>
             PIN: <b>${secretToken}</b>
             <br/>
             <br/><br/>
-            Have a pleasant day.`;
+            Chúc bạn có một ngaày vui vẻ.`;
 
     // Check if this user already exists
     let user = await User.findOne({ email: req.body.email });
@@ -92,10 +95,10 @@ module.exports = {
           message: 'đăng ký thành công',
         });
         // Send email
-        await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Please verify your email!', html);
+        await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Vui lòng xác thực email!', html);
         return;
       } else {
-        return res.status(400).json({ error: 'That email already exists' });
+        return res.status(400).json({ error: 'Email đã tôn tại.' });
       }
     } else {
       function getRandomInt(max) {
@@ -118,7 +121,7 @@ module.exports = {
         message: 'đăng ký thành công',
       });
       // Send email
-      await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Please verify your email!', html);
+      await mailer.sendEmail('minhtrung2031997@gmail.com', req.body.email, 'Vui lòng xác thực email!', html);
     }
   },
   updateTokenNotification: async (req, res) => {
@@ -136,7 +139,7 @@ module.exports = {
       // Find account with matching secret token
       const user = await User.findOne({ secretToken: secretToken });
       if (!user) {
-        res.status(400).json({ error: 'Sorry, PIN code invalid' });
+        res.status(400).json({ error: 'Xin lỗi, mã pin không có giá trị' });
         return;
       }
 
@@ -338,14 +341,9 @@ module.exports = {
   sendMoneyAllMail: async (req, res, next) => {
     const tripId = req.params.tripId;
     let arrMail = await TripUser.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) }).populate('user_id');
-    const html = `Click link to see the total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Click here</a>`;
+    const html = `Nhấp vào liên kết để xem tổng chi phí chuyến đi: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Nhấn tại đây</a>`;
     for (let i = 0; i < arrMail.length; i++) {
-      await mailer.sendEmail(
-        'minhtrung2031997@gmail.com',
-        arrMail[i].user_id.email,
-        'Please click the link below to see the total trip cost',
-        html,
-      );
+      await mailer.sendEmail('minhtrung2031997@gmail.com', arrMail[i].user_id.email, 'Tổng chi phí chuyến đi.', html);
     }
     await res.json(arrMail.length);
   },
@@ -354,10 +352,9 @@ module.exports = {
     let trip = await Trip.findOne({ _id: mongoose.Types.ObjectId(tripId) });
     let userRemind = await User.findOne({ _id: mongoose.Types.ObjectId(trip.author) });
     let userReminded = await User.findOne({ _id: mongoose.Types.ObjectId(userIdReminded) });
-    let title = `Please pay the amount you owe during the trip ${trip.name}`;
-    const html = `The amount you are owed is <strong style="color: red">${amountUserRemind} VNĐ</strong>
-          <p>click link here to see total trip cost: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${trip._id}">Click here</a></p>
-            `;
+    let title = `Vui lòng thanh toán số tiền bạn nợ trong chuyến đi ${trip.name}`;
+    const html = `Số tiền bạn đang nợ: <strong style="color: red">${amountUserRemind} VNĐ</strong>
+          <p>Nhấp vào liên kết để xem tổng chi phí chuyến đi: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${trip._id}">Nhấn tại đây</a></p>`;
     await mailer.sendEmail(userRemind.email, userReminded.email, title, html);
     await res.json('ok');
   },
@@ -365,8 +362,13 @@ module.exports = {
 
 function validate(req) {
   const schema = {
-    email: Joi.string().min(5).max(255).required().email({ minDomainAtoms: 2 }).error(new Error('email invalid')),
-    password: Joi.string().min(5).max(255).required().error(new Error('password must be at least 5 characters')),
+    email: Joi.string()
+      .min(5)
+      .max(255)
+      .required()
+      .email({ minDomainAtoms: 2 })
+      .error(new Error('email không có giá trị')),
+    password: Joi.string().min(5).max(255).required().error(new Error('Mật khauir phải có ít nhất 5 ký tư')),
   };
 
   return Joi.validate(req, schema);

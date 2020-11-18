@@ -15,15 +15,15 @@ html
                 .col-xs-8.col-sm-8.col-md-12.col-lg-12
                     .text-center
                         h1 WeGo
-                        h3 Cost statistic table of all members of the trip
+                        h3 Bảng thống kê chi phí của tất cả các thành viên trong chuyến đi
                     table.table.table-hover.table-bordered#myTable
                         thead
                             tr
-                                th Transaction
-                                th Amount
-                                th User Name
+                                th Giao Dịch
+                                th Tiền Giao Dịch
+                                th Tên Thành Viên
                                 th Email
-                                th TotalMoney
+                                th Số Dư
                         tbody
                             each transactionUser in transactionUsers
                                 tr.clickable-row

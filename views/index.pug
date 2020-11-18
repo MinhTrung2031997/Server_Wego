@@ -15,14 +15,14 @@ html
                 .col-xs-8.col-sm-8.col-md-12.col-lg-10.col-lg-push-1
                     .text-center
                         h1 WeGo
-                        h3 Cost statistic table of all members of the trip
+                        h3 Bảng thống kê chi phí của tất cả các thành viên trong chuyến đi
                     table.table.table-hover.table-bordered
                         thead
                             tr
-                                th Name
+                                th Tên Thành Viên
                                 th Email
-                                th Total Money
-                                th Detail
+                                th Số Dư Chuyến Đi
+                                th Chi Tiết
                         tbody
                              each user in users
                                      tr.click-row(idUser=user._id)(tripId=tripId)
@@ -34,7 +34,7 @@ html
                                              td(style='color:green;')= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
                                          td
                                              button.btn(type='button')
-                                                 a(href=`http://localhost:3001/api/index/sendMailTotalMoneyDetails/${tripId}/${user._id}`) Detail
+                                                 a(href=`http://localhost:3001/api/index/sendMailTotalMoneyDetails/${tripId}/${user._id}`) Chi Tiết
 
 
 
