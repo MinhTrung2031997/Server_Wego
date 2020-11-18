@@ -34,6 +34,7 @@ module.exports = {
   },
 
   createTrip: async (req, res, next) => {
+    const membersTrip = req.body.list_user.length;
     // random avatar
     const { name, author, list_user, listPlan } = req.body;
     function getRandomInt(max) {
@@ -61,12 +62,12 @@ module.exports = {
     if (nameTrip) {
       if (nameTrip.isDelete === false) return res.status(400).json({ error: 'Name trip already exists' });
       else {
-        let trip = new Trip({ name, author });
+        let trip = new Trip({ name, author, membersTrip });
         await trip.save();
       }
     }
 
-    let trip = new Trip({ name, author });
+    let trip = new Trip({ name, author, membersTrip });
     let saveTrip = await trip.save();
     await res.json({ saveTrip });
 

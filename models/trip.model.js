@@ -17,6 +17,10 @@ const tripSchema = new Schema(
       type: Number,
       default: 0,
     },
+    membersTrip: {
+      type: Number,
+      required: true,
+    },
     // begin_date: {
     //     type: String,
     //     default: ""
