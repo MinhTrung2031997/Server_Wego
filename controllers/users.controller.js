@@ -27,23 +27,23 @@ module.exports = {
     //  Now find the user by their email address
     let user = await User.findOne({ email: req.body.email });
 
-    if (user.secretToken) {
-      return res.status(400).json({ error: 'verify' });
-    }
     if (!user) {
       return res.status(400).json({ error: 'Tài khoản không tồn tại' });
-    }
-
-    // Check if email has been verified
-    if (!user.active) {
-      return res.status(400).json({ error: 'Bạn chưa đăng ký tài khoản. Vui lòng đăng ký trước khi đăng nhập' });
-    }
-
-    // Then validate the Credentials in MongoDB match
-    // those provided in the request
-    const validPassword = await bcrypt.compare(req.body.password, user.password);
-    if (!validPassword) {
-      return res.status(400).json({ error: 'Mật khẩu không đúng. Vui lòng nhập lại' });
+    } else {
+      if(user.password) {
+        // Then validate the Credentials in MongoDB match
+        // those provided in the request
+        const validPassword = await bcrypt.compare(req.body.password, user.password);
+        if (!validPassword) {
+          return res.status(400).json({ error: 'Mật khẩu không đúng. Vui lòng nhập lại' });
+        }
+        if (user.secretToken) {
+          return res.status(400).json({ error: 'verify' });
+        }
+      } else {
+        // Case user was signed in trip
+          return res.status(400).json({ error: 'Bạn chưa đăng ký tài khoản. Vui lòng đăng ký trước khi đăng nhập' });
+      }
     }
 
     const token = jwt.sign({ _id: user._id }, 'PrivateKey');
