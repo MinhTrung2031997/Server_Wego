@@ -37,12 +37,8 @@ module.exports = {
     let numberUserInTrip = 0;
     await TripUser.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
       .populate('user_id')
-      .exec((err, users) => {
-        if (err) {
-          numberUserInTrip = 0;
-        } else {
+      .then((users) => {
           numberUserInTrip = users.length;
-        }
       });
     await Transaction.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
       .then((transactionByTripId) => {
