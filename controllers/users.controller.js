@@ -27,9 +27,12 @@ module.exports = {
     //  Now find the user by their email address
     let user = await User.findOne({ email: req.body.email });
 
-    if (user.secretToken) {
-      return res.status(400).json({ error: 'verify' });
+    if (user) {
+      if (user.secretToken) {
+        return res.status(400).json({ error: 'verify' });
+      }
     }
+
     if (!user) {
       return res.status(400).json({ error: 'Tài khoản không tồn tại' });
     }

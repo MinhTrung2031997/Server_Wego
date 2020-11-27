@@ -26,7 +26,6 @@ router.get('/sendMailTotalMoney/:tripId', async (req, res, next) => {
     a.totalBalanceTrip = moneyUser[i].totalBalance;
     listUser.push(a);
   }
-  // await res.json(listUser);
   res.render('index', {
     users: listUser,
     tripId: req.params.tripId,
@@ -59,7 +58,6 @@ router.get('/sendMailTotalMoneyDetails/:tripId/:userId', async (req, res, next) 
       listTransactionUser.push(arr[i]);
     }
   }
-
   await res.render('layout', {
     transactionUsers: listTransactionUser,
   });
