@@ -36,11 +36,10 @@ module.exports = {
   createTrip: async (req, res, next) => {
     const membersTrip = req.body.list_user.length;
     // random avatar
-    const { name, author, list_user, listPlan } = req.body;
+    const { name, author, list_user, listPlan, startDay, endDay } = req.body;
     function getRandomInt(max) {
       return Math.floor(Math.random() * Math.floor(max));
     }
-
     async function sendMailInvite(email, nameAuthor, emailAuthor, nameTrip) {
       // Compose email
       const html = `Hi there,
@@ -53,24 +52,32 @@ module.exports = {
                   <br/>
                   <br/><br/>
                   Have a pleasant day.`;
-
       await mailer.sendEmail(emailAuthor, email, 'Welcome to Wego', html);
     }
-
     const userAuthor = await User.findOne({ _id: req.body.author });
     let nameTrip = await Trip.findOne({ name: req.body.name });
     if (nameTrip) {
       if (nameTrip.isDelete === false) return res.status(400).json({ error: 'Name trip already exists' });
       else {
-        let trip = new Trip({ name, author, membersTrip });
+        let trip = new Trip({
+          name,
+          author,
+          membersTrip,
+          begin_date: startDay,
+          end_date: endDay,
+        });
         await trip.save();
       }
     }
-
-    let trip = new Trip({ name, author, membersTrip });
+    let trip = new Trip({
+      name,
+      author,
+      membersTrip,
+      begin_date: startDay,
+      end_date: endDay,
+    });
     let saveTrip = await trip.save();
     await res.json({ saveTrip });
-
     let userCreateTrip = new UserActivity({
       user_id: author,
       trip_id: saveTrip._id,
@@ -78,7 +85,6 @@ module.exports = {
       create_date: Date.now(),
     });
     await userCreateTrip.save();
-
     for (let i = 0; i < list_user.length; i++) {
       let UserExist = await User.findOne({ email: list_user[i].email });
       if (!UserExist) {

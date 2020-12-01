@@ -21,14 +21,14 @@ const tripSchema = new Schema(
       type: Number,
       required: true,
     },
-    // begin_date: {
-    //     type: String,
-    //     default: ""
-    // },
-    // end_date: {
-    //   type: String,
-    //   default:""
-    // },
+    begin_date: {
+      type: String,
+      require: true,
+    },
+    end_date: {
+      type: String,
+      require: true,
+    },
     avatarGroup: {
       type: String,
       default: '',

@@ -94,7 +94,7 @@ module.exports = {
     let listTrip = [];
     // assign money of trip
     for (let i = 0; i < tripMoney.length; i++) {
-      let a = await Trip.findOne({ _id: mongoose.Types.ObjectId(tripMoney[i]._id) });
+      let a = await (await Trip.findOne({ _id: mongoose.Types.ObjectId(tripMoney[i]._id) })).populate('author');
       a.oweUser = tripMoney[i].totalBalance;
       listTrip.push(a);
     }
