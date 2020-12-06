@@ -73,7 +73,7 @@ module.exports = {
     form.keepExtensions = true;
     form.maxFieldsSize = 10 * 1024 * 1024;
     form.multiples = true;
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, async (err, fields, files) => {
       if (err) {
         res.json({
           result: 'failed',
@@ -87,8 +87,6 @@ module.exports = {
       let lengthDataLocation = Object.keys(dataLocation).length;
       let lengthDataImage = Object.keys(files).length;
       let trip_id = fields.trip_id;
-      console.log(files);
-      console.log(trip_id);
       const type = os.type() === 'Darwin' ? '/' : '\\';
       if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
         let imageURL =
@@ -101,14 +99,17 @@ module.exports = {
           latitude: dataLocation.latitude,
           longitude: dataLocation.longitude,
         });
-        placeLocation.save();
+        await placeLocation.save();
 
         let imageTrip = new ImageTrip({
           trip_id: dataExpense.trip_id,
           imageURL: imageURL,
         });
-        imageTrip.save();
-
+        await imageTrip.save();
+        let idForShare = {
+          imgId: imageTrip._id,
+          locationId: placeLocation._id,
+        }
         let transaction = new Transaction({
           name: dataExpense.name,
           author: dataExpense.author,
@@ -124,10 +125,10 @@ module.exports = {
             res.json({
               result: 'ok',
               data: transaction,
+              idForShare,
               message: 'save transaction successfully',
             });
             let list_user = dataExpense.list_user;
-            console.log(list_user);
             for (let i = 0; i < list_user.length; i++) {
               if (list_user[i].type === -1) {
                 let transactionUser = new TransactionUser({
@@ -185,7 +186,7 @@ module.exports = {
               latitude: dataLocation.latitude,
               longitude: dataLocation.longitude,
             });
-            placeLocation.save();
+            await placeLocation.save();
             let imageURL =
               files.image.length > 1
                 ? files.image.map((item) => item.path.split(type).pop())
@@ -194,9 +195,14 @@ module.exports = {
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
             });
-            imageTrip.save();
+            await imageTrip.save();
+            let idForShare = {
+              imgId: imageTrip._id,
+              locationId: placeLocation._id,
+            }
             res.json({
               result: 'ok',
+              idForShare,
             });
           } else {
             let placeLocation = new PlaceLocation({
@@ -205,9 +211,14 @@ module.exports = {
               latitude: dataLocation.latitude,
               longitude: dataLocation.longitude,
             });
-            placeLocation.save();
+            await placeLocation.save();
+            let idForShare = {
+              imgId: '',
+              locationId: placeLocation._id,
+            }
             res.json({
               result: 'ok',
+              idForShare,
             });
           }
         } else {
@@ -220,9 +231,14 @@ module.exports = {
             trip_id: trip_id,
             imageURL: imageURL,
           });
-          imageTrip.save();
+          await imageTrip.save();
+          let idForShare = {
+            imgId: imageTrip._id,
+            locationId: '',
+          }
           res.json({
             result: 'ok',
+            idForShare,
           });
         }
       } else if (lengthDataLocation === 0) {
@@ -236,7 +252,11 @@ module.exports = {
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
             });
-            imageTrip.save();
+            await imageTrip.save();
+            let idForShare = {
+              imgId: imageTrip._id,
+              locationId: '',
+            }
             let transaction = new Transaction({
               name: dataExpense.name,
               author: dataExpense.author,
@@ -251,6 +271,7 @@ module.exports = {
                 res.json({
                   result: 'ok',
                   data: transaction,
+                  idForShare,
                   message: 'save transaction successfully',
                 });
                 let list_user = dataExpense.list_user;
@@ -375,9 +396,14 @@ module.exports = {
             trip_id: trip_id,
             imageURL: imageURL,
           });
-          imageTrip.save();
+          await imageTrip.save();
+          let idForShare = {
+            imgId: imageTrip._id,
+            locationId: '',
+          }
           res.json({
             result: 'ok',
+            idForShare,
           });
         }
       } else if (lengthDataImage === 0) {

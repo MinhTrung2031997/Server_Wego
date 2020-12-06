@@ -1,0 +1,29 @@
+style
+    include share.css
+script
+    include share.js
+script(src='https://kit.fontawesome.com/a076d05399.js')
+.text-center
+  h1 WeGo
+  h2 Cùng #{user.name} tạo nên những khoảnh khắc tuyệt vời
+.item
+  .image
+    div
+      if (user.avatar.length > 2)
+        img(src=`http://localhost:3001/images/avatars/${user.avatar}`)
+      else
+        img(src='http://localhost:3001/avatar.jpg')
+      span
+        | #{date}
+  .details
+    div
+      h4 #{user.name} đã chia sẻ một khoảnh khắc
+      if (address.length > 0)
+        div
+          i(class="fas fa-map-marker-alt" style="font-size:20px;color:#EA4335")
+          h4 Tại #{address}
+      each img in images
+        img(id=img, onclick='openModal('+'"'+img+'"'+')', src=`http://localhost:3001/images/uploads/${img}`)
+#myModal.modal
+  span(class='close', onclick='closeModal()') &times;
+  img#img01.modal-content

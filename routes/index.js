@@ -4,8 +4,8 @@ const router = express.Router();
 const { User } = require('../models/user.model');
 const TransactionUser = require('../models/transactionUser.model');
 const Transaction = require('../models/transaction.model');
-const map = require('lodash');
-const zip = require('lodash');
+const ImageTrip = require('../models/imageTrip.model');
+const PlaceLocation = require('../models/placeLocation.model');
 
 /* GET home page. */
 router.get('/sendMailTotalMoney/:tripId', async (req, res, next) => {
@@ -62,6 +62,29 @@ router.get('/sendMailTotalMoneyDetails/:tripId/:userId', async (req, res, next) 
 
   await res.render('layout', {
     transactionUsers: listTransactionUser,
+  });
+});
+
+router.get('/shareSocial/:userId/:imageId?/:locationId?', async (req, res, next) => {
+  let images = await ImageTrip.find({ _id: mongoose.Types.ObjectId(req.params.imageId) });
+  let location = await PlaceLocation.find({ _id: mongoose.Types.ObjectId(req.params.locationId) });
+  let user = await User.find({ _id: mongoose.Types.ObjectId(req.params.userId) });
+  // format date
+  Date.prototype.ddmmyyyy = function() {
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+    var dd = this.getDate();
+  
+    return [(dd>9 ? '' : '0') + dd,
+            (mm>9 ? '' : '0') + mm,
+            this.getFullYear()
+            ].join('.');
+  };
+  var date = new Date(images[0].create_date);
+  res.render('share', {
+    images: images[0].imageURL,
+    address: location.length > 0 ? location[0].address : '',
+    user: user[0],
+    date: date.ddmmyyyy(),
   });
 });
 
