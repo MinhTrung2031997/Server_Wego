@@ -9,6 +9,23 @@ const placeLocationSchema = new Schema(
       require: true,
       ref: 'trip',
     },
+    author: {
+      type: Schema.Types.ObjectId,
+      require: true,
+      ref: 'User',
+    },
+    imageURL: {
+      type: Array,
+      default: [],
+    },
+    nameTransaction: {
+      type: String,
+      default: '',
+    },
+    amountTransaction: {
+      type: Number,
+      default: 0,
+    },
     address: {
       type: String,
       required: true,

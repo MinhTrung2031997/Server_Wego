@@ -1,4 +1,5 @@
 const PlaceLocation = require('../models/placeLocation.model');
+const Transaction = require('../models/transaction.model');
 const axios = require('axios');
 const apiKey = '6f5c2600edmsh15ca7c6d9fb63b3p16e1bfjsn9e515317b4bd';
 
@@ -18,7 +19,7 @@ const optimizeDirection = async (stops) => {
     },
   })
     .then((response) => {
-     // if (response.data.route.geometry) response.data.route.geometry = ''; // remove detail coordinate because not use and slow api
+      // if (response.data.route.geometry) response.data.route.geometry = ''; // remove detail coordinate because not use and slow api
       return response.data.route.geometry;
     })
     .catch((error) => {
@@ -44,21 +45,23 @@ const getLatLngInArray = (array) => {
 module.exports = {
   getAllPlaceLocation: (req, res, next) => {
     {
-      PlaceLocation.find({ trip_id: req.params.tripId }).exec((err, locations) => {
-        if (err) {
-          res.json({
-            result: 'failed',
-            data: [],
-            message: 'query failed',
-          });
-        } else {
-          res.json({
-            result: 'ok',
-            data: locations,
-            message: 'query successfully',
-          });
-        }
-      });
+      PlaceLocation.find({ trip_id: req.params.tripId })
+        .populate('author')
+        .exec((err, locations) => {
+          if (err) {
+            res.json({
+              result: 'failed',
+              data: [],
+              message: 'query failed',
+            });
+          } else {
+            res.json({
+              result: 'ok',
+              data: locations,
+              message: 'query successfully',
+            });
+          }
+        });
     }
   },
 
@@ -66,13 +69,13 @@ module.exports = {
     let stops = await getLatLngInArray(req.body);
     let direction = await optimizeDirection(stops);
     let coordinate = [];
-    direction.coordinates.map(item => {
+    direction.coordinates.map((item) => {
       obj = {
-        'latitude': item[0],
-        'longitude': item[1]
-      }
+        latitude: item[0],
+        longitude: item[1],
+      };
       coordinate.push(obj);
-    })
-     res.send({data: coordinate})
+    });
+    res.send({ data: coordinate });
   },
 };

@@ -46,6 +46,9 @@ const transactionSchema = new Schema(
         },
       },
     ],
+    avatar: {
+      type: String,
+    },
     imageURL: {
       type: Array,
     },
