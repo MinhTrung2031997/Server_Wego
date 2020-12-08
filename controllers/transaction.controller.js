@@ -38,7 +38,7 @@ module.exports = {
     await TripUser.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
       .populate('user_id')
       .then((users) => {
-          numberUserInTrip = users.length;
+        numberUserInTrip = users.length;
       });
     await Transaction.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) })
       .then((transactionByTripId) => {
@@ -65,6 +65,9 @@ module.exports = {
     });
   },
   createTransaction: async (req, res, next) => {
+    function randomIntFromInterval(min, max) {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
     const serverName = require('os').hostname();
     const serverPort = require('../app').settings.port;
     console.log(serverName, serverPort);
@@ -95,6 +98,10 @@ module.exports = {
             : [files.image.path.split(type).pop()];
         let placeLocation = new PlaceLocation({
           trip_id: trip_id,
+          author: dataExpense.author,
+          imageURL: imageURL,
+          nameTransaction: dataExpense.name,
+          amountTransaction: dataExpense.amount,
           address: dataLocation.address,
           latitude: dataLocation.latitude,
           longitude: dataLocation.longitude,
@@ -109,13 +116,14 @@ module.exports = {
         let idForShare = {
           imgId: imageTrip._id,
           locationId: placeLocation._id,
-        }
+        };
         let transaction = new Transaction({
           name: dataExpense.name,
           author: dataExpense.author,
           amount: dataExpense.amount,
           trip_id: trip_id,
           list_user: dataExpense.list_user,
+          avatar: randomIntFromInterval(6, 9),
           imageURL: imageURL,
           address: dataLocation.address,
         });
@@ -180,17 +188,19 @@ module.exports = {
       } else if (lengthDataExpense === 0) {
         if (lengthDataLocation > 0) {
           if (lengthDataImage > 0) {
+            let imageURL =
+              files.image.length > 1
+                ? files.image.map((item) => item.path.split(type).pop())
+                : [files.image.path.split(type).pop()];
             let placeLocation = new PlaceLocation({
               trip_id: trip_id,
+              author: dataLocation.author,
+              imageURL: imageURL,
               address: dataLocation.address,
               latitude: dataLocation.latitude,
               longitude: dataLocation.longitude,
             });
             await placeLocation.save();
-            let imageURL =
-              files.image.length > 1
-                ? files.image.map((item) => item.path.split(type).pop())
-                : [files.image.path.split(type).pop()];
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
@@ -199,7 +209,7 @@ module.exports = {
             let idForShare = {
               imgId: imageTrip._id,
               locationId: placeLocation._id,
-            }
+            };
             res.json({
               result: 'ok',
               idForShare,
@@ -207,6 +217,7 @@ module.exports = {
           } else {
             let placeLocation = new PlaceLocation({
               trip_id: trip_id,
+              author: dataLocation.author,
               address: dataLocation.address,
               latitude: dataLocation.latitude,
               longitude: dataLocation.longitude,
@@ -215,7 +226,7 @@ module.exports = {
             let idForShare = {
               imgId: '',
               locationId: placeLocation._id,
-            }
+            };
             res.json({
               result: 'ok',
               idForShare,
@@ -235,7 +246,7 @@ module.exports = {
           let idForShare = {
             imgId: imageTrip._id,
             locationId: '',
-          }
+          };
           res.json({
             result: 'ok',
             idForShare,
@@ -256,13 +267,14 @@ module.exports = {
             let idForShare = {
               imgId: imageTrip._id,
               locationId: '',
-            }
+            };
             let transaction = new Transaction({
               name: dataExpense.name,
               author: dataExpense.author,
               amount: dataExpense.amount,
               trip_id: trip_id,
               list_user: dataExpense.list_user,
+              avatar: randomIntFromInterval(6, 9),
               imageURL: imageURL,
             });
             transaction
@@ -329,6 +341,7 @@ module.exports = {
               amount: dataExpense.amount,
               trip_id: trip_id,
               list_user: dataExpense.list_user,
+              avatar: randomIntFromInterval(6, 9),
             });
             transaction
               .save()
@@ -400,7 +413,7 @@ module.exports = {
           let idForShare = {
             imgId: imageTrip._id,
             locationId: '',
-          }
+          };
           res.json({
             result: 'ok',
             idForShare,
@@ -411,6 +424,9 @@ module.exports = {
           if (lengthDataLocation > 0) {
             let placeLocation = new PlaceLocation({
               trip_id: trip_id,
+              author: dataLocation.author,
+              nameTransaction: dataExpense.name,
+              amountTransaction: dataExpense.amount,
               address: dataLocation.address,
               latitude: dataLocation.latitude,
               longitude: dataLocation.longitude,
@@ -423,6 +439,7 @@ module.exports = {
               trip_id: trip_id,
               list_user: dataExpense.list_user,
               address: dataLocation.address,
+              avatar: randomIntFromInterval(6, 9),
             });
             transaction
               .save()
@@ -487,6 +504,7 @@ module.exports = {
               amount: dataExpense.amount,
               trip_id: trip_id,
               list_user: dataExpense.list_user,
+              avatar: randomIntFromInterval(6, 9),
             });
             transaction
               .save()
@@ -548,6 +566,7 @@ module.exports = {
         } else {
           let placeLocation = new PlaceLocation({
             trip_id: trip_id,
+            author: dataLocation.author,
             address: dataLocation.address,
             latitude: dataLocation.latitude,
             longitude: dataLocation.longitude,
