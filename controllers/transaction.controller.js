@@ -201,10 +201,6 @@ module.exports = {
               longitude: dataLocation.longitude,
             });
             await placeLocation.save();
-            let imageURL =
-              files.image.length > 1
-                ? files.image.map((item) => item.path.split(type).pop())
-                : [files.image.path.split(type).pop()];
             let imageTrip = new ImageTrip({
               trip_id: dataExpense.trip_id,
               imageURL: imageURL,
