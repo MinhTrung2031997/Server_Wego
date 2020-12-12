@@ -14,6 +14,9 @@ module.exports = {
           .populate('trip_id');
         data = data.concat(userActivity1);
       }
+      data.sort((a,b) => {
+        return new Date(b.create_date) - new Date(a.create_date);
+      });
       await res.json({ data });
     }
   },
