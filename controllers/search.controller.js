@@ -2,16 +2,17 @@ const detailLocation = require('../models/detailLocation.model');
 const mainLocation = require('../models/mainLocation.model');
 const planLocation = require('../models/planLocation.model');
 const axios = require('axios');
-const keyApi = 'fdef9ef84fmsh2b629839a43ad16p1a7925jsn6dd919bd6305';
+const KeyApi = require('../data/KeyApi');
 
-const optimizeDirection = async (stops) => {
+const optimizeDirection = async (stops, index) => {
+  if(index === KeyApi.length) return null;
   let data = await axios({
     method: 'GET',
     url: 'https://trueway-directions2.p.rapidapi.com/FindDrivingRoute',
     headers: {
       'content-type': 'application/octet-stream',
       'x-rapidapi-host': 'trueway-directions2.p.rapidapi.com',
-      'x-rapidapi-key': keyApi,
+      'x-rapidapi-key': KeyApi[index],
       useQueryString: true,
     },
     params: {
@@ -24,8 +25,11 @@ const optimizeDirection = async (stops) => {
       return response.data;
     })
     .catch((error) => {
-      console.log(error);
-      return null;
+      if(error.response.data.message){
+        return optimizeDirection(stops, index+1); // recursive with next keyApi
+      } else{
+        return null;
+      }
     });
   return data;
 };
@@ -85,7 +89,7 @@ module.exports = {
         let location = await planLocation.find({'code': code});
         let headTailPoint = determineHeadTailPoint(location); // determine start point and end point for direction
         let stops = getLatLngInArray(headTailPoint); // get latitude longitude to call api route
-        let dataOptimizeDirection = await optimizeDirection(stops); // call api optimize route direction
+        let dataOptimizeDirection = await optimizeDirection(stops, 0); // call api optimize route direction
         if(dataOptimizeDirection){
             let arrangeListLocation = []; // arrange array follow api return
             for(let i = 0; i < headTailPoint.length; i++){
@@ -116,7 +120,7 @@ module.exports = {
 
         let headTailPoint = location; // determine start point and end point for direction
         let stops = getLatLngInArray(headTailPoint); // get latitude longitude to call api route
-        let dataOptimizeDirection = await optimizeDirection(stops); // call api optimize route direction
+        let dataOptimizeDirection = await optimizeDirection(stops, 0); // call api optimize route direction
         if(dataOptimizeDirection){
             let arrangeListLocation = []; // arrange array follow api return
             for(let i = 0; i < headTailPoint.length; i++){
