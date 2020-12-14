@@ -1,5 +1,5 @@
 # we will use the latest version of node available from the Docker Hub.
-FROM node:14.4.0
+FROM node:14
 
 # Create app directory, where your app will live its lifetime.
 WORKDIR /usr/src/app
