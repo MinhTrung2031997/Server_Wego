@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 let fs = require('fs');
 const mailer = require('../nodemailer/mailer');
 const rn = require('random-number');
@@ -30,7 +30,7 @@ module.exports = {
     if (!user) {
       return res.status(400).json({ error: 'Tài khoản không tồn tại' });
     } else {
-      if(user.password) {
+      if (user.password) {
         // Then validate the Credentials in MongoDB match
         // those provided in the request
         const validPassword = await bcrypt.compare(req.body.password, user.password);
@@ -42,7 +42,7 @@ module.exports = {
         }
       } else {
         // Case user was signed in trip
-          return res.status(400).json({ error: 'Bạn chưa đăng ký tài khoản. Vui lòng đăng ký trước khi đăng nhập' });
+        return res.status(400).json({ error: 'Bạn chưa đăng ký tài khoản. Vui lòng đăng ký trước khi đăng nhập' });
       }
     }
 

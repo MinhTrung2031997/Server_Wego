@@ -28,22 +28,29 @@ const locationUser = require('./routes/locationUser.router');
 
 const app = express();
 
+const MONGO_USERNAME = 'myUserAdmin';
+const MONGO_PASSWORD = 'minhtrung';
+const MONGO_HOSTNAME = '127.0.0.1';
+const MONGO_PORT = '27017';
+const MONGO_DB = 'wego';
+
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+
+const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
+const url1 = `mongodb://localhost:27017/wego`;
+
 mongoose.Promise = global.Promise;
-mongoose
-  .connect('mongodb://localhost:27017/wego', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  })
-  .then(
-    () => {
-      console.log('Connected Mongodb');
-    },
-    (err) => {
-      console.log(`err :${err}`);
-    },
-  );
+mongoose.connect(url1, options).then(
+  () => {
+    console.log('Connected Mongodb');
+  },
+  (err) => {
+    console.log(`err :${err}`);
+  },
+);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
