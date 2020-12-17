@@ -1,16 +1,17 @@
 const PlaceLocation = require('../models/placeLocation.model');
 const Transaction = require('../models/transaction.model');
 const axios = require('axios');
-const apiKey = '6f5c2600edmsh15ca7c6d9fb63b3p16e1bfjsn9e515317b4bd';
+const KeyApi = require('../data/KeyApi');
 
-const optimizeDirection = async (stops) => {
+const optimizeDirection = async (stops, index) => {
+  if(index === KeyApi.length) return null;
   let data = await axios({
     method: 'GET',
     url: 'https://trueway-directions2.p.rapidapi.com/FindDrivingRoute',
     headers: {
       'content-type': 'application/octet-stream',
       'x-rapidapi-host': 'trueway-directions2.p.rapidapi.com',
-      'x-rapidapi-key': apiKey,
+      'x-rapidapi-key': KeyApi[index],
       useQueryString: true,
     },
     params: {
@@ -23,8 +24,11 @@ const optimizeDirection = async (stops) => {
       return response.data.route.geometry;
     })
     .catch((error) => {
-      console.log(error);
-      return null;
+      if(error.response.data.message){
+        return optimizeDirection(stops, index+1); // recursive with next keyApi
+      } else{
+        return null;
+      }
     });
   return data;
 };
@@ -67,15 +71,20 @@ module.exports = {
 
   direction: async (req, res, next) => {
     let stops = await getLatLngInArray(req.body);
-    let direction = await optimizeDirection(stops);
-    let coordinate = [];
-    direction.coordinates.map((item) => {
-      obj = {
-        latitude: item[0],
-        longitude: item[1],
-      };
-      coordinate.push(obj);
-    });
-    res.send({ data: coordinate });
+    let direction = await optimizeDirection(stops, 0);
+    if(direction){
+      let coordinate = [];
+      direction.coordinates.map((item) => {
+        obj = {
+          latitude: item[0],
+          longitude: item[1],
+        };
+        coordinate.push(obj);
+      });
+      res.send({ data: coordinate });
+    } else {
+      res.send({ data: [] });
+    }
+    
   },
 };
