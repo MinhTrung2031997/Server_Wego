@@ -40,7 +40,7 @@ const options = {
 };
 
 const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
-const url1 = `mongodb://localhost:27017/wego`;
+const url1 = `mongodb://mongo:27017/wego`;
 
 mongoose.Promise = global.Promise;
 mongoose.connect(url1, options).then(

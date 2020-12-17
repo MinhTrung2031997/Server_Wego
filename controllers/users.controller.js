@@ -368,7 +368,7 @@ function validate(req) {
       .required()
       .email({ minDomainAtoms: 2 })
       .error(new Error('email không có giá trị')),
-    password: Joi.string().min(5).max(255).required().error(new Error('Mật khauir phải có ít nhất 5 ký tư')),
+    password: Joi.string().min(5).max(255).required().error(new Error('Mật khẩu phải có ít nhất 5 ký tự')),
   };
 
   return Joi.validate(req, schema);
