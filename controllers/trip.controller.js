@@ -55,20 +55,20 @@ module.exports = {
       await mailer.sendEmail(emailAuthor, email, 'Welcome to Wego', html);
     }
     const userAuthor = await User.findOne({ _id: req.body.author });
-    let nameTrip = await Trip.findOne({ name: req.body.name });
-    if (nameTrip) {
-      if (nameTrip.isDelete === false) return res.status(400).json({ error: 'Name trip already exists' });
-      else {
-        let trip = new Trip({
-          name,
-          author,
-          membersTrip,
-          begin_date: startDay,
-          end_date: endDay,
-        });
-        await trip.save();
-      }
-    }
+    // let nameTrip = await Trip.findOne({ name: req.body.name });
+    // if (nameTrip) {
+    //   if (nameTrip.isDelete === false) return res.status(400).json({ error: 'Name trip already exists' });
+    //   else {
+    //     let trip = new Trip({
+    //       name,
+    //       author,
+    //       membersTrip,
+    //       begin_date: startDay,
+    //       end_date: endDay,
+    //     });
+    //     await trip.save();
+    //   }
+    // }
     let trip = new Trip({
       name,
       author,

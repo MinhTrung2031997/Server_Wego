@@ -341,7 +341,7 @@ module.exports = {
   sendMoneyAllMail: async (req, res, next) => {
     const tripId = req.params.tripId;
     let arrMail = await TripUser.find({ trip_id: mongoose.Types.ObjectId(req.params.tripId) }).populate('user_id');
-    const html = `Nhấp vào liên kết để xem tổng chi phí chuyến đi: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${tripId}">Nhấn tại đây</a>`;
+    const html = `Nhấp vào liên kết để xem tổng chi phí chuyến đi: <a href="http://www.wego.host/api/index/sendMailTotalMoney/${tripId}">Nhấn tại đây</a>`;
     for (let i = 0; i < arrMail.length; i++) {
       await mailer.sendEmail('minhtrung2031997@gmail.com', arrMail[i].user_id.email, 'Tổng chi phí chuyến đi.', html);
     }
@@ -354,7 +354,7 @@ module.exports = {
     let userReminded = await User.findOne({ _id: mongoose.Types.ObjectId(userIdReminded) });
     let title = `Vui lòng thanh toán số tiền bạn nợ trong chuyến đi ${trip.name}`;
     const html = `Số tiền bạn đang nợ: <strong style="color: red">${amountUserRemind} VNĐ</strong>
-          <p>Nhấp vào liên kết để xem tổng chi phí chuyến đi: <a href="http://localhost:3001/api/index/sendMailTotalMoney/${trip._id}">Nhấn tại đây</a></p>`;
+          <p>Nhấp vào liên kết để xem tổng chi phí chuyến đi: <a href="http://www.wego.host/api/index/sendMailTotalMoney/${trip._id}">Nhấn tại đây</a></p>`;
     await mailer.sendEmail(userRemind.email, userReminded.email, title, html);
     await res.json('ok');
   },
