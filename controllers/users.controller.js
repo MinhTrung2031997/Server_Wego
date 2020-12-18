@@ -204,7 +204,7 @@ module.exports = {
             }
           });
         } else {
-          const type = os.type() === 'Darwin' ? '/' : '\\';
+          const type = os.type() === 'Windows_NT' ? '\\' : '/';
           let imageURL = files.image.path.split(type).pop();
           let newValues = {
             name: fields.name,

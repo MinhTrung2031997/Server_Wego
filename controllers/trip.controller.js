@@ -391,7 +391,7 @@ module.exports = {
           message: `cannot up load images. Error is ${err}`,
         });
       } else {
-        const type = os.type() === 'Darwin' ? '/' : '\\';
+        const type = os.type() === 'Windows_NT' ? '\\' : '/';
         let imageURL = files.image.path.split(type).pop();
         await Trip.findOneAndUpdate(
           {

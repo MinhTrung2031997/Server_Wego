@@ -36,7 +36,7 @@ module.exports = {
           message: `cannot read file. Error is: ${err}`,
         });
       } else {
-        const type = os.type() === 'Darwin' ? '/' : '\\';
+        const type = os.type() === 'Windows_NT' ? '\\' : '/';
         let imageURL = files.image.path.split(type).pop();
         let chat = new Chat({
           type: 2,
@@ -71,7 +71,7 @@ module.exports = {
           message: `cannot read file. Error is: ${err}`,
         });
       } else {
-        const type = os.type() === 'Darwin' ? '/' : '\\';
+        const type = os.type() === 'Windows_NT' ? '\\' : '/';
         let audioURL = files.audio.path.split(type).pop();
         let chat = new Chat({
           type: 4,

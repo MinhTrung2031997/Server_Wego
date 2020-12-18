@@ -90,7 +90,7 @@ module.exports = {
       let lengthDataLocation = Object.keys(dataLocation).length;
       let lengthDataImage = Object.keys(files).length;
       let trip_id = fields.trip_id;
-      const type = os.type() === 'Darwin' ? '/' : '\\';
+      const type = os.type() === 'Windows_NT' ? '\\' : '/';
       if (lengthDataExpense > 0 && lengthDataLocation > 0 && lengthDataImage > 0) {
         let imageURL =
           files.image.length > 1
