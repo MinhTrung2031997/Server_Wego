@@ -1,5 +1,40 @@
-extends layout
+doctype html
+html
+    head
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+        meta(charset='utf-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1')
+        script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+        script
+            include index.js
+        style
+            include index.css
+    body
+        .container
+            .row
+                .col-xs-12.col-sm-12.col-md-12.col-lg-12
+                    .text-center
+                        h1 WeGo
+                        h3 Bảng thống kê chi phí của tất cả các thành viên trong chuyến đi
+                    table.table.table-hover.table-bordered
+                        thead
+                            tr
+                                th Tên Thành Viên
+                                th Email
+                                th Số Dư Chuyến Đi
+                                th Chi Tiết
+                        tbody
+                             each user in users
+                                     tr.click-row(idUser=user._id)(tripId=tripId)
+                                         td= user.name
+                                         td= user.email
+                                         if (user.totalBalanceTrip < 0)
+                                             td(style='color:red;')= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
+                                         else
+                                             td(style='color:green;')= user.totalBalanceTrip.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
+                                         td
+                                             button.btn(type='button')
+                                                 a(href=`http://www.wego.host/api/index/sendMailTotalMoneyDetails/${tripId}/${user._id}`) Chi Tiết
 
-block content
-  h1= title
-  p Welcome to #{title}
+
+
